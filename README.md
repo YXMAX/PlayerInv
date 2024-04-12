@@ -17,5 +17,12 @@
 * Two diffent vault: tiny vault(27 sizes), large vault(54 sizes)
 * 10 large vaults, 15 tiny vaults
 
+## ✨ Plugin Pictures
+![MainGUI1](img/MainGUI1.jpg)
+![MainGUI2](img/MainGUI2.jpg)
+![CheckGUIOffline](img/CheckGUIOffline.jpg)
+![CheckGUIOnline](img/CheckGUIOnline.jpg)
+![Vouchers](img/Vouchers.jpg)
+
 ## 📃 License
 [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
