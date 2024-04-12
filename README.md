@@ -2,9 +2,10 @@
 ## 🛠 Plugin Dependencies
 + Vault [Download](https://www.spigotmc.org/resources/vault.34315/)
 
-## 🛠 Plugin Dependencies
+## 🛠 Plugin Versions
 * If you need version below 1.13, click me to download
-
+* zh-CN version: [MineBBS Forum](https://www.minebbs.com/resources/playerinv-1-12-x-1-20-x.7117/)
+* en-US version: Github Releases
 ## ✨ Plugin Features
 
 * Supported Version 1.12.X-1.20.X
