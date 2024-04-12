@@ -22,7 +22,7 @@
 ![MainGUI2](img/MainGUI2.jpg)
 ![CheckGUIOffline](img/CheckGUIOffline.jpg)
 ![CheckGUIOnline](img/CheckGUIOnline.jpg)
-![Vouchers](img/Vouchers.jpg)
+![Vouchers](img/Vouchers.png)
 
 ## 📃 License
 [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
