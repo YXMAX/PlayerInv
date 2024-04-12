@@ -1,0 +1,142 @@
+# 插件前缀
+Prefix: '&f[&ePlayerInv&f]'
+
+#打开仓库时消息
+OpenMessage: '&e已打开仓库GUI'
+ToggleMessage:
+  Enabled: ' &a已开启F键打开GUI.'
+  Disabled: ' &c已关闭F键打开GUI.'
+NoPermissionMessage:
+#无指令权限时的提示信息
+  Command: '&c你没有使用该命令的权限.'
+#无仓库权限时的提示信息
+  Inv: '&c你没有权限打开该仓库.'
+UnableMessage:
+#当Opentoggle设为false时玩家尝试/Inv keys toggle的提示信息
+  Command: '&c该命令被禁止.'
+#当KeysOpen设为false时玩家尝试/Inv keys toggle的提示信息
+  Keys: '&c该功能被禁止.'
+
+#使用物品给予权限时的提示信息
+ItemMessage:
+  Full: ' &c你已拥有当前类型的全部仓库 无法使用该兑换券！'
+  Give: ' &e成功给予 &f%player% &e玩家一个仓库兑换券'
+  Use:
+    Large: ' &e获得 &a%large_vault_number% &e号大型仓库.'
+    Medium: ' &e获得 &a%medium_vault_number% &e号小型仓库.'
+
+#控制台输出给玩家的提示信息
+ConsoleMessage:
+  #玩家获得兑换券时的提示信息(控制台发出)
+  Give:
+    Large: ' &e获得一张大型仓库兑换券.'
+    Medium: ' &e获得一张小型仓库兑换券.'
+
+#使用兑换券时Title和音效展示开关
+UseItem:
+  Sound: true
+  Title: true
+  Large:
+    Title: '&eCongratulation!!'
+    Subtitle: '&a获得 &b%large_vault_number% &a号大型仓库'
+  Medium:
+    Title: '&eCongratulation!!'
+    Subtitle: '&a获得 &b%medium_vault_number% &a号小型仓库'
+
+#设置GUI中的玻璃提示信息
+GUIGlass:
+  LIME: '&a'
+  ORANGE: '&f&l仓库GUI'
+  YELLOW: '&e&l分界线'
+
+#GUI内的物品材质以及属性
+GUIItem:
+  lime_glass:
+    material: 'LIME_STAINED_GLASS_PANE'
+    enchant_glow: false
+  orange_glass:
+    material: 'ORANGE_STAINED_GLASS_PANE'
+    enchant_glow: false
+  yellow_glass:
+    material: 'YELLOW_STAINED_GLASS_PANE'
+    enchant_glow: false
+  locked_chest:
+    material: 'ENDER_CHEST'
+    enchant_glow: false
+  unlock_chest:
+    material: 'CHEST'
+    enchant_glow: false
+
+
+#CustomModelData用于材质包的额外材质显示
+#如无该需求，无需启用
+CustomModelData:
+  enabled: false
+  lime_glass: '1'
+  orange_glass: '1'
+  yellow_glass: '1'
+  locked_chest: '1'
+  unlock_chest: '1'
+
+# 主GUI内个人仓库的标题和Lore修改
+# Title仅限于修改仓库序号前的字符
+GUI:
+  #仓库主界面标题
+  Title: '&b&l个人仓库GUI'
+  Large:
+    Title: '&c个人大仓库'
+    Lore:
+      - ''
+  Medium:
+    Title: '&c个人小仓库'
+    Lore:
+      - ''
+
+# 是否允许玩家使用/Inv Toggle 开关F键功能
+OpenToggle: true
+
+# 是否开启F键打开仓库菜单功能
+KeysOpen: true
+
+#是否打开仓库GUI提示信息
+OpenGUIMessage: true
+
+# 仓库状态字符修改
+Status:
+  Lock: '&cLocked'
+  Unlock: '&aUnlocked'
+
+Item:
+  Large:
+    Title: '&b大型仓库兑换券'
+    Lore:
+      - '&e右键该物品可获得一个大型仓库'
+      - ''
+  Medium:
+    Title: '&a小型仓库兑换券'
+    Lore:
+      - '&6右键该物品可获得一个小型仓库'
+      - ''
+
+#数据存储方式
+DataBases:
+  #MySql为false时使用SQLite存储 即保存为本地数据库Database.db
+  #Mysql为true时使用Mysql存储 即保存数据至Mysql数据库
+  #Database.db的数据可通过Mysql数据库管理面板(如NaviCat)导入到Mysql的数据库中
+  #当Mysql启用时，下方参数为启用状态
+  #若插件无法成功链接数据库 将会关闭插件 直至下次服务器重启
+  MySQL: false
+  #数据库地址
+  host: localhost
+  #数据库端口
+  port: 3306
+  #数据库用户名
+  user: root
+  #数据库密码
+  password: root
+  #数据库名
+  database: playerinv
+  #默认为false
+  #用于Mysql
+  #Paper服务端出现Mysql相关该PublicKey报错时,可尝试开启该项解决问题
+  allowPublicKeyRetrieval: false

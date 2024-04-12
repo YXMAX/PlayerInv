@@ -1,0 +1,76 @@
+name: PlayerInv
+version: '${version}'
+main: com.playerinv.PlayerInv
+api-version: '1.14'
+folia-supported: true
+commands:
+  playerinv:
+    aliases: inv
+permissions:
+  playerinv.admin:
+    default: op
+  playerinv.check:
+    default: false
+  playerinv.reload:
+    default: false
+  playerinv.inv.*:
+    default: false
+  playerinv.inv.1:
+    default: false
+  playerinv.inv.2:
+    default: false
+  playerinv.inv.3:
+    default: false
+  playerinv.inv.4:
+    default: false
+  playerinv.inv.5:
+    default: false
+  playerinv.inv.6:
+    default: false
+  playerinv.inv.7:
+    default: false
+  playerinv.inv.8:
+    default: false
+  playerinv.inv.9:
+    default: false
+  playerinv.inv.10:
+    default: false
+  playerinv.inv.11:
+    default: false
+  playerinv.inv.12:
+    default: false
+  playerinv.inv.13:
+    default: false
+  playerinv.inv.14:
+    default: false
+  playerinv.inv.15:
+    default: false
+  playerinv.inv.16:
+    default: false
+  playerinv.inv.17:
+    default: false
+  playerinv.inv.18:
+    default: false
+  playerinv.inv.19:
+    default: false
+  playerinv.inv.20:
+    default: false
+  playerinv.inv.21:
+    default: false
+  playerinv.inv.22:
+    default: false
+  playerinv.inv.23:
+    default: false
+  playerinv.inv.24:
+    default: false
+  playerinv.inv.25:
+    default: false
+  playerinv.keys.toggle:
+    default: true
+  playerinv.give:
+    default: false
+  playerinv.gui.open:
+    default: true
+
+softdepend:
+  - Vault
