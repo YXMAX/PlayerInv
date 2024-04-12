@@ -2,6 +2,9 @@
 ## 🛠 Plugin Dependencies
 + Vault [Download](https://www.spigotmc.org/resources/vault.34315/)
 
+## 🛠 Plugin Dependencies
+* If you need version below 1.13, click me to download
+
 ## ✨ Plugin Features
 
 * Supported Version 1.12.X-1.20.X
