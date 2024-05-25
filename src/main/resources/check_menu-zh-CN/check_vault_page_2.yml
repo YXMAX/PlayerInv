@@ -1,0 +1,94 @@
+######################################################
+###
+### vault_items为重要的显示仓库的行列 vault_set为重要的槽位与仓库的联系
+### vault_items下的信息都无法删除 只能作以此基础上的修改
+### 如更改材质 数量 lore 显示名称都可自定义
+### items下可自由进行自定义 无执行指令的功能 仅作为装饰以及开关其他菜单用
+### 菜单title和size缺一不可
+### 可自由添加新的菜单文件 如需要打开请在items下的物品添加open-menu选项
+### custom-model-data 仅支持1.14版本以上
+### 如服务端为1.12 且要使用彩色玻璃或彩色地毯以及其他带副ID的物品
+### 添加item-subid: [num] 以使用该功能
+###
+######################################################
+menu_title: '查看仓库界面 #2'
+size: 36
+vault_items:
+  large_locked:
+    material: BLACK_SHULKER_BOX
+    amount: 1
+    enchant-glow: false
+    display-name: '&6大型个人仓库 [ &a%vault_num% &6]'
+    lore:
+      - '&e- &f可存储不同的物品和武器'
+      - '&e- &f仓库大小: &a54 &f格'
+      - ''
+      - '&e- &c未解锁'
+    custom-model-data: '0'
+  large_unlocked:
+    material: WHITE_SHULKER_BOX
+    amount: 1
+    enchant-glow: false
+    display-name: '&6大型个人仓库 [ &a%vault_num% &6]'
+    lore:
+      - '&e- &f可存储不同的物品和武器'
+      - '&e- &f仓库大小: &a54 &f格'
+      - ''
+      - '&e- &a点击打开'
+  medium_locked:
+    material: ENDER_CHEST
+    amount: 1
+    enchant-glow: false
+    display-name: '&d中型个人仓库 [ &a%vault_num% &6]'
+    lore:
+      - '&e- &f可存储不同的物品和武器'
+      - '&e- &f仓库大小: &a27 &f格'
+      - ''
+      - '&e- &c未解锁'
+  medium_unlocked:
+    material: CHEST
+    amount: 1
+    enchant-glow: false
+    display-name: '&d中型个人仓库 [ &a%vault_num% &d]'
+    lore:
+      - '&e- &f可存储不同的物品和武器'
+      - '&e- &f仓库大小: &a27 &f格'
+      - ''
+      - '&e- &a点击打开'
+  large_vault_set: ##槽位 : 相应仓库
+    - '3:11'
+    - '4:12'
+    - '5:13'
+    - '6:14'
+    - '7:15'
+    - '12:16'
+    - '13:17'
+    - '14:18'
+    - '15:19'
+    - '16:20'
+  medium_vault_set: ##槽位 : 相应仓库
+    - '21:11'
+    - '22:12'
+    - '23:13'
+    - '24:14'
+    - '25:15'
+    - '30:16'
+    - '31:17'
+    - '32:18'
+    - '33:19'
+    - '34:20'
+items:
+  glass_1:
+    material: LIME_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 28
+    display-name: '&a上一页'
+    open-menu: Main
+  glass_2:
+    material: LIME_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 36
+    display-name: '&a下一页'
+    open-menu: check_vault_page_3

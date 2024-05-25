@@ -1,0 +1,58 @@
+Voucher:
+  large:
+    display-name: '&bLarge Vault Voucher'
+    lore:
+      - '&e- &6Get a large vault'
+      - '&e- &6Right-click to use'
+    title: '&eCongratulation!!'
+    subtitle: '&aReceived &bNO.%large_vault_number% &aLarge Vault'
+  medium:
+    display-name: '&aMedium Vault Voucher'
+    lore:
+      - '&e- &6Get a medium vault'
+      - '&e- &6Right-click to use'
+    title: '&eCongratulation!!'
+    subtitle: '&aReceived &bNO.%medium_vault_number% &aMedium Vault'
+
+##Title cannot contain numbers, it will go wrong!
+##Title cannot contain numbers, it will go wrong!
+Vault:
+  Large_title: 'Large vault #'
+  Medium_title: 'Medium vault #'
+
+##Title cannot contain numbers, it will go wrong!
+##Title cannot contain numbers, it will go wrong!
+Check:
+  Player_online:
+    Large_title: "Player %player% 's large vault #"
+    Medium_title: "Player %player% 's medium vault #"
+  Player_offline:
+    Large_title: "OfflinePlayer %player% 's large vault #"
+    Medium_title: "OfflinePlayer %player% 's medium vault #"
+
+Messages:
+  Open_main_gui: '&eOpening Main GUI..'
+  Toggle_enabled: '&aKey-bind F function was enabled.'
+  Toggle_disabled: '&cKey-bind F function was disabled.'
+  Toggle_unable_command: '&cThis command is not allowed.'
+  Toggle_unable_keys: '&cThis function is not allowed.'
+  No_permission_command: '&cYou have no permission to do that.'
+  No_permission_vault: '&cYou have no permission to open vault.'
+  Vault_blacklist_items: '&cThe item has been banned from vault'
+  Voucher_full: '&cYou already have all the vault of the current type, You cant use this voucher!'
+  Voucher_give: '&eSuccessfully give player &f%player% &ea vault voucher'
+  Voucher_use_large: '&eReceived &aNO.%large_vault_number% &elarge vault'
+  Voucher_use_medium: '&eReceived &aNO.%medium_vault_number% &emedium vault'
+  Voucher_cannot_use: '&cYou cannot use this voucher'
+  Check_player_error: '&cPlease enter the right player name.'
+  Check_unknown_player: '&cUnknown player'
+  Not_console_command: '&cThis command is only in game.'
+  Console_give_voucher_player_error: '&cPlayer offline..'
+  Console_give_voucher_large_notice: '&eSuccessfully give player &f%player% &elarge vault voucher.'
+  Console_give_voucher_medium_notice: '&eSuccessfully give player &f%player% &emedium vault voucher.'
+  Console_give_voucher_large: '&eReceived a large vault voucher.'
+  Console_give_voucher_medium: '&eReceived a medium vault voucher.'
+  Command_reload: '&ePlugin reloaded...'
+
+
+

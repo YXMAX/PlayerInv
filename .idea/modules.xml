@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Administrator.IdeaProjects.PlayerInv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Administrator.IdeaProjects.PlayerInv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IdeaProjects.PlayerInv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/IdeaProjects.PlayerInv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerInv.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerInv.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerInv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerInv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayerInv_Backup.PlayerInv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayerInv_Backup.PlayerInv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.PlayerInv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.PlayerInv.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.PlayerInv.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/com.PlayerInv.main~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.PlayerInv.main~3.iml" filepath="$PROJECT_DIR$/.idea/modules/com.PlayerInv.main~3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/zforikn.IdeaProjects.PlayerInv.main.iml" filepath="$PROJECT_DIR$/.idea/modules/zforikn.IdeaProjects.PlayerInv.main.iml" />
+    </modules>
+  </component>
+</project>

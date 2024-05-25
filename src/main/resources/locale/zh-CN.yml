@@ -1,0 +1,62 @@
+Voucher:
+  large:
+    display-name: '&b大型仓库兑换券'
+    lore:
+      - '&e- &6使用可获得一个大型仓库'
+      - '&e- &6右键使用'
+    title: '&eCongratulation!!'
+    subtitle: '&a获得 &b%large_vault_number% &a号大型仓库'
+  medium:
+    display-name: '&a小型仓库兑换券'
+    lore:
+      - '&e- &6使用可获得一个小型仓库'
+      - '&e- &6右键使用'
+    title: '&eCongratulation!!'
+    subtitle: '&a获得 &b%medium_vault_number% &a号小型仓库'
+
+
+##Title标题中不能含有数字, 否则会出现存储错误！
+##Title标题中不能含有数字, 否则会出现存储错误！
+Vault:
+  Large_title: '大型仓库 #'
+  Medium_title: '中型仓库 #'
+
+##Title标题中不能含有数字, 否则会出现存储错误！
+##Title标题中不能含有数字, 否则会出现存储错误！
+Check:
+  Player_online:
+    Large_title: '玩家 %player% 的大型仓库 #'
+    Medium_title: '玩家 %player% 的中型仓库 #'
+  Player_offline:
+    Large_title: '离线玩家 %player% 的大型仓库 #'
+    Medium_title: '离线玩家 %player% 的中型仓库 #'
+
+Messages:
+  Open_main_gui: '&e已打开仓库GUI'
+  Toggle_enabled: '&a已开启F键打开GUI.'
+  Toggle_disabled: '&c已关闭F键打开GUI.'
+  Toggle_unable_command: '&c该命令被禁止.'
+  Toggle_unable_keys: '&c该功能被禁止.'
+  No_permission_command: '&c你没有使用该命令的权限.'
+  No_permission_vault: '&c你没有权限打开该仓库.'
+  Vault_blacklist_items: '&c该物品已被禁止放入仓库中'
+  Voucher_full: '&c你已拥有当前类型的全部仓库 无法使用该兑换券！'
+  Voucher_give: '&e成功给予 &f%player% &e玩家一个仓库兑换券'
+  Voucher_use_large: '&e获得 &a%large_vault_number% &e号大型仓库.'
+  Voucher_use_medium: '&e获得 &a%medium_vault_number% &e号小型仓库.'
+  Voucher_cannot_use: '&c你无法使用该兑换券.'
+  Check_player_error: '&c请输入正确的玩家名称.'
+  Check_unknown_player: '&c未知玩家'
+  Not_console_command: '&c该命令仅游戏内可用'
+  Console_give_voucher_player_error: '&c玩家未在线.'
+  Console_give_voucher_large_notice: '&e成功给予玩家 &f%player% &e大型仓库兑换券.'
+  Console_give_voucher_medium_notice: '&e成功给予玩家 &f%player% &e小型仓库兑换券.'
+  Console_give_voucher_large: '&e获得一张大型仓库兑换券.'
+  Console_give_voucher_medium: '&e获得一张小型仓库兑换券.'
+  Command_reload: '&e插件已重载'
+  Unknown_number: '&c未知数值'
+  Sort_cooldown: '&c仓库整理冷却中...'
+  Sort_inventory: '&e已对仓库进行整理...'
+
+
+
