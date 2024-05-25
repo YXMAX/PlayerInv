@@ -1,7 +1,7 @@
 # PlayerInv
 ## 🛠 Plugin Dependencies && Soft Dependencies
 + Vault [Download](https://www.spigotmc.org/resources/vault.34315/)
-+ [softdepends] LuckPerms [Download](https://www.spigotmc.org/resources/vault.34315/](https://www.spigotmc.org/resources/luckperms.28140/)
++ [softdepends] LuckPerms [Download](https://www.spigotmc.org/resources/luckperms.28140/)
 
 ## ✨ Plugin Features
 
