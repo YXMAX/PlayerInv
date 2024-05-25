@@ -1,10 +1,7 @@
 # PlayerInv
-## 🛠 Plugin Dependencies
+## 🛠 Plugin Dependencies && Soft Dependencies
 + Vault [Download](https://www.spigotmc.org/resources/vault.34315/)
-
-## 🛠 Plugin Versions
-* zh-CN version: [MineBBS Forum](https://www.minebbs.com/resources/playerinv-1-12-x-1-20-x.7117/)
-* en-US version: [Github Releases](https://github.com/YXMAX/PlayerInv/releases)
++ [softdepends] LuckPerms [Download](https://www.spigotmc.org/resources/vault.34315/](https://www.spigotmc.org/resources/luckperms.28140/)
 
 ## ✨ Plugin Features
 
@@ -20,13 +17,6 @@
 * Base64 Code to storge Inventory, High Security
 * Two diffent vault: tiny vault(27 sizes), large vault(54 sizes)
 * 10 large vaults, 15 tiny vaults
-
-## ✨ Plugin Pictures
-![MainGUI1](img/MainGUI1.jpg)
-![MainGUI2](img/MainGUI2.jpg)
-![CheckGUIOffline](img/CheckGUIOffline.jpg)
-![CheckGUIOnline](img/CheckGUIOnline.jpg)
-![Vouchers](img/Vouchers.png)
 
 ## 📃 License
 [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
