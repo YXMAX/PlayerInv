@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 import static com.playerinv.PlayerInv.LocaleConfig;
+import static com.playerinv.PluginSet.locale;
 
 public class LocaleUtil {
 
@@ -39,8 +40,8 @@ public class LocaleUtil {
         return v;
     }
 
-    public static List<String> Voucher_cannot_use(){
-        List<String> v = LocaleConfig.getStringList("Messages.Voucher_cannot_use");
+    public static String Voucher_cannot_use(){
+        String v = LocaleConfig.getString("Messages.Voucher_cannot_use");
         return v;
     }
 
@@ -155,16 +156,6 @@ public class LocaleUtil {
         return v;
     }
 
-    public static String Messages_sort_inventory(){
-        String v = LocaleConfig.getString("Messages.Sort_inventory");
-        return v;
-    }
-
-    public static String Messages_sort_cooldown(){
-        String v = LocaleConfig.getString("Messages.Sort_cooldown");
-        return v;
-    }
-
     public static String Messages_Console_give_voucher_player_error(){
         String v = LocaleConfig.getString("Messages.Console_give_voucher_player_error");
         return v;
@@ -194,4 +185,30 @@ public class LocaleUtil {
         String v = LocaleConfig.getString("Messages.Console_give_voucher_medium_notice").replaceAll("%player%", player.getName());
         return v;
     }
+
+    public static String Vault_command_give_large_success(Player player, String num){
+        String v = LocaleConfig.getString("Messages.Vault_command_give_large_success").replaceAll("%player%", player.getName());
+        return v.replaceAll("%vault_num%", String.valueOf(num));
+    }
+
+    public static String Vault_command_give_medium_success(Player player, String num){
+        String v = LocaleConfig.getString("Messages.Vault_command_give_medium_success").replaceAll("%player%", player.getName());
+        return v.replaceAll("%vault_num%", String.valueOf(num));
+    }
+
+    public static String Vault_command_give_already_has(Player player){
+        String v = LocaleConfig.getString("Messages.Vault_command_give_already_has").replaceAll("%player%", player.getName());
+        return v;
+    }
+
+    public static String Vault_command_append_large_success(Player player, int before ,String num){
+        String v = LocaleConfig.getString("Messages.Vault_command_append_large_success").replaceAll("%player%", player.getName());
+        return v.replaceAll("%vault_amount%", String.valueOf(num)).replaceAll("%before_append%", String.valueOf(before));
+    }
+
+    public static String Vault_command_append_medium_success(Player player, int before,String num){
+        String v = LocaleConfig.getString("Messages.Vault_command_append_medium_success").replaceAll("%player%", player.getName());
+        return v.replaceAll("%vault_amount%", String.valueOf(num)).replaceAll("%before_append%", String.valueOf(before));
+    }
+
 }

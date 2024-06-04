@@ -25,6 +25,14 @@ permissions:
     default: true
   playerinv.invopen:
     default: true
+  playerinv.large.inv.*:
+    default: op
+  playerinv.medium.inv.*:
+    default: op
+  playerinv.vault.give:
+    default: op
+  playerinv.vault.append:
+    default: op
 
 depend: [Vault]
 softdepend: [LuckPerms]

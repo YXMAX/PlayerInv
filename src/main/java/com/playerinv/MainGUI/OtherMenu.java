@@ -2,9 +2,7 @@ package com.playerinv.MainGUI;
 
 import com.playerinv.InvHolder.Check_OtherMenuHolder;
 import com.playerinv.InvHolder.Check_OtherMenuHolder_Offline;
-import com.playerinv.InvHolder.MainMenuHolder;
 import com.playerinv.InvHolder.OtherMenuHolder;
-import com.playerinv.PlayerInv;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -22,7 +20,7 @@ import java.util.List;
 
 import static com.playerinv.MainGUI.MenuItemException.*;
 import static com.playerinv.PlayerInv.*;
-import static com.playerinv.PluginSet.color;
+import static com.playerinv.PluginSet.*;
 
 public class OtherMenu {
 
@@ -142,7 +140,7 @@ public class OtherMenu {
             OtherMenuVaultSlotMap_Large.putIfAbsent(menu_file_key + ":" + slot,vault_num);
             String path = null;
             if(vault_num <= 10){
-                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp() || player.hasPermission(LargeFullInv)) {
                     path = "vault_items.large_unlocked.";
                 } else if (player.hasPermission("playerinv.inv." + vault_num) || player.isOp()){
                     path = "vault_items.large_unlocked.";
@@ -151,7 +149,7 @@ public class OtherMenu {
                 }
             }
             if(vault_num > 10){
-                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp() || player.hasPermission(LargeFullInv)) {
                     path = "vault_items.large_unlocked.";
                 } else {
                     path = "vault_items.large_locked.";
@@ -220,7 +218,7 @@ public class OtherMenu {
             String path = null;
             int old_num = vault_num + 10;
             if(vault_num <= 15){
-                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp() || player.hasPermission(MediumFullInv)) {
                     path = "vault_items.medium_unlocked.";
                 } else if (player.hasPermission("playerinv.inv." + old_num) || player.isOp()){
                     path = "vault_items.medium_unlocked.";
@@ -229,7 +227,7 @@ public class OtherMenu {
                 }
             }
             if(vault_num > 15){
-                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp() || player.hasPermission(MediumFullInv)) {
                     path = "vault_items.medium_unlocked.";
                 } else {
                     path = "vault_items.medium_locked.";
@@ -402,7 +400,7 @@ public class OtherMenu {
             Check_OtherMenuVaultSlotMap_Large.putIfAbsent(menu_file_key + ":" + slot,vault_num);
             String path = null;
             if(vault_num <= 10){
-                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp() || player.hasPermission(LargeFullInv)) {
                     path = "vault_items.large_unlocked.";
                 } else if (player.hasPermission("playerinv.inv." + vault_num) || player.isOp()){
                     path = "vault_items.large_unlocked.";
@@ -411,7 +409,7 @@ public class OtherMenu {
                 }
             }
             if(vault_num > 10){
-                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.large.inv." + vault_num) || player.isOp() || player.hasPermission(LargeFullInv)) {
                     path = "vault_items.large_unlocked.";
                 } else {
                     path = "vault_items.large_locked.";
@@ -480,7 +478,7 @@ public class OtherMenu {
             String path = null;
             int old_num = vault_num + 10;
             if(vault_num <= 15){
-                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp() || player.hasPermission(MediumFullInv)) {
                     path = "vault_items.medium_unlocked.";
                 } else if (player.hasPermission("playerinv.inv." + old_num) || player.isOp()){
                     path = "vault_items.medium_unlocked.";
@@ -489,7 +487,7 @@ public class OtherMenu {
                 }
             }
             if(vault_num > 15){
-                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp()) {
+                if (player.hasPermission("playerinv.medium.inv." + vault_num) || player.isOp() || player.hasPermission(MediumFullInv)) {
                     path = "vault_items.medium_unlocked.";
                 } else {
                     path = "vault_items.medium_locked.";

@@ -1,14 +1,15 @@
 package com.playerinv.Listener;
 
 import com.playerinv.ContextNode;
-import com.playerinv.InvHolder.*;
-import com.playerinv.MainGUI.MainMenu;
+import com.playerinv.InvHolder.MainMenuHolder;
+import com.playerinv.InvHolder.OtherMenuHolder;
+import com.playerinv.InvHolder.VaultHolder_Large;
+import com.playerinv.InvHolder.VaultHolder_Medium;
 import com.playerinv.MainGUI.OtherMenu;
-import com.playerinv.PermItem.PermItem;
 import com.playerinv.PlayerInv;
 import com.playerinv.PluginSet;
 import com.playerinv.SQLite.SQLiteConnect;
-import org.bukkit.*;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -17,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -25,9 +25,10 @@ import org.bukkit.inventory.ItemStack;
 
 import static com.playerinv.LocaleUtil.*;
 import static com.playerinv.MainGUI.MainMenu.Main_GUI;
+import static com.playerinv.OpenInventoryRunnable.ReturnMain;
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
-import static com.playerinv.SQLite.SQLiteConnect.*;
+import static com.playerinv.SQLite.SQLiteConnect.con;
 
 
 public class InvListener implements Listener {
@@ -69,7 +70,7 @@ public class InvListener implements Listener {
                 if(MainMenuVaultSlotMap_Large.containsKey(clicked_slot + 1)){
                     Integer vault_num = MainMenuVaultSlotMap_Large.get(clicked_slot + 1);
                     if(vault_num <= 10){
-                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + vault_num)){
+                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + vault_num) || player.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -87,7 +88,7 @@ public class InvListener implements Listener {
                         }
                     }
                     if(vault_num > 10){
-                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp()){
+                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -109,7 +110,7 @@ public class InvListener implements Listener {
                     int vault_num = MainMenuVaultSlotMap_Medium.get(clicked_slot + 1);
                     if(vault_num <= 15){
                         int old_vault_num = vault_num + 10;
-                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + old_vault_num)){
+                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + old_vault_num) || player.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -127,7 +128,7 @@ public class InvListener implements Listener {
                         }
                     }
                     if(vault_num > 15){
-                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp()){
+                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -188,7 +189,7 @@ public class InvListener implements Listener {
                 if(OtherMenuVaultSlotMap_Large.containsKey(final_key)){
                     Integer vault_num = OtherMenuVaultSlotMap_Large.get(final_key);
                     if(vault_num <= 10){
-                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + vault_num)){
+                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + vault_num) || player.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -206,7 +207,7 @@ public class InvListener implements Listener {
                         }
                     }
                     if(vault_num > 10){
-                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp()){
+                        if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -228,7 +229,7 @@ public class InvListener implements Listener {
                     int vault_num = OtherMenuVaultSlotMap_Medium.get(final_key);
                     if(vault_num <= 15){
                         int old_vault_num = vault_num + 10;
-                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + old_vault_num)){
+                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + old_vault_num) || player.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -246,7 +247,7 @@ public class InvListener implements Listener {
                         }
                     }
                     if(vault_num > 15){
-                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp()){
+                        if(player.hasPermission("playerinv.medium.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,player.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -280,6 +281,7 @@ public class InvListener implements Listener {
             String vault_num = vault_substring.replaceAll("[^(0-9)]","");
             vault_num.trim();
             SQLiteConnect.updateInv_Large(con, player.getUniqueId().toString(), invdata, Integer.valueOf(vault_num));
+            ReturnMain(player);
         }
         if (event.getInventory().getHolder() instanceof VaultHolder_Medium){
             String invdata = PluginSet.inventoryToBase64(event.getInventory());
@@ -288,6 +290,7 @@ public class InvListener implements Listener {
             String vault_num = vault_substring.replaceAll("[^(0-9)]","");
             vault_num.trim();
             SQLiteConnect.updateInv_Medium(con, player.getUniqueId().toString(), invdata, Integer.valueOf(vault_num));
+            ReturnMain(player);
         }
     }
 
@@ -334,9 +337,9 @@ public class InvListener implements Listener {
         }
         if(p.getItemInHand().getItemMeta().getDisplayName().equals(color(Locale_Voucher_Large_DisplayName()))){
             String item_target = getValueFromLore(p.getItemInHand(),"Owner");
-            if(item_target.equals(p.getName())){
-                if(p.isOp() || p.hasPermission("playerinv.admin")){
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_Voucher_full()));
+            if((item_target.equals(p.getName()) && Voucher_Set_Owner()) || !Voucher_Set_Owner()){
+                if(p.isOp() || p.hasPermission("playerinv.admin") || p.hasPermission(LargeFullInv)){
+                    p.sendMessage(color(prefix + Messages_Voucher_full()));
                     return;
                 }
                 for(int i=1;i<(Large_Amount + 1);i++){
@@ -383,18 +386,18 @@ public class InvListener implements Listener {
                         }
                     }
                 }
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_Voucher_full()));
+                p.sendMessage(color(prefix + Messages_Voucher_full()));
                 return;
-            } else if(!item_target.equals(p.getName())){
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + Voucher_cannot_use()));
+            } else if(!item_target.equals(p.getName()) && Voucher_Set_Owner()){
+                p.sendMessage(color(prefix + Voucher_cannot_use()));
                 return;
             }
         }
         if(p.getItemInHand().getItemMeta().getDisplayName().equals(color(Locale_Voucher_Medium_DisplayName()))){
             String item_target = getValueFromLore(p.getItemInHand(),"Owner");
-            if(item_target.equals(p.getName())){
-                if(p.isOp() || p.hasPermission("playerinv.admin")){
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_Voucher_full()));
+            if((item_target.equals(p.getName()) && Voucher_Set_Owner()) || !Voucher_Set_Owner()){
+                if(p.isOp() || p.hasPermission("playerinv.admin") || p.hasPermission(MediumFullInv)){
+                    p.sendMessage(color(prefix + Messages_Voucher_full()));
                     return;
                 }
                 for(int i=1;i<(Medium_Amount + 1);i++){
@@ -442,10 +445,10 @@ public class InvListener implements Listener {
                         }
                     }
                 }
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_Voucher_full()));
+                p.sendMessage(color(prefix + Messages_Voucher_full()));
                 return;
-            } else if(!item_target.equals(p.getName())){
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + Voucher_cannot_use()));
+            } else if(!item_target.equals(p.getName()) && Voucher_Set_Owner()){
+                p.sendMessage(color(prefix + Voucher_cannot_use()));
                 return;
             }
         }
@@ -488,80 +491,6 @@ public class InvListener implements Listener {
                     player.sendMessage(color(prefix + Messages_Vault_blacklist_items()));
                 }
             }
-        }
-    }
-
-    @EventHandler
-    public void onPutItemIntoVaultEvent(InventoryClickEvent event)throws Exception{
-        if(event.getInventory().getHolder() instanceof VaultHolder_Large){
-            if(event.getCurrentItem() != null && event.getCursor() != null){
-                return;
-            }
-            Player player = (Player) event.getWhoClicked();
-            String vault_title = event.getView().getTitle().toString();
-            String vault_substring = vault_title.substring(vault_title.length()-3);
-            String vault_num = vault_substring.replaceAll("[^(0-9)]","");
-            vault_num.trim();
-            SQLiteConnect.updateInv_Large(con,player.getUniqueId().toString(),inventoryToBase64(event.getInventory()), Integer.valueOf(vault_num));
-        }
-        if(event.getInventory().getHolder() instanceof VaultHolder_Medium){
-            if(event.getCurrentItem() != null && event.getCursor() != null){
-                return;
-            }
-            Player player = (Player) event.getWhoClicked();
-            String vault_title = event.getView().getTitle().toString();
-            String vault_substring = vault_title.substring(vault_title.length()-3);
-            String vault_num = vault_substring.replaceAll("[^(0-9)]","");
-            vault_num.trim();
-            SQLiteConnect.updateInv_Medium(con,player.getUniqueId().toString(),inventoryToBase64(event.getInventory()), Integer.valueOf(vault_num));
-        }
-        if(event.getInventory().getHolder() instanceof Check_VaultHolder_Large){
-            if(event.getCurrentItem() != null && event.getCursor() != null){
-                return;
-            }
-            Player player = (Player) event.getWhoClicked();
-            Player target = Check_OnlinePlayerMap.get(player);
-            String vault_title = event.getView().getTitle().toString();
-            String vault_substring = vault_title.substring(vault_title.length()-3);
-            String vault_num = vault_substring.replaceAll("[^(0-9)]","");
-            vault_num.trim();
-            SQLiteConnect.updateInv_Large(con,target.getUniqueId().toString(),inventoryToBase64(event.getInventory()), Integer.valueOf(vault_num));
-        }
-        if(event.getInventory().getHolder() instanceof Check_VaultHolder_Medium){
-            if(event.getCurrentItem() != null && event.getCursor() != null){
-                return;
-            }
-            Player player = (Player) event.getWhoClicked();
-            Player target = Check_OnlinePlayerMap.get(player);
-            String vault_title = event.getView().getTitle().toString();
-            String vault_substring = vault_title.substring(vault_title.length()-3);
-            String vault_num = vault_substring.replaceAll("[^(0-9)]","");
-            vault_num.trim();
-            SQLiteConnect.updateInv_Medium(con,target.getUniqueId().toString(),inventoryToBase64(event.getInventory()), Integer.valueOf(vault_num));
-        }
-        if(event.getInventory().getHolder() instanceof Check_VaultHolder_Large_Offline){
-            if(event.getCurrentItem() != null && event.getCursor() != null){
-                return;
-            }
-            Player player = (Player) event.getWhoClicked();
-            OfflinePlayer target = Check_OfflinePlayerMap.get(player);
-            String vault_title = event.getView().getTitle().toString();
-            String vault_substring = vault_title.substring(vault_title.length()-3);
-            String vault_num = vault_substring.replaceAll("[^(0-9)]","");
-            vault_num.trim();
-            SQLiteConnect.updateInv_Large(con,target.getUniqueId().toString(),inventoryToBase64(event.getInventory()), Integer.valueOf(vault_num));
-        }
-        if(event.getInventory().getHolder() instanceof Check_VaultHolder_Medium_Offline){
-            if(event.getCurrentItem() != null && event.getCursor() != null){
-                return;
-            }
-            Player player = (Player) event.getWhoClicked();
-            OfflinePlayer target = Check_OfflinePlayerMap.get(player);
-            String vault_title = event.getView().getTitle().toString();
-            String vault_substring = vault_title.substring(vault_title.length()-3);
-            String vault_num = vault_substring.replaceAll("[^(0-9)]","");
-            vault_num.trim();
-            SQLiteConnect.updateInv_Medium(con,target.getUniqueId().toString(),inventoryToBase64(event.getInventory()), Integer.valueOf(vault_num));
         }
     }
 }

@@ -53,6 +53,12 @@ Messages:
   Console_give_voucher_large: '&eReceived a large vault voucher.'
   Console_give_voucher_medium: '&eReceived a medium vault voucher.'
   Command_reload: '&ePlugin reloaded...'
+  Unknown_number: '&cUnknown value...'
+  Vault_command_give_large_success: '&eSuccessfully given player %player% Large Vault %vault_num%'
+  Vault_command_give_medium_success: '&eSuccessfully given player %player% Medium Vault %vault_num%'
+  Vault_command_give_already_has: '&cThe player already owns the vault!'
+  Vault_command_append_large_success: '&eSuccessfully added &f%player% &ewith &a%vault_mount% &elarge vaults under the existing &a%before_append% &elarge vault.'
+  Vault_command_append_medium_success: '&eSuccessfully added &f%player% &ewith &a%vault_mount% &emedium vaults under the existing &a%before_append% &emedium vault.'
 
 
 

@@ -4,6 +4,7 @@ import com.playerinv.InvHolder.*;
 import com.playerinv.Listener.CheckInvListener;
 import com.playerinv.Listener.CheckInvOfflineListener;
 import com.playerinv.Listener.InvListener;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -11,7 +12,6 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
@@ -22,21 +22,22 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import javax.naming.ConfigurationException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static com.playerinv.LocaleUtil.*;
 import static com.playerinv.PlayerInv.*;
 import static org.bukkit.Bukkit.getServer;
 
-public class PluginSet{
+public class PluginSet {
     public static void initListeners() {
         getServer().getPluginManager().registerEvents((Listener)new InvListener(), (Plugin)plugin);
         getServer().getPluginManager().registerEvents((Listener)new CheckInvListener(), (Plugin)plugin);
@@ -52,7 +53,9 @@ public class PluginSet{
                 dataOutput.writeObject(inventory.getItem(i));
             }
             dataOutput.close();
-            return Base64Coder.encodeLines(outputStream.toByteArray());
+            String base64 = Base64Coder.encodeLines(outputStream.toByteArray());
+            sendLog("EnCode Length: " + base64.length());
+            return base64;
             //Converts the inventory and its contents to base64, This also saves item meta-data and inventory type
         } catch (Exception e) {
             throw new IllegalStateException("Could not convert inventory to base64.", e);
@@ -222,11 +225,23 @@ public class PluginSet{
     public static HashMap<String, File> LocaleMap;
 
     public static void getFile_writeMap() {
-        String path = plugin.getDataFolder().getAbsolutePath() + "\\locale";
+        String path = plugin.getDataFolder().getAbsolutePath() + "/locale";
         File file = new File(path);
-        HashMap<String,File> temp_map = new HashMap<>();
         File[] array = file.listFiles();
-
+        HashMap<String,File> temp_map = new HashMap<>();
+        if(array == null){
+            if(isWindows()){
+                array = file.listFiles();
+            }
+            if(isLinux()){
+                try {
+                    Stream<Path> stream = Files.list(Paths.get(path));
+                    array = (File[]) stream.toArray();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         for (int i = 0; i < array.length; i++) {
             if (array[i].isFile()) {
                 temp_map.put(array[i].getName(),array[i].getAbsoluteFile());
@@ -234,10 +249,23 @@ public class PluginSet{
         }
         LocaleMap = temp_map;
 
-        String menu_path = plugin.getDataFolder().getAbsolutePath() + "\\vault_menu";
+        String menu_path = plugin.getDataFolder().getAbsolutePath() + "/vault_menu";
         File menu_file = new File(menu_path);
         HashMap<String, FileConfiguration> menu_map = new HashMap<>();
         File[] menu_array = menu_file.listFiles();
+        if(menu_array == null){
+            if(isWindows()){
+                menu_array = file.listFiles();
+            }
+            if(isLinux()){
+                try {
+                    Stream<Path> stream = Files.list(Paths.get(path));
+                    menu_array = (File[]) stream.toArray();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         OtherMenuFileList = new ArrayList<>();
         for (int i = 0; i < menu_array.length; i++) {
             if (menu_array[i].isFile()) {
@@ -250,7 +278,7 @@ public class PluginSet{
                     if(file_name.endsWith(".yml")){
                         new_name = file_name.substring(0, file_name.lastIndexOf("."));
                         OtherMenuFileList.add(new_name);
-                        OtherMenuFileMap.putIfAbsent(new_name,current_file);
+                        OtherMenuFileMap.put(new_name,current_file);
                     } else {
                         continue;
                     }
@@ -266,10 +294,23 @@ public class PluginSet{
     }
 
     public static void getCheckFile_writeMap() {
-        String menu_path = plugin.getDataFolder().getAbsolutePath() + "\\check_menu";
+        String menu_path = plugin.getDataFolder().getAbsolutePath() + "/check_menu";
         File menu_file = new File(menu_path);
         HashMap<String, FileConfiguration> menu_map = new HashMap<>();
         File[] menu_array = menu_file.listFiles();
+        if(menu_array == null){
+            if(isWindows()){
+                menu_array = menu_file.listFiles();
+            }
+            if(isLinux()){
+                try {
+                    Stream<Path> stream = Files.list(Paths.get(menu_path));
+                    menu_array = (File[]) stream.toArray();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         Check_OtherMenuFileList = new ArrayList<>();
         for (int i = 0; i < menu_array.length; i++) {
             if (menu_array[i].isFile()) {
@@ -282,7 +323,7 @@ public class PluginSet{
                     if(file_name.endsWith(".yml")){
                         new_name = file_name.substring(0, file_name.lastIndexOf("."));
                         Check_OtherMenuFileList.add(new_name);
-                        Check_OtherMenuFileMap.putIfAbsent(new_name,current_file);
+                        Check_OtherMenuFileMap.put(new_name,current_file);
                     } else {
                         continue;
                     }
@@ -297,9 +338,26 @@ public class PluginSet{
         Check_VaultMenuMap = menu_map;
     }
 
-    public static String color(String msg) {
-        String usecolor = ChatColor.translateAlternateColorCodes('&', msg);
-        return usecolor;
+    public static String color(String message) {
+        if(!Below116 || !isBelow113 || !is113) {
+            Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+            Matcher matcher = pattern.matcher(message);
+            while (matcher.find()) {
+                String hexCode = message.substring(matcher.start(), matcher.end());
+                String replaceSharp = hexCode.replace('#', 'x');
+
+                char[] ch = replaceSharp.toCharArray();
+                StringBuilder builder = new StringBuilder("");
+                for (char c : ch) {
+                    builder.append("&" + c);
+                }
+
+                message = message.replace(hexCode, builder.toString());
+                matcher = pattern.matcher(message);
+            }
+            return ChatColor.translateAlternateColorCodes('&', message);
+        }
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public static Boolean Voucher_sound_bool() {
@@ -413,11 +471,13 @@ public class PluginSet{
         if(version.contains("v1_12") || version.contains("v1_11") || version.contains("v1_10") || version.contains("v1_9") || version.contains("v1_8") || version.contains("v1_7") || version.contains("v1_6")){
             isBelow113 = true;
             resetSoundValue();
-        }
-        if(version.contains("v1_13")){
+        } else if(version.contains("v1_13")){
             is113 = true;
             resetSoundValue();
+        } else if(version.contains("v1_14") || version.contains("v1_15")){
+            Below116 = true;
         }
+
         ServerVersion = version;
     }
 
@@ -435,36 +495,168 @@ public class PluginSet{
     public static void PluginStartUp(){
         String locale = locale();
         Boolean mysql = plugin.getConfig().getBoolean("DataBases.MySQL");
+        Boolean lptoggle = plugin.getConfig().getBoolean("Luckperms-proxy-support");
         if(locale.equals("zh-CN")){
             String database = "本地数据库已启动..";
-            String lp = "&c关闭";
+            String lp = null;
             if(lpsupport){
-                lp = "&a启用";
+                lp = "&e禁用";
+                if(lptoggle){
+                    lp = "&a启用";
+                }
+            } else {
+                lp = "&c不支持";
             }
             if(mysql){
                 database = "成功连接MySQL数据库..";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.5.49"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.6.17"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms 权限同步 " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &8插件运行于: " + ServerVersion));
             Bukkit.getServer().getConsoleSender().sendMessage(color("                      "));
         } else {
             String database = "Local SQLite databases connected..";
-            String lp = "&cDisabled";
+            String lp = null;
             if(lpsupport){
-                lp = "&aEnabled";
+                lp = "&eDisabled";
+                if(lptoggle){
+                    lp = "&aEnabled";
+                }
+            } else {
+                lp = "&cNot Supported";
             }
             if(mysql){
                 database = "Successfully connected to MySQL database";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.5.49"));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms Proxy Support " + lp));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.6.17"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms permission synchronization: " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &8Running on " + ServerVersion));
             Bukkit.getServer().getConsoleSender().sendMessage(color("                      "));
+        }
+    }
+
+    public static boolean isLinux(){
+        return System.getProperty("os.name").toLowerCase().contains("linux");
+    }
+
+    public static boolean isWindows(){
+        return System.getProperty("os.name").toLowerCase().contains("windows");
+    }
+
+    public static final String LargeFullInv = "playerinv.large.inv.*";
+    public static final String MediumFullInv = "playerinv.medium.inv.*";
+
+    public static Boolean Debug = false;
+
+    public static void isDebug(){
+        Boolean debug = plugin.getConfig().getBoolean("Debug-mode");
+        if(debug){
+            Debug = true;
+        }
+    }
+
+    public static void sendLog(String message){
+        if(Debug){
+            System.out.println(message);
+        }
+    }
+
+    public static void reloadMainMenuConfig(){
+        String language = locale();
+        MainMenu = new File(plugin.getDataFolder() + "/vault_menu/", "Main.yml");
+        Check_MainMenu = new File(plugin.getDataFolder() + "/check_menu/", "Main.yml");
+        if(!MainMenu.exists()){
+            MainMenu.getParentFile().mkdirs();
+            if(language.equals("zh-CN")){
+                try {
+                    FileUtils.copyInputStreamToFile(plugin.getResource("vault_menu-zh-CN/Main.yml"),new File(plugin.getDataFolder() + "/vault_menu/", "Main.yml"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    FileUtils.copyInputStreamToFile(plugin.getResource("vault_menu-en-US/Main.yml"),new File(plugin.getDataFolder() + "/vault_menu/", "Main.yml"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        if(!Check_MainMenu.exists()){
+            Check_MainMenu.getParentFile().mkdirs();
+            if(language.equals("zh-CN")){
+                try {
+                    FileUtils.copyInputStreamToFile(plugin.getResource("check_menu-zh-CN/Main.yml"),new File(plugin.getDataFolder() + "/check_menu/", "Main.yml"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    FileUtils.copyInputStreamToFile(plugin.getResource("check_menu-en-US/Main.yml"),new File(plugin.getDataFolder() + "/check_menu/", "Main.yml"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        try {
+            Check_MainMenuConfig = new YamlConfiguration();
+            Check_MainMenuConfig.load(Check_MainMenu);
+            MainMenuConfig = new YamlConfiguration();
+            MainMenuConfig.load(MainMenu);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot load main menu file",e);
+        } catch (InvalidConfigurationException e) {
+            throw new RuntimeException("Cannot read the main menu file, check the file is exist",e);
+        }
+    }
+
+    public static Boolean Voucher_Set_Owner(){
+        Boolean v = plugin.getConfig().getBoolean("Voucher.Set-owner");
+        return v;
+    }
+
+    public static void Update_Config(){
+        boolean change = false;
+        Configuration defaults = plugin.getConfig().getDefaults();
+        for (String defaultKey : defaults.getKeys(true)) {
+            if (!plugin.getConfig().contains(defaultKey)) {
+                plugin.getConfig().set(defaultKey, defaults.get(defaultKey));
+                change = true;
+            }
+        }
+        if (change) {
+            plugin.saveConfig();
+        }
+    }
+
+    public static void Update_Locale_Config(){
+        boolean change = false;
+        String locale = locale();
+        Configuration defaults = null;
+        try {
+            InputStream resource = plugin.getResource("locale/" + locale + ".yml");
+            File temp = File.createTempFile("stream2file", ".tmp");
+            FileUtils.copyInputStreamToFile(resource,temp);
+            defaults = YamlConfiguration.loadConfiguration(temp);
+            temp.delete();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (String defaultKey : defaults.getKeys(true)) {
+            if (!LocaleConfig.contains(defaultKey)) {
+                LocaleConfig.set(defaultKey, defaults.get(defaultKey));
+                change = true;
+            }
+        }
+        if (change) {
+            try {
+                LocaleConfig.save(LocaleConfigFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

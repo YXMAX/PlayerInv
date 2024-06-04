@@ -2,7 +2,6 @@ package com.playerinv;
 
 import com.playerinv.Command.InvCommand;
 import com.playerinv.Metric.Metrics;
-import com.playerinv.SQLite.SQLiteConnect;
 import com.playerinv.TempHolder.TempPlayer;
 import net.luckperms.api.LuckPerms;
 import org.apache.commons.io.FileUtils;
@@ -55,7 +54,7 @@ public class PlayerInv extends JavaPlugin {
 
     public static List<TempPlayer> Insert_TempList_Medium;
 
-    private static File LocaleConfigFile;
+    public static File LocaleConfigFile;
     public static FileConfiguration LocaleConfig;
 
     public static HashMap<Integer,String> MainMenuItemMap = new HashMap<>();
@@ -110,6 +109,8 @@ public class PlayerInv extends JavaPlugin {
 
     public static Boolean isBelow113 = false;
 
+    public static Boolean Below116 = false;
+
     public static Boolean lpsupport = false;
 
     public void onEnable(){
@@ -117,6 +118,7 @@ public class PlayerInv extends JavaPlugin {
         Metrics metrics = new Metrics(this, pluginId);
         saveDefaultConfig();
         plugin = this;
+        isDebug();
         Large_Amount = Vault_large_amount();
         Medium_Amount = Vault_medium_amount();
         createLocaleConfig_Detect();
@@ -137,6 +139,8 @@ public class PlayerInv extends JavaPlugin {
                 MysqlcreateMediumTable(con);
                 MysqlcreateToggleTable(con);
                 MySQLScheduler.Mysqlconnect();
+                FixMySQL_DataType_Large();
+                FixMySQL_DataType_Medium();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -162,6 +166,8 @@ public class PlayerInv extends JavaPlugin {
 
             }
         }
+        Update_Config();
+        Update_Locale_Config();
         PluginStartUp();
     }
 
@@ -194,7 +200,7 @@ public class PlayerInv extends JavaPlugin {
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
-            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?" + allowPublicKeyRetrieval();
+            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?" + allowPublicKeyRetrieval() + "&rewriteBatchedStatements=true";
             Connection connection = DriverManager.getConnection(url, user, password);
             return connection;
         } catch (ClassNotFoundException | SQLException e) {

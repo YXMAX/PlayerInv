@@ -54,9 +54,12 @@ Messages:
   Console_give_voucher_large: '&e获得一张大型仓库兑换券.'
   Console_give_voucher_medium: '&e获得一张小型仓库兑换券.'
   Command_reload: '&e插件已重载'
-  Unknown_number: '&c未知数值'
-  Sort_cooldown: '&c仓库整理冷却中...'
-  Sort_inventory: '&e已对仓库进行整理...'
+  Unknown_number: '&c未知参数'
+  Vault_command_give_large_success: '&e成功给予玩家 %player% 大型仓库 %vault_num%'
+  Vault_command_give_medium_success: '&e成功给予玩家 %player% 中型仓库 %vault_num%'
+  Vault_command_give_already_has: '&c玩家已拥有该仓库！'
+  Vault_command_append_large_success: '&e成功在已拥有 &a%before_append% &e号大型仓库下, 追加给予玩家 &f%player% &e大型仓库 %vault_amount% 个'
+  Vault_command_append_medium_success: '&e成功在已拥有 &a%before_append% &e号中型仓库下, 追加给予玩家 &f%player% &e中型仓库 %vault_amount% 个'
 
 
 

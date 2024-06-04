@@ -2,12 +2,12 @@ package com.playerinv.SQLite;
 
 import com.playerinv.TempHolder.TempPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteDataSource;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
@@ -37,6 +37,46 @@ public class SQLiteConnect {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void FixMySQL_DataType_Large() throws SQLException {
+         String sql = "select * from vault_large limit 1";
+         PreparedStatement pst = con.prepareStatement(sql);
+         ResultSet rs = pst.executeQuery();
+         ResultSetMetaData data = rs.getMetaData();
+         while(rs.next()){
+             String columnType = data.getColumnTypeName(3);
+             if(columnType.equalsIgnoreCase("text")){
+                 String alter = "alter table vault_large modify column inv longtext";
+                 PreparedStatement pst_alter = con.prepareStatement(alter);
+                 pst_alter.executeUpdate();
+                 pst_alter.close();
+                 return;
+             }
+         }
+         rs.close();
+         pst.close();
+         return;
+    }
+
+    public static void FixMySQL_DataType_Medium() throws SQLException {
+        String sql = "select * from vault_medium limit 1";
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        ResultSetMetaData data = rs.getMetaData();
+        while(rs.next()){
+            String columnType = data.getColumnTypeName(3);
+            if(columnType.equalsIgnoreCase("text")){
+                String alter = "alter table vault_medium modify column inv longtext";
+                PreparedStatement pst_alter = con.prepareStatement(alter);
+                pst_alter.executeUpdate();
+                pst_alter.close();
+                return;
+            }
+        }
+        rs.close();
+        pst.close();
+        return;
     }
 
 
@@ -192,7 +232,9 @@ public class SQLiteConnect {
         pst.setString(1, Inv);
         pst.setString(2, uuid);
         pst.setInt(3, num);
-        pst.executeUpdate();
+        int bool = pst.executeUpdate();
+        Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+        sendLog(player.getName() + " isUpdateInv: " + bool);
     }
 
     public static void updateInv_Medium(Connection con, String uuid, String Inv, Integer num)throws Exception {
@@ -202,7 +244,9 @@ public class SQLiteConnect {
         pst.setString(1, Inv);
         pst.setString(2, uuid);
         pst.setInt(3, num);
-        pst.executeUpdate();
+        int bool = pst.executeUpdate();
+        Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+        sendLog(player.getName() + " isUpdateInv: " + bool);
     }
 
     public static void updateToggle(Connection con, String uuid, Boolean toggle)throws Exception {
@@ -355,7 +399,7 @@ public class SQLiteConnect {
                 + "("
                 + "uuid VARCHAR(255),"
                 + "num INT,"
-                + "inv TEXT"
+                + "inv LONGTEXT"
                 + ");";
         Statement stat = null;
         stat = con.createStatement();
@@ -367,7 +411,7 @@ public class SQLiteConnect {
                 + "("
                 + "uuid VARCHAR(255),"
                 + "num INT,"
-                + "inv TEXT"
+                + "inv LONGTEXT"
                 + ");";
         Statement stat = null;
         stat = con.createStatement();
@@ -383,16 +427,5 @@ public class SQLiteConnect {
         Statement stat = null;
         stat = con.createStatement();
         stat.executeUpdate(sql);
-    }
-
-    public static boolean mysqlhasData(Connection con, String uuid)throws Exception {
-        String sql = "SELECT 1 FROM InvData WHERE uuid='"+uuid+"'";
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        if(rs.next()){
-            return true;
-        } else {
-            return false;
-        }
     }
 }

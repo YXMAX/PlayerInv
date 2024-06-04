@@ -35,6 +35,8 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 commandSender.sendMessage("§f/PlayerInv Keys Toggle §e开/关F键打开仓库菜单");
                 commandSender.sendMessage("§f/PlayerInv Check [玩家] §e查看某玩家仓库");
                 commandSender.sendMessage("§f/PlayerInv Give [玩家] [类型] §e给予玩家某一类型的仓库兑换券");
+                commandSender.sendMessage("§f/PlayerInv Open [类型] [编号] §e打开某一类型和编号的仓库");
+                commandSender.sendMessage("§f/PlayerInv Vault [给予类型] [仓库类型] [数值] [玩家] §e给予或追加给予玩家相应数值的仓库");
                 commandSender.sendMessage("§f/PlayerInv Reload §e插件重载");
                 return true;
             } else if(accessToggle && !player.hasPermission("playerinv.give")){
@@ -58,6 +60,8 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 commandSender.sendMessage("§f/PlayerInv §eOpen Main GUI");
                 commandSender.sendMessage("§f/PlayerInv Keys Toggle §eToggle Press F To Open Main GUI");
                 commandSender.sendMessage("§f/PlayerInv Give [Player] [Type] §eGive Player A Type Of Vault Ticket");
+                commandSender.sendMessage("§f/PlayerInv Open [Type] [Num] §eOpen a vault of a certain type and number");
+                commandSender.sendMessage("§f/PlayerInv Vault [Given Type] [Vault Type] [Num] [Player] §eappend or add vault that give players corresponding values");
                 commandSender.sendMessage("§f/PlayerInv Reload §ePlugin Reload");
                 return true;
             } else if(accessToggle && !player.hasPermission("playerinv.give")){
@@ -80,7 +84,9 @@ public class InvCommand implements CommandExecutor , TabExecutor {
             if (player.isOp() || player.hasPermission("playerinv.admin")) {
                 OtherMenuFileMap = new HashMap<>();
                 Check_OtherMenuFileMap = new HashMap<>();
+                plugin.saveDefaultConfig();
                 plugin.reloadConfig();
+                reloadMainMenuConfig();
                 getFile_writeMap();
                 getCheckFile_writeMap();
                 reloadLocale_GUI();
@@ -100,10 +106,12 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 MainMenuVaultSlotMap_Large = new HashMap<>();
                 MainMenuVaultSlotMap_Medium = new HashMap<>();
                 reloadOtherMenuInventoryMap();
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Command_reload()));
+                Update_Config();
+                Update_Locale_Config();
+                commandSender.sendMessage(color(prefix + Command_reload()));
                 return true;
             } else {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_No_permission_command()));
+                commandSender.sendMessage(color(prefix + Messages_No_permission_command()));
             }
         }
 
@@ -113,13 +121,13 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 ToggleF(player);
                 return true;
             } else if(player.hasPermission("playerinv.keys.toggle") && !(accessToggle)){
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_Toggle_unable_command()));
+                commandSender.sendMessage(color(prefix + Messages_Toggle_unable_command()));
             } else if(!(KeysOpen)){
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_Toggle_unable_keys()));
+                commandSender.sendMessage(color(prefix + Messages_Toggle_unable_keys()));
             } else if(!(player.hasPermission("playerinv.keys.toggle"))){
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_No_permission_command()));
+                commandSender.sendMessage(color(prefix + Messages_No_permission_command()));
             } else {
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_No_permission_command()));
+                commandSender.sendMessage(color(prefix + Messages_No_permission_command()));
             }
         } else if(args.length == 2 && args[0].equals("keys") && args[1].equals("toggle") && !(commandSender instanceof Player)){
             Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Not_Console_Command()));
@@ -129,7 +137,9 @@ public class InvCommand implements CommandExecutor , TabExecutor {
             if (!(commandSender instanceof Player)) {
                 OtherMenuFileMap = new HashMap<>();
                 Check_OtherMenuFileMap = new HashMap<>();
+                plugin.saveDefaultConfig();
                 plugin.reloadConfig();
+                reloadMainMenuConfig();
                 getFile_writeMap();
                 getCheckFile_writeMap();
                 reloadLocale_GUI();
@@ -149,6 +159,8 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 MainMenuVaultSlotMap_Large = new HashMap<>();
                 MainMenuVaultSlotMap_Medium = new HashMap<>();
                 reloadOtherMenuInventoryMap();
+                Update_Config();
+                Update_Locale_Config();
                 Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Command_reload()));
                 return true;
             }
@@ -225,14 +237,14 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 } else if(Bukkit.getServer().getPlayerExact(target) != null && args[2].equals("large")){
                     Player targetonline = Bukkit.getServer().getPlayerExact(target);
                     PermItem.linvitem(targetonline);
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + Messages_Voucher_give(targetonline)));
+                    commandSender.sendMessage(color(prefix + Messages_Voucher_give(targetonline)));
                 } else if(Bukkit.getServer().getPlayerExact(target) != null && args[2].equals("medium")){
                     Player targetonline = Bukkit.getServer().getPlayerExact(target);
                     PermItem.sinvitem(targetonline);
-                    commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + Messages_Voucher_give(targetonline)));
+                    commandSender.sendMessage(color( prefix + Messages_Voucher_give(targetonline)));
                 }
             } else if(!player.hasPermission("playerinv.give")){
-                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',prefix + Messages_No_permission_command()));
+                commandSender.sendMessage(color(prefix + Messages_No_permission_command()));
             }
         }
 
@@ -357,6 +369,304 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 }
             }
         }
+        if(args[0].equalsIgnoreCase("vault")){
+            Boolean lp_support = PlayerInv.plugin.getConfig().getBoolean("Luckperms-proxy-support");
+            Boolean isConsole = false;
+            if(!(commandSender instanceof Player)){
+                isConsole = true;
+            }
+            switch(args.length) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    if (isConsole) {
+                        Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Unknown_number()));
+                        return true;
+                    } else {
+                        commandSender.sendMessage(color(prefix + Messages_Unknown_number()));
+                        return true;
+                    }
+                case 5:
+                    if (!isConsole) {
+                        Player player = Bukkit.getPlayerExact(args[4]);
+                        if(player == null){
+                            commandSender.sendMessage(color(prefix + Messages_Console_give_voucher_player_error()));
+                            return true;
+                        }
+                        if(!commandSender.hasPermission("playerinv.vault.give") && !commandSender.hasPermission("playerinv.vault.append")){
+                            commandSender.sendMessage(color(prefix + Messages_No_permission_command()));
+                            return true;
+                        }
+                        if (args[1].equals("give") && commandSender.hasPermission("playerinv.vault.give")) {
+                            if (args[2].equals("large")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        if (!plugin.perms.has(player, "playerinv.large.inv." + Integer.parseInt(args[3]))) {
+                                            plugin.perms.playerAdd(null, player, "playerinv.large.inv." + Integer.parseInt(args[3]));
+                                            commandSender.sendMessage(color(prefix + Vault_command_give_large_success(player, args[3])));
+                                            return true;
+                                        } else {
+                                            commandSender.sendMessage(color(prefix + Vault_command_give_already_has(player)));
+                                            return true;
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        ContextNode.addPermissionWithContext_Large(player, Integer.parseInt(args[3]));
+                                        commandSender.sendMessage(color(prefix + Vault_command_give_large_success(player, args[3])));
+                                        return true;
+                                    }
+                                } else {
+                                    commandSender.sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                            if (args[2].equals("medium")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        if (!plugin.perms.has(player, "playerinv.medium.inv." + Integer.parseInt(args[3]))) {
+                                            plugin.perms.playerAdd(null, player, "playerinv.medium.inv." + Integer.parseInt(args[3]));
+                                            commandSender.sendMessage(color(prefix + Vault_command_give_medium_success(player, args[3])));
+                                            return true;
+                                        } else {
+                                            commandSender.sendMessage(color(prefix + Vault_command_give_already_has(player)));
+                                            return true;
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        ContextNode.addPermissionWithContext_Medium(player, Integer.parseInt(args[3]));
+                                        commandSender.sendMessage(color(prefix + Vault_command_give_medium_success(player, args[3])));
+                                        return true;
+                                    }
+                                } else {
+                                    commandSender.sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                        }
+                        if (args[1].equals("append") && commandSender.hasPermission("playerinv.vault.append")) {
+                            if (args[2].equals("large")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        for(int i=1;i<(Large_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.large.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Large_Amount){
+                                                        break;
+                                                    }
+                                                    plugin.perms.playerAdd(null,player,"playerinv.large.inv." + (i+add));
+                                                    success = success + 1;
+                                                }
+                                                commandSender.sendMessage(color(prefix + Vault_command_append_large_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        for(int i=1;i<(Large_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.large.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Large_Amount){
+                                                        break;
+                                                    }
+                                                    ContextNode.addPermissionWithContext_Large(player,i+add);
+                                                    success = success + 1;
+                                                }
+                                                commandSender.sendMessage(color(prefix + Vault_command_append_large_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    commandSender.sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                            if (args[2].equals("medium")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        for(int i=1;i<(Medium_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.medium.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Medium_Amount){
+                                                        break;
+                                                    }
+                                                    plugin.perms.playerAdd(null,player,"playerinv.medium.inv." + (i+add));
+                                                    success = success + 1;
+                                                }
+                                                commandSender.sendMessage(color(prefix + Vault_command_append_medium_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        for(int i=1;i<(Medium_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.medium.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Medium_Amount){
+                                                        break;
+                                                    }
+                                                    ContextNode.addPermissionWithContext_Medium(player,i+add);
+                                                    success = success + 1;
+                                                }
+                                                commandSender.sendMessage(color(prefix + Vault_command_append_medium_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    commandSender.sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                        }
+                    } else if(isConsole){
+                        Player player = Bukkit.getPlayerExact(args[4]);
+                        if(player == null){
+                            Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Console_give_voucher_player_error()));
+                            return true;
+                        }
+                        if (args[1].equals("give")) {
+                            if (args[2].equals("large")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        if (!plugin.perms.has(player, "playerinv.large.inv." + Integer.parseInt(args[3]))) {
+                                            plugin.perms.playerAdd(null, player, "playerinv.large.inv." + Integer.parseInt(args[3]));
+                                            Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_give_large_success(player, args[3])));
+                                            return true;
+                                        } else {
+                                            Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_give_already_has(player)));
+                                            return true;
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        ContextNode.addPermissionWithContext_Large(player, Integer.parseInt(args[3]));
+                                        Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_give_large_success(player, args[3])));
+                                        return true;
+                                    }
+                                } else {
+                                    Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                            if (args[2].equals("medium")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        if (!plugin.perms.has(player, "playerinv.medium.inv." + Integer.parseInt(args[3]))) {
+                                            plugin.perms.playerAdd(null, player, "playerinv.medium.inv." + Integer.parseInt(args[3]));
+                                            Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_give_medium_success(player, args[3])));
+                                            return true;
+                                        } else {
+                                            Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_give_already_has(player)));
+                                            return true;
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        ContextNode.addPermissionWithContext_Medium(player, Integer.parseInt(args[3]));
+                                        Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_give_medium_success(player, args[3])));
+                                        return true;
+                                    }
+                                } else {
+                                    Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                        }
+                        if (args[1].equals("append")) {
+                            if (args[2].equals("large")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        for(int i=1;i<(Large_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.large.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Large_Amount){
+                                                        break;
+                                                    }
+                                                    plugin.perms.playerAdd(null,player,"playerinv.large.inv." + (i+add));
+                                                    success = success + 1;
+                                                }
+                                                Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_append_large_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        for(int i=1;i<(Large_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.large.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Large_Amount){
+                                                        break;
+                                                    }
+                                                    ContextNode.addPermissionWithContext_Large(player,i+add);
+                                                    success = success + 1;
+                                                }
+                                                Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_append_large_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                            if (args[2].equals("medium")) {
+                                if (isNum(args[3])) {
+                                    if ((!hasLuckPerms && !lp_support) || (hasLuckPerms && !lp_support)) {
+                                        for(int i=1;i<(Medium_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.medium.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Medium_Amount){
+                                                        break;
+                                                    }
+                                                    plugin.perms.playerAdd(null,player,"playerinv.medium.inv." + (i+add));
+                                                    success = success + 1;
+                                                }
+                                                Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_append_medium_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    if (hasLuckPerms && lp_support) {
+                                        for(int i=1;i<(Medium_Amount + 1);i++){
+                                            if(!player.hasPermission("playerinv.medium.inv." + i)){
+                                                int success = 0;
+                                                int amount = Integer.parseInt(args[3]);
+                                                for(int add=0;add<amount;add++){
+                                                    if(i+add > Medium_Amount){
+                                                        break;
+                                                    }
+                                                    ContextNode.addPermissionWithContext_Medium(player,i+add);
+                                                    success = success + 1;
+                                                }
+                                                Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Vault_command_append_medium_success(player,i-1, String.valueOf(success))));
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Unknown_number()));
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+            }
+        }
         return true;
     }
 
@@ -398,7 +708,7 @@ public class InvCommand implements CommandExecutor , TabExecutor {
         }
 
         if(args.length == 1 && (player.hasPermission("playerinv.admin") || player.isOp())) {
-            List<String> firstArgList = Arrays.asList("reload", "keys", "help", "check", "give", "open");
+            List<String> firstArgList = Arrays.asList("reload", "keys", "help", "check", "give", "open", "vault");
             if(args[0].isEmpty()){
                 tips.addAll(firstArgList);
                 return tips;
@@ -503,7 +813,7 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                     tips.addAll(thirdArgList);
                 } else {
                     for(String thirdArg : thirdArgList) {
-                        if(thirdArg.toLowerCase().startsWith(args[2].toLowerCase())) {
+                        if(thirdArg.toLowerCase().startsWith(args[1].toLowerCase())) {
                             tips.add(thirdArg);
                         }
                     }
@@ -521,6 +831,36 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                             if(thirdArg.toLowerCase().startsWith(args[2].toLowerCase())) {
                                 tips.add(thirdArg);
                             }
+                        }
+                    }
+                }
+            }
+        }
+        if(args.length == 3 && (player.hasPermission("playerinv.vault.give") || player.hasPermission("playerinv.admin") || player.hasPermission("playerinv.vault.append") || player.isOp())){
+            if(args[0].equalsIgnoreCase("vault".toLowerCase())) {
+                List<String> thirdArgList = Arrays.asList("large", "medium");
+                if(args[1].equals("give") || args[1].equals("append")){
+                    if(args[2].isEmpty()){
+                        tips.addAll(thirdArgList);
+                    } else {
+                        for(String thirdArg : thirdArgList) {
+                            if(thirdArg.toLowerCase().startsWith(args[2].toLowerCase())) {
+                                tips.add(thirdArg);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(args.length == 2 && (player.hasPermission("playerinv.vault.give") || player.hasPermission("playerinv.admin") || player.hasPermission("playerinv.vault.append") || player.isOp())){
+            if(args[0].equalsIgnoreCase("vault".toLowerCase())) {
+                List<String> thirdArgList = Arrays.asList("give", "append");
+                if(args[1].isEmpty()){
+                    tips.addAll(thirdArgList);
+                } else {
+                    for(String thirdArg : thirdArgList) {
+                        if(thirdArg.toLowerCase().startsWith(args[1].toLowerCase())) {
+                            tips.add(thirdArg);
                         }
                     }
                 }

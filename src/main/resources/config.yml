@@ -2,6 +2,8 @@ Prefix: '&f[&ePlayerInv&f] '
 
 Language: 'en-US'
 
+Debug-mode: false
+
 Voucher:
   large:
     material: PAPER
@@ -14,6 +16,7 @@ Voucher:
   Sound: true
   Value: 'UI_TOAST_CHALLENGE_COMPLETE:1:1'
   Title: true
+  Set-owner: true
 
 ## Customize vault amount
 Vault:
@@ -36,6 +39,9 @@ Inventory:
   Blacklist:
     - 'BARRIER'
 
+## Only applicable for multi server using BungeeCord or Velocity
+## Not available for single server
+## If single server using it, it cannot give permission when using vouchers
 Luckperms-proxy-support: false
 Sync-server:
   - 'lobby'

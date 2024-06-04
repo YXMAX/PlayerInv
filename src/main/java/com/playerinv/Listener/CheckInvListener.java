@@ -1,19 +1,19 @@
 package com.playerinv.Listener;
 
 
-import com.playerinv.InvHolder.*;
+import com.playerinv.InvHolder.Check_MainMenuHolder;
+import com.playerinv.InvHolder.Check_OtherMenuHolder;
+import com.playerinv.InvHolder.Check_VaultHolder_Large;
+import com.playerinv.InvHolder.Check_VaultHolder_Medium;
 import com.playerinv.MainGUI.OtherMenu;
-import com.playerinv.PlayerInv;
 import com.playerinv.PluginSet;
 import com.playerinv.SQLite.SQLiteConnect;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-
 
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
@@ -54,7 +54,7 @@ public class CheckInvListener implements Listener {
                 if(Check_MainMenuVaultSlotMap_Large.containsKey(event.getRawSlot() + 1)){
                     Integer vault_num = Check_MainMenuVaultSlotMap_Large.get(event.getRawSlot() + 1);
                     if(vault_num <= 10){
-                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + vault_num)){
+                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + vault_num) || target.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -67,7 +67,7 @@ public class CheckInvListener implements Listener {
                         }
                     }
                     if(vault_num > 10){
-                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp()){
+                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -84,7 +84,7 @@ public class CheckInvListener implements Listener {
                     int vault_num = Check_MainMenuVaultSlotMap_Medium.get(event.getRawSlot() + 1);
                     int old_num = vault_num + 10;
                     if(vault_num <= 15){
-                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + old_num)){
+                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + old_num) || target.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -97,7 +97,7 @@ public class CheckInvListener implements Listener {
                         }
                     }
                     if(vault_num > 15){
-                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp()){
+                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -150,7 +150,7 @@ public class CheckInvListener implements Listener {
                 if(Check_OtherMenuVaultSlotMap_Large.containsKey(final_key)){
                     Integer vault_num = Check_OtherMenuVaultSlotMap_Large.get(final_key);
                     if(vault_num <= 10){
-                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + vault_num)){
+                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + vault_num) || target.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -163,7 +163,7 @@ public class CheckInvListener implements Listener {
                         }
                     }
                     if(vault_num > 10){
-                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp()){
+                        if(target.hasPermission("playerinv.large.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission(LargeFullInv)){
                             if(!SQLiteConnect.hasData_Large(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Large(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -180,7 +180,7 @@ public class CheckInvListener implements Listener {
                     int vault_num = Check_OtherMenuVaultSlotMap_Medium.get(final_key);
                     int old_num = vault_num + 10;
                     if(vault_num <= 15){
-                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + old_num)){
+                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission("playerinv.inv." + old_num) || target.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
@@ -193,7 +193,7 @@ public class CheckInvListener implements Listener {
                         }
                     }
                     if(vault_num > 15){
-                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp()){
+                        if(target.hasPermission("playerinv.medium.inv." + vault_num) || target.hasPermission("playerinv.inv.*") || target.hasPermission("playerinv.admin") || target.isOp() || target.hasPermission(MediumFullInv)){
                             if(!SQLiteConnect.hasData_Medium(con,target.getUniqueId().toString(),vault_num)){
                                 event.setCancelled(true);
                                 SQLiteConnect.insert_Medium(con,target.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
