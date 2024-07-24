@@ -2,8 +2,12 @@ package com.playerinv;
 
 import com.playerinv.Command.InvCommand;
 import com.playerinv.Metric.Metrics;
+import com.playerinv.PlaceHolder.PlaceholderExpansion;
+import com.playerinv.Scheduler.MySQLScheduler;
+import com.playerinv.Scheduler.PlaceHolderScheduler;
 import com.playerinv.TempHolder.TempPlayer;
 import net.luckperms.api.LuckPerms;
+import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,17 +18,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.arim.morepaperlib.MorePaperLib;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static com.playerinv.PluginSet.*;
 import static com.playerinv.SQLite.SQLiteConnect.*;
@@ -101,6 +103,10 @@ public class PlayerInv extends JavaPlugin {
 
     public static HashMap<Player, OfflinePlayer> Check_OfflinePlayerMap = new HashMap<>();
 
+    public static LinkedHashMap<Player,String> Placeholder_Vault_Amount = new LinkedHashMap<>();
+
+    public static List<String> Placeholder_List = new ArrayList<>();
+
     public static int Large_Amount;
 
     public static int Medium_Amount;
@@ -113,38 +119,27 @@ public class PlayerInv extends JavaPlugin {
 
     public static Boolean lpsupport = false;
 
+    public static Boolean isFolia = false;
+    public static Boolean hasPAPI = false;
+
+    public static MorePaperLib FoliaLib;
+
+    public static HashMap<String,Long> PlayerExpiryMap_Large = new HashMap<>();
+
+    public static HashMap<String,Long> PlayerExpiryMap_Medium = new HashMap<>();
+
     public void onEnable(){
         int pluginId = 20554;
         Metrics metrics = new Metrics(this, pluginId);
         saveDefaultConfig();
         plugin = this;
         isDebug();
+        DetectFolia();
         Large_Amount = Vault_large_amount();
         Medium_Amount = Vault_medium_amount();
         createLocaleConfig_Detect();
         DetectServerVersion();
-        Boolean mysql = getConfig().getBoolean("DataBases.MySQL");
-        if (!mysql) {
-            try {
-                createLargeTable(con);
-                createMediumTable(con);
-                createToggleTable(con);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if (mysql) {
-            try {
-                MysqlcreateLargeTable(con);
-                MysqlcreateMediumTable(con);
-                MysqlcreateToggleTable(con);
-                MySQLScheduler.Mysqlconnect();
-                FixMySQL_DataType_Large();
-                FixMySQL_DataType_Medium();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        MySQL_Detect();
         setupPermissions();
         loadMainMenuConfig();
         createOtherMenuConfig();
@@ -154,21 +149,14 @@ public class PlayerInv extends JavaPlugin {
         FixTable_InsertNew(con);
         Bukkit.getPluginCommand("playerinv").setExecutor(new InvCommand());
         initListeners();
-        if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
-            try {
-                RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-                if(provider != null){
-                    API = provider.getProvider();
-                    hasLuckPerms = true;
-                }
-                lpsupport = true;
-            } catch (NoClassDefFoundError e) {
-
-            }
-        }
-        Update_Config();
+        PlaceHolderScheduler.Placeholder_start();
+        Luckperms_Detect();
+        PlaceHolderAPI_Register();
         Update_Locale_Config();
+        Update_Config();
+        initMorePaperLib();
         PluginStartUp();
+        UpdateCheck();
     }
 
     @Override
@@ -188,7 +176,6 @@ public class PlayerInv extends JavaPlugin {
         }
         saveConfig();
         plugin = null;
-        // Plugin shutdown logic
     }
 
     public Connection getMySQLConnection() {
@@ -246,7 +233,7 @@ public class PlayerInv extends JavaPlugin {
             try {
                 LocaleConfig.load(LocaleConfigFile);
             } catch (IOException | InvalidConfigurationException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         } else {
             LocaleConfigFile = US_File;
@@ -254,7 +241,7 @@ public class PlayerInv extends JavaPlugin {
             try {
                 LocaleConfig.load(LocaleConfigFile);
             } catch (IOException | InvalidConfigurationException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -401,4 +388,66 @@ public class PlayerInv extends JavaPlugin {
             }
         }
     }
+
+    private void MySQL_Detect(){
+        Boolean mysql = getConfig().getBoolean("DataBases.MySQL");
+        if (!mysql) {
+            try {
+                createLargeTable(con);
+                createMediumTable(con);
+                createToggleTable(con);
+                createReturnToggleTable(con);
+                createPlayerShareListTable(con);
+                createSharingVaultTable(con);
+                createPlayerPointsTable(con);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (mysql) {
+            try {
+                MysqlcreateLargeTable(con);
+                MysqlcreateMediumTable(con);
+                MysqlcreateToggleTable(con);
+                MysqlcreateReturnToggleTable(con);
+                MysqlcreatePlayerShareListTable(con);
+                MysqlcreateSharingVaultTable(con);
+                MysqlcreatePlayerPointsTable(con);
+                MySQLScheduler.Mysqlconnect();
+                FixMySQL_DataType_Large();
+                FixMySQL_DataType_Medium();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void Luckperms_Detect(){
+        if (Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) {
+            try {
+                RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+                if(provider != null){
+                    API = provider.getProvider();
+                    hasLuckPerms = true;
+                }
+                lpsupport = true;
+            } catch (NoClassDefFoundError e) {
+
+            }
+        }
+    }
+
+    private void PlaceHolderAPI_Register(){
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderExpansion(this).register();
+            hasPAPI = true;
+        }
+    }
+
+    private void initMorePaperLib(){
+        if(isFolia){
+            FoliaLib = new MorePaperLib(plugin);
+        }
+    }
+
 }

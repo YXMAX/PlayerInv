@@ -4,6 +4,7 @@ import com.playerinv.InvHolder.Check_MainMenuHolder;
 import com.playerinv.InvHolder.Check_MainMenuHolder_Offline;
 import com.playerinv.InvHolder.MainMenuHolder;
 import com.playerinv.PlayerInv;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -81,6 +82,9 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if (lore != null) {
+                        if(hasPAPI){
+                            lore = PlaceholderAPI.setPlaceholders(player,lore);
+                        }
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -92,6 +96,16 @@ public class MainMenu {
                         if (MainMenuConfig.contains(path + "item-subid")) {
                             int id = MainMenuConfig.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (MainMenuConfig.contains(path + "enchant-glow")) {
@@ -159,6 +173,9 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if (lore != null) {
+                        if(hasPAPI){
+                            lore = PlaceholderAPI.setPlaceholders(player,lore);
+                        }
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -170,6 +187,16 @@ public class MainMenu {
                         if (MainMenuConfig.contains(path + "item-subid")) {
                             int id = MainMenuConfig.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (MainMenuConfig.contains(path + "enchant-glow")) {
@@ -223,6 +250,9 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if (lore != null) {
+                        if(hasPAPI){
+                            lore = PlaceholderAPI.setPlaceholders(player,lore);
+                        }
                         for (String s : lore) {
                             lore_list.add(color(s));
                         }
@@ -242,6 +272,16 @@ public class MainMenu {
                         if (MainMenuConfig.contains(path_prefix + "item-subid")) {
                             int id = MainMenuConfig.getInt(path_prefix + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (MainMenuConfig.contains(path_prefix + "close-menu")) {
@@ -333,7 +373,7 @@ public class MainMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -342,9 +382,19 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if(isBelow113){
-                        if (MainMenuConfig.contains(path + "item-subid")) {
-                            int id = MainMenuConfig.getInt(path + "item-subid");
+                        if (Check_MainMenuConfig.contains(path + "item-subid")) {
+                            int id = Check_MainMenuConfig.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (Check_MainMenuConfig.contains(path + "enchant-glow")) {
@@ -411,7 +461,7 @@ public class MainMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -420,9 +470,19 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if(isBelow113){
-                        if (MainMenuConfig.contains(path + "item-subid")) {
-                            int id = MainMenuConfig.getInt(path + "item-subid");
+                        if (Check_MainMenuConfig.contains(path + "item-subid")) {
+                            int id = Check_MainMenuConfig.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (Check_MainMenuConfig.contains(path + "enchant-glow")) {
@@ -475,7 +535,7 @@ public class MainMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s));
                         }
@@ -489,6 +549,22 @@ public class MainMenu {
                             meta.addEnchant(Enchantment.ARROW_FIRE, 1, false);
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                             item.setItemMeta(meta);
+                        }
+                    }
+                    if(isBelow113){
+                        if (Check_MainMenuConfig.contains(path + "item-subid")) {
+                            int id = Check_MainMenuConfig.getInt(path + "item-subid");
+                            item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (Check_MainMenuConfig.contains(path_prefix + "close-menu")) {
@@ -505,12 +581,6 @@ public class MainMenu {
                             ItemMeta meta = item.getItemMeta();
                             meta.setCustomModelData(Check_MainMenuConfig.getInt(path_prefix + "custom-model-data"));
                             item.setItemMeta(meta);
-                        }
-                    }
-                    if(isBelow113){
-                        if (MainMenuConfig.contains(path_prefix + "item-subid")) {
-                            int id = MainMenuConfig.getInt(path_prefix + "item-subid");
-                            item.setDurability((short) id);
                         }
                     }
                     if(Check_MainMenuConfig.contains(path_prefix + "open-menu")){
@@ -583,6 +653,22 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if(isBelow113){
+                        if (Check_MainMenuConfig.contains(path + "item-subid")) {
+                            int id = Check_MainMenuConfig.getInt(path + "item-subid");
+                            item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(isBelow113){
                         if (MainMenuConfig.contains(path+ "item-subid")) {
                             int id = MainMenuConfig.getInt(path + "item-subid");
                             item.setDurability((short) id);
@@ -644,9 +730,19 @@ public class MainMenu {
                         item.setItemMeta(meta);
                     }
                     if(isBelow113){
-                        if (MainMenuConfig.contains(path+ "item-subid")) {
-                            int id = MainMenuConfig.getInt(path + "item-subid");
+                        if (Check_MainMenuConfig.contains(path + "item-subid")) {
+                            int id = Check_MainMenuConfig.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
                         }
                     }
                     if (Check_MainMenuConfig.contains(path + "enchant-glow")) {
@@ -707,6 +803,22 @@ public class MainMenu {
                         meta.setLore(lore_list);
                         item.setItemMeta(meta);
                     }
+                    if(isBelow113){
+                        if (Check_MainMenuConfig.contains(path_prefix + "item-subid")) {
+                            int id = Check_MainMenuConfig.getInt(path_prefix + "item-subid");
+                            item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                        }
+                    }
                     if (Check_MainMenuConfig.contains(path_prefix + "enchant-glow")) {
                         if (Check_MainMenuConfig.getBoolean(path_prefix + "enchant-glow")) {
                             ItemMeta meta = item.getItemMeta();
@@ -729,12 +841,6 @@ public class MainMenu {
                             ItemMeta meta = item.getItemMeta();
                             meta.setCustomModelData(Check_MainMenuConfig.getInt(path_prefix + "custom-model-data"));
                             item.setItemMeta(meta);
-                        }
-                    }
-                    if(isBelow113){
-                        if (MainMenuConfig.contains(path_prefix + "item-subid")) {
-                            int id = MainMenuConfig.getInt(path_prefix + "item-subid");
-                            item.setDurability((short) id);
                         }
                     }
                     if(Check_MainMenuConfig.contains(path_prefix + "open-menu")){

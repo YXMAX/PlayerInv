@@ -3,6 +3,7 @@ package com.playerinv.MainGUI;
 import com.playerinv.InvHolder.Check_OtherMenuHolder;
 import com.playerinv.InvHolder.Check_OtherMenuHolder_Offline;
 import com.playerinv.InvHolder.OtherMenuHolder;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -72,7 +73,10 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
+                        if(hasPAPI){
+                            lore = PlaceholderAPI.setPlaceholders(player,lore);
+                        }
                         for (String s : lore) {
                             lore_list.add(color(s));
                         }
@@ -86,6 +90,22 @@ public class OtherMenu {
                             meta.addEnchant(Enchantment.ARROW_FIRE, 1, false);
                             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                             item.setItemMeta(meta);
+                        }
+                    }
+                    if(isBelow113){
+                        if (MenuFile.contains(path + "item-subid")) {
+                            int id = MenuFile.getInt(path + "item-subid");
+                            item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path_prefix + "close-menu")) {
@@ -102,12 +122,6 @@ public class OtherMenu {
                             ItemMeta meta = item.getItemMeta();
                             meta.setCustomModelData(MenuFile.getInt(path_prefix + "custom-model-data"));
                             item.setItemMeta(meta);
-                        }
-                    }
-                    if(isBelow113){
-                        if (MenuFile.contains(path_prefix + "item-subid")) {
-                            int id = MenuFile.getInt(path_prefix + "item-subid");
-                            item.setDurability((short) id);
                         }
                     }
                     if(MenuFile.contains(path_prefix + "open-menu")){
@@ -176,7 +190,10 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
+                        if(hasPAPI){
+                            lore = PlaceholderAPI.setPlaceholders(player,lore);
+                        }
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -188,6 +205,16 @@ public class OtherMenu {
                         if (MenuFile.contains(path + "item-subid")) {
                             int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path + "enchant-glow")) {
@@ -254,7 +281,10 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
+                        if(hasPAPI){
+                            lore = PlaceholderAPI.setPlaceholders(player,lore);
+                        }
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -266,6 +296,16 @@ public class OtherMenu {
                         if (MenuFile.contains(path + "item-subid")) {
                             int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path + "enchant-glow")) {
@@ -332,13 +372,29 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s));
                         }
                         ItemMeta meta = item.getItemMeta();
                         meta.setLore(lore_list);
                         item.setItemMeta(meta);
+                    }
+                    if(isBelow113){
+                        if (MenuFile.contains(path + "item-subid")) {
+                            int id = MenuFile.getInt(path + "item-subid");
+                            item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
                     }
                     if (MenuFile.contains(path_prefix + "enchant-glow")) {
                         if (MenuFile.getBoolean(path_prefix + "enchant-glow")) {
@@ -362,12 +418,6 @@ public class OtherMenu {
                             ItemMeta meta = item.getItemMeta();
                             meta.setCustomModelData(MenuFile.getInt(path_prefix + "custom-model-data"));
                             item.setItemMeta(meta);
-                        }
-                    }
-                    if(isBelow113){
-                        if (MenuFile.contains(path_prefix + "item-subid")) {
-                            int id = MenuFile.getInt(path_prefix + "item-subid");
-                            item.setDurability((short) id);
                         }
                     }
                     if(MenuFile.contains(path_prefix + "open-menu")){
@@ -436,7 +486,7 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -448,6 +498,16 @@ public class OtherMenu {
                         if (MenuFile.contains(path + "item-subid")) {
                             int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path + "enchant-glow")) {
@@ -514,7 +574,7 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -526,6 +586,16 @@ public class OtherMenu {
                         if (MenuFile.contains(path + "item-subid")) {
                             int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path + "enchant-glow")) {
@@ -592,7 +662,7 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s));
                         }
@@ -609,9 +679,19 @@ public class OtherMenu {
                         }
                     }
                     if(isBelow113){
-                        if (MenuFile.contains(path_prefix + "item-subid")) {
-                            int id = MenuFile.getInt(path_prefix + "item-subid");
+                        if (MenuFile.contains(path + "item-subid")) {
+                            int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path_prefix + "close-menu")) {
@@ -680,7 +760,7 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -692,6 +772,16 @@ public class OtherMenu {
                         if (MenuFile.contains(path + "item-subid")) {
                             int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path + "enchant-glow")) {
@@ -741,7 +831,7 @@ public class OtherMenu {
                         meta.setDisplayName(color(displayName));
                         item.setItemMeta(meta);
                     }
-                    if (lore != null) {
+                    if (!lore.isEmpty()) {
                         for (String s : lore) {
                             lore_list.add(color(s.replaceAll("%vault_num%", String.valueOf(vault_num))));
                         }
@@ -753,6 +843,16 @@ public class OtherMenu {
                         if (MenuFile.contains(path + "item-subid")) {
                             int id = MenuFile.getInt(path + "item-subid");
                             item.setDurability((short) id);
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                        }
+                    }
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path + "enchant-glow")) {

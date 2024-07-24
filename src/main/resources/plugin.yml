@@ -33,6 +33,12 @@ permissions:
     default: op
   playerinv.vault.append:
     default: op
+  playerinv.death.store:
+    default: false
+  playerinv.return.toggle:
+    default: true
 
 depend: [Vault]
-softdepend: [LuckPerms]
+softdepend:
+  - PlaceholderAPI
+  - Luckperms

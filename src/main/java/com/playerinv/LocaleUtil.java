@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 import static com.playerinv.PlayerInv.LocaleConfig;
-import static com.playerinv.PluginSet.locale;
 
 public class LocaleUtil {
 
@@ -75,6 +74,18 @@ public class LocaleUtil {
         return v;
     }
 
+    public static String placeholder_expiry(int num){
+        switch (num){
+            case 1:
+                return LocaleConfig.getString("Placeholder_expiry.Permanent");
+            case 2:
+                return LocaleConfig.getString("Placeholder_expiry.Expiry");
+            case 3:
+                return LocaleConfig.getString("Placeholder_expiry.Not_exist");
+        }
+        return LocaleConfig.getString("Placeholder_expiry.Permanent");
+    }
+
     public static String Messages_Open_main_gui(){
         String v = LocaleConfig.getString("Messages.Open_main_gui");
         return v;
@@ -135,13 +146,8 @@ public class LocaleUtil {
         return v;
     }
 
-    public static String Command_reload(){
+    public static String Command_reload() {
         String v = LocaleConfig.getString("Messages.Command_reload");
-        return v;
-    }
-
-    public static String Messages_Check_unknown_player(){
-        String v = LocaleConfig.getString("Messages.Check_unknown_player");
         return v;
     }
 
@@ -166,6 +172,21 @@ public class LocaleUtil {
         return v;
     }
 
+    public static String Messages_Return_to_main_config_disabled(){
+        String v = LocaleConfig.getString("Messages.Return_to_main_config_disabled");
+        return v;
+    }
+
+    public static String Messages_Return_to_main_disabled(){
+        String v = LocaleConfig.getString("Messages.Return_to_main_disabled");
+        return v;
+    }
+
+    public static String Messages_Return_to_main_enabled(){
+        String v = LocaleConfig.getString("Messages.Return_to_main_enabled");
+        return v;
+    }
+
     public static String Messages_Console_give_voucher_large(Player player){
         String v = LocaleConfig.getString("Messages.Console_give_voucher_large").replaceAll("%player%", player.getName());
         return v;
@@ -186,14 +207,14 @@ public class LocaleUtil {
         return v;
     }
 
-    public static String Vault_command_give_large_success(Player player, String num){
+    public static String Vault_command_give_large_success(Player player, String num, long day){
         String v = LocaleConfig.getString("Messages.Vault_command_give_large_success").replaceAll("%player%", player.getName());
-        return v.replaceAll("%vault_num%", String.valueOf(num));
+        return v.replaceAll("%vault_num%", String.valueOf(num)).replaceAll("%expiry_time%", expiry_adjust(day));
     }
 
-    public static String Vault_command_give_medium_success(Player player, String num){
+    public static String Vault_command_give_medium_success(Player player, String num, long day){
         String v = LocaleConfig.getString("Messages.Vault_command_give_medium_success").replaceAll("%player%", player.getName());
-        return v.replaceAll("%vault_num%", String.valueOf(num));
+        return v.replaceAll("%vault_num%", String.valueOf(num)).replaceAll("%expiry_time%", expiry_adjust(day));
     }
 
     public static String Vault_command_give_already_has(Player player){
@@ -201,14 +222,49 @@ public class LocaleUtil {
         return v;
     }
 
-    public static String Vault_command_append_large_success(Player player, int before ,String num){
+    public static String Vault_command_append_large_success(Player player, int before ,String num, long day){
         String v = LocaleConfig.getString("Messages.Vault_command_append_large_success").replaceAll("%player%", player.getName());
-        return v.replaceAll("%vault_amount%", String.valueOf(num)).replaceAll("%before_append%", String.valueOf(before));
+        return v.replaceAll("%vault_amount%", String.valueOf(num)).replaceAll("%before_append%", String.valueOf(before)).replaceAll("%expiry_time%", expiry_adjust(day));
     }
 
-    public static String Vault_command_append_medium_success(Player player, int before,String num){
+    public static String Vault_command_append_medium_success(Player player, int before,String num, long day){
         String v = LocaleConfig.getString("Messages.Vault_command_append_medium_success").replaceAll("%player%", player.getName());
-        return v.replaceAll("%vault_amount%", String.valueOf(num)).replaceAll("%before_append%", String.valueOf(before));
+        return v.replaceAll("%vault_amount%", String.valueOf(num)).replaceAll("%before_append%", String.valueOf(before)).replaceAll("%expiry_time%", expiry_adjust(day));
+    }
+
+    public static String Vault_player_give_large_notice(String num, long day){
+        String v = LocaleConfig.getString("Messages.Vault_player_give_large_notice");
+        return v.replaceAll("%vault_num%", String.valueOf(num)).replaceAll("%expiry_time%", expiry_adjust(day));
+    }
+
+    public static String Vault_player_give_medium_notice(String num, long day){
+        String v = LocaleConfig.getString("Messages.Vault_player_give_medium_notice");
+        return v.replaceAll("%vault_num%", String.valueOf(num)).replaceAll("%expiry_time%", expiry_adjust(day));
+    }
+
+    public static String Vault_player_append_large_notice(String start,String end, long day){
+        String v = LocaleConfig.getString("Messages.Vault_player_append_large_notice");
+        return v.replaceAll("%vault_num_start%", String.valueOf(start)).replaceAll("%vault_num_end%", String.valueOf(end)).replaceAll("%expiry_time%", expiry_adjust(day));
+    }
+
+    public static String Vault_player_append_medium_notice(String start,String end, long day){
+        String v = LocaleConfig.getString("Messages.Vault_player_append_medium_notice");
+        return v.replaceAll("%vault_num_start%", String.valueOf(start)).replaceAll("%vault_num_end%", String.valueOf(end)).replaceAll("%expiry_time%", expiry_adjust(day));
+    }
+
+    public static String player_death_store_notice(String num){
+        String v = LocaleConfig.getString("Messages.Player_death_store_notice");
+        return v.replaceAll("%vault_num%", String.valueOf(num));
+    }
+
+    public static String expiry_adjust(long day){
+        String expiry = null;
+        if(day == 0){
+            expiry = LocaleConfig.getString("Expiry.Permanent");
+        } else {
+            expiry = LocaleConfig.getString("Expiry.Temporary").replaceAll("%day_value%", String.valueOf(day));
+        }
+        return expiry;
     }
 
 }

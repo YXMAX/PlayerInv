@@ -3,7 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17">
       <module name="com.PlayerInv.main~2" target="1.8" />
-      <module name="com.PlayerInv.main~3" target="1.8" />
+      <module name="com.PlayerInv.test~1" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

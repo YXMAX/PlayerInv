@@ -1,14 +1,19 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
 }
 
 group = 'com'
-version = '2.6.17'
+version = '2.7.53'
 
 repositories {
     mavenCentral()
     maven {
         name = "papermc"
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        name = "spigotmc"
         url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
     }
     maven {
@@ -16,30 +21,68 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     maven { url 'https://jitpack.io' }
+    maven {
+        url = 'https://libraries.minecraft.net/'
+    }
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = 'MorePaperLib'
+        url = 'https://mvn-repo.arim.space/lesser-gpl3/'
+    }
+    maven {
+        url = "https://repo.jeff-media.com/public/"
+    }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT"
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'me.clip:placeholderapi:2.11.5'
+    implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.xerial:sqlite-jdbc:3.32.3.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation "com.jeff_media:SpigotUpdateChecker:3.0.3"
+    compileOnly 'com.mojang:authlib:1.5.25'
 }
 
-def targetJavaVersion = 1.8
+shadowJar {
+    destinationDirectory = file('OutPut')
+    archiveClassifier.set('')
+    dependencies {
+        include(dependency('space.arim.morepaperlib:morepaperlib'))
+        relocate("com.jeff_media", "com.playerinv") {
+            include(dependency("com.jeff_media:"))
+        }
+    }
+}
+
+
+//def targetJavaVersion = 1.8
+//java {
+//    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+//    sourceCompatibility = javaVersion
+//    targetCompatibility = javaVersion
+//    if (JavaVersion.current() < javaVersion) {
+//        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+//    }
+//}
+//
+//tasks.withType(JavaCompile).configureEach {
+//    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+//        options.release.set(targetJavaVersion)
+//    }
+//}
+
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    }
-}
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
-tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 processResources {
@@ -50,3 +93,4 @@ processResources {
         expand props
     }
 }
+

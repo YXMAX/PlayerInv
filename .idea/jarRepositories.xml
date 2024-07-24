@@ -41,5 +41,40 @@
       <option name="name" value="maven" />
       <option name="url" value="https://repo.purpurmc.org/snapshots" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven2" />
+      <option name="name" value="maven2" />
+      <option name="url" value="https://libraries.minecraft.net/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven3" />
+      <option name="name" value="maven3" />
+      <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
+      <option name="url" value="https://api.luminolmc.com" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="devmart-other" />
+      <option name="name" value="devmart-other" />
+      <option name="url" value="https://nexuslite.gcnt.net/repos/other/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="MorePaperLib" />
+      <option name="name" value="MorePaperLib" />
+      <option name="url" value="https://mvn-repo.arim.space/lesser-gpl3/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="FastJson" />
+      <option name="name" value="FastJson" />
+      <option name="url" value="https://repo1.maven.org/maven2/com/alibaba/fastjson/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
+      <option name="url" value="https://repo.jeff-media.com/public/" />
+    </remote-repository>
   </component>
 </project>
