@@ -86,6 +86,11 @@ public class LocaleUtil {
         return LocaleConfig.getString("Placeholder_expiry.Permanent");
     }
 
+    public static String Vault_already_open(){
+        String v = LocaleConfig.getString("Messages.Vault_already_open");
+        return v;
+    }
+
     public static String Messages_Open_main_gui(){
         String v = LocaleConfig.getString("Messages.Open_main_gui");
         return v;

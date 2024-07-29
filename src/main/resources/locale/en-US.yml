@@ -73,6 +73,6 @@ Messages:
   Return_to_main_config_disabled: '&cThe return to main menu function is not enabled'
   Return_to_main_enabled: '&eReturn-to-main &aEnabled'
   Return_to_main_disabled: '&eReturn-to-main &cDisabled'
-
+  Vault_already_open: '&cYou have already opened the vault!'
 
 

@@ -590,7 +590,7 @@ public class PluginSet {
                 papi = "&a启用";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.53"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.55"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms 权限同步 " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI 支持: " + papi));
@@ -614,7 +614,7 @@ public class PluginSet {
                 papi = "&aEnabled";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.53"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.55"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms permission synchronization: " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI Support: " + papi));

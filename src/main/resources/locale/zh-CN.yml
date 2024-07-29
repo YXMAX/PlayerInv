@@ -78,4 +78,4 @@ Messages:
   Return_to_main_config_disabled: '&c返回主菜单功能未启用'
   Return_to_main_enabled: '&e返回主菜单功能 &a开启'
   Return_to_main_disabled: '&e返回主菜单功能 &c关闭'
-
+  Vault_already_open: '&c已打开仓库！无法重复打开'

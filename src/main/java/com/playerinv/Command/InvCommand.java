@@ -1,6 +1,8 @@
 package com.playerinv.Command;
 
 import com.playerinv.ContextNode;
+import com.playerinv.InvHolder.VaultHolder_Large;
+import com.playerinv.InvHolder.VaultHolder_Medium;
 import com.playerinv.PermItem.PermItem;
 import com.playerinv.PlayerInv;
 import com.playerinv.PluginSet;
@@ -305,6 +307,10 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 if(args[1].equals("large")){
                     if(isNum(args[2])){
                         Integer vault_num = Integer.valueOf(args[2]);
+                        if(player.getOpenInventory().getTopInventory().getHolder() instanceof VaultHolder_Large){
+                            player.sendMessage(color(prefix + Vault_already_open()));
+                            return true;
+                        }
                         try{
                             if(vault_num <= 10){
                                 if(player.hasPermission("playerinv.large.inv." + vault_num) || player.hasPermission("playerinv.inv.*") || player.hasPermission("playerinv.admin") || player.isOp() || player.hasPermission("playerinv.inv." + vault_num)){
@@ -348,6 +354,10 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 if(args[1].equals("medium")){
                     if(isNum(args[2])){
                         Integer vault_num = Integer.valueOf(args[2]);
+                        if(player.getOpenInventory().getTopInventory().getHolder() instanceof VaultHolder_Medium){
+                            player.sendMessage(color(prefix + Vault_already_open()));
+                            return true;
+                        }
                         try{
                             if(vault_num <= 15){
                                 int old_vault_num = vault_num + 10;
