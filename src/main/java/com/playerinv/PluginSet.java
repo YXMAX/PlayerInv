@@ -590,7 +590,7 @@ public class PluginSet {
                 papi = "&a启用";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.55"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.60"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms 权限同步 " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI 支持: " + papi));
@@ -614,7 +614,7 @@ public class PluginSet {
                 papi = "&aEnabled";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.55"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.60"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms permission synchronization: " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI Support: " + papi));
@@ -845,7 +845,7 @@ public class PluginSet {
     }
 
     public static int getVault(Player player){
-        if(!Placeholder_List.contains(player.getName())){
+        if(!Placeholder_List.contains(player.getName()) || Placeholder_Vault_Amount.get(player) == null){
             int count = 0;
             for (int i = 1; i < (Large_Amount + 1); i++) {
                 if ((player.hasPermission("playerinv.large.inv." + i) || player.hasPermission("playerinv.inv." + i)) && i<11){

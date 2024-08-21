@@ -192,6 +192,10 @@ public class LocaleUtil {
         return v;
     }
 
+    public static String console_open_main(Player player){
+        return LocaleConfig.getString("Messages.Console_open_main").replaceAll("%player%", player.getName());
+    }
+
     public static String Messages_Console_give_voucher_large(Player player){
         String v = LocaleConfig.getString("Messages.Console_give_voucher_large").replaceAll("%player%", player.getName());
         return v;

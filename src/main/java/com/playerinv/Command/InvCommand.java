@@ -21,6 +21,7 @@ import java.util.*;
 import static com.playerinv.ContextNode.addPermission_Large;
 import static com.playerinv.LPVerify.VerifyPermission.*;
 import static com.playerinv.LocaleUtil.*;
+import static com.playerinv.LocaleUtil.console_open_main;
 import static com.playerinv.MainGUI.MainMenu.*;
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
@@ -89,6 +90,34 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
                 commandSender.sendMessage("¡ìf/PlayerInv ¡ìeOpen Main GUI");
             }
+        }
+
+        if(args.length >= 1 && args[0].equals("open-main")){
+            Boolean openaccess = plugin.getConfig().getBoolean("OpenGUIMessage");
+            if(!(commandSender instanceof Player) || commandSender.isOp()){
+                if(args.length == 1){
+                    Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Console_give_voucher_player_error()));
+                    return true;
+                } else if(args.length == 2 && !args[1].isEmpty()){
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+                    if(player.isOnline()){
+                        Player target = player.getPlayer();
+                        if(openaccess) {
+                            target.sendMessage(color(prefix + Messages_Open_main_gui()));
+                        }
+                        target.openInventory(Main_GUI(target));
+                        target.playSound(target.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                        Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + console_open_main(target)));
+                        return true;
+                    } else {
+                        Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Console_give_voucher_player_error()));
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
+            return true;
         }
 
         if(args.length == 1 && args[0].equals("reload") && (commandSender instanceof Player)) {

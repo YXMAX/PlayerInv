@@ -397,9 +397,6 @@ public class PlayerInv extends JavaPlugin {
                 createMediumTable(con);
                 createToggleTable(con);
                 createReturnToggleTable(con);
-                createPlayerShareListTable(con);
-                createSharingVaultTable(con);
-                createPlayerPointsTable(con);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -410,9 +407,6 @@ public class PlayerInv extends JavaPlugin {
                 MysqlcreateMediumTable(con);
                 MysqlcreateToggleTable(con);
                 MysqlcreateReturnToggleTable(con);
-                MysqlcreatePlayerShareListTable(con);
-                MysqlcreateSharingVaultTable(con);
-                MysqlcreatePlayerPointsTable(con);
                 MySQLScheduler.Mysqlconnect();
                 FixMySQL_DataType_Large();
                 FixMySQL_DataType_Medium();

@@ -344,12 +344,6 @@ public class InvListener implements Listener {
         if(!SQLiteConnect.hasDataReturnToggle(con,player.getUniqueId().toString())){
             SQLiteConnect.insertReturnToggle(con,player.getUniqueId().toString(),true);
         }
-        if(!SQLiteConnect.hasDataPlayerList(con,player.getUniqueId().toString())){
-            SQLiteConnect.insert_player_share_list(con,player.getUniqueId().toString(),null,0);
-        }
-        if(!SQLiteConnect.hasDataPlayerPoints(con,player.getUniqueId().toString())){
-            SQLiteConnect.insertPoints(con,player.getUniqueId().toString(),0);
-        }
     }
 
     @EventHandler

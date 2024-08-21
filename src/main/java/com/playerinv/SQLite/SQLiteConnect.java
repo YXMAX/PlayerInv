@@ -1,18 +1,15 @@
 package com.playerinv.SQLite;
 
 import com.playerinv.TempHolder.TempPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.UUID;
 
 import static com.playerinv.PlayerInv.*;
-import static com.playerinv.PluginSet.*;
+import static com.playerinv.PluginSet.sendConvertDataMessage;
+import static com.playerinv.PluginSet.sendConvertSuccessMessage;
 
 
 public class SQLiteConnect {
@@ -134,39 +131,6 @@ public class SQLiteConnect {
         stat.executeUpdate(sql);
     }
 
-    public static void createPlayerShareListTable(Connection con)throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS player_share_list (\n"
-                + "	uuid string,\n"
-                + "	list string,\n"
-                + " amount integer\n"
-                + ");";
-        Statement stat = null;
-        stat = con.createStatement();
-        stat.executeUpdate(sql);
-    }
-
-    public static void createSharingVaultTable(Connection con)throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS vault_sharing (\n"
-                + "	uuid string,\n"
-                + "	num integer,\n"
-                + "	inv string,\n"
-                + "	hashset string\n"
-                + ");";
-        Statement stat = null;
-        stat = con.createStatement();
-        stat.executeUpdate(sql);
-    }
-
-    public static void createPlayerPointsTable(Connection con)throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS player_points (\n"
-                + "	uuid string,\n"
-                + " point integer\n"
-                + ");";
-        Statement stat = null;
-        stat = con.createStatement();
-        stat.executeUpdate(sql);
-    }
-
     public static void dropTable(Connection con)throws Exception {
         String sql = "alter table InvData rename to InvData_backup";
         Statement stat = null;
@@ -238,40 +202,6 @@ public class SQLiteConnect {
         pst.close();
     }
 
-    public static LinkedHashMap<Integer,String> getAllLargeInvCode(Connection con, String uuid)throws Exception{
-        LinkedHashMap<Integer,String> large_map = new LinkedHashMap<>();
-        String sql = "select inv,num from vault_large where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            int num = rs.getInt("num");
-            String invcode = rs.getString("inv");
-            large_map.put(num,invcode);
-        }
-        rs.close();
-        pst.close();
-        return large_map;
-    }
-
-    public static LinkedHashMap<Integer,String> getAllMediumInvCode(Connection con, String uuid)throws Exception{
-        LinkedHashMap<Integer,String> medium_map = new LinkedHashMap<>();
-        String sql = "select inv,num from vault_medium where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            int num = rs.getInt("num");
-            String invcode = rs.getString("inv");
-            medium_map.put(num,invcode);
-        }
-        rs.close();
-        pst.close();
-        return medium_map;
-    }
-
     public static void insert_Large(Connection con, String uuid, Integer num, String Inv)throws Exception {
         String sql = "insert into vault_large (uuid, num, inv) values(?,?,?)";
         PreparedStatement pst = null;
@@ -294,28 +224,6 @@ public class SQLiteConnect {
 
     }
 
-    public static void insert_player_share_list(Connection con, String uuid,String list,int amount)throws Exception {
-        String sql = "insert into player_share_list (uuid, list, amount) values(?,?,?)";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        pst.setString(2, list);
-        pst.setInt(3, amount);
-        pst.executeUpdate();
-
-    }
-
-    public static void insert_vault_sharing(Connection con,String uuid,int num,String inv,String set)throws Exception {
-        String sql = "insert into vault_sharing (uuid,num,inv,hashset) values(?,?,?,?)";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        pst.setInt(2, num);
-        pst.setString(3,inv);
-        pst.setString(4,set);
-        pst.executeUpdate();
-    }
-
     public static void insertToggle(Connection con, String uuid, Boolean toggle)throws Exception {
         String sql = "insert into keys_toggle (uuid,toggle) values(?,?)";
         PreparedStatement pst = null;
@@ -336,53 +244,6 @@ public class SQLiteConnect {
 
     }
 
-    public static void insertPoints(Connection con, String uuid, int amount)throws Exception {
-        String sql = "insert into player_points (uuid,point) values(?,?)";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        pst.setInt(2, amount);
-        pst.executeUpdate();
-
-    }
-
-    public static void updatePlayerShareAmount(Connection con, String uuid, int amount)throws Exception {
-        String sql = "update player_share_list set amount=? where uuid=?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setInt(1, amount);
-        pst.setString(2, uuid);
-        pst.executeUpdate();
-    }
-
-    public static void updatePlayerShareSet(Connection con, String uuid, String list)throws Exception {
-        String sql = "update player_share_list set list=? where uuid=?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, list);
-        pst.setString(2, uuid);
-        pst.executeUpdate();
-    }
-
-    public static void updateShareSet(Connection con, String uuid, Integer num, String set)throws Exception {
-        String sql = "update vault_sharing set hashset=? where uuid=? and num=?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, set);
-        pst.setString(2, uuid);
-        pst.setInt(3, num);
-        pst.executeUpdate();
-    }
-
-    public static void updatePlayerPoints(Connection con, String uuid, Integer num)throws Exception {
-        String sql = "update player_points set point=? where uuid=?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setInt(1, num);
-        pst.setString(2, uuid);
-        pst.executeUpdate();
-    }
-
     public static void updateInv_Large(Connection con, String uuid, String Inv, Integer num)throws Exception {
         String sql = "update vault_large set inv = ? where uuid = ? and num = ?";
         PreparedStatement pst = null;
@@ -391,24 +252,10 @@ public class SQLiteConnect {
         pst.setString(2, uuid);
         pst.setInt(3, num);
         int bool = pst.executeUpdate();
-        Player player = Bukkit.getPlayer(UUID.fromString(uuid));
-        sendLog(player.getName() + " isUpdateInv: " + bool);
     }
 
     public static void updateInv_Medium(Connection con, String uuid, String Inv, Integer num)throws Exception {
         String sql = "update vault_medium set inv = ? where uuid = ? and num = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, Inv);
-        pst.setString(2, uuid);
-        pst.setInt(3, num);
-        int bool = pst.executeUpdate();
-        Player player = Bukkit.getPlayer(UUID.fromString(uuid));
-        sendLog(player.getName() + " isUpdateInv: " + bool);
-    }
-
-    public static void updateInv_Share(Connection con, String uuid, String Inv, Integer num)throws Exception {
-        String sql = "update vault_sharing set inv = ? where uuid = ? and num = ?";
         PreparedStatement pst = null;
         pst = con.prepareStatement(sql);
         pst.setString(1, Inv);
@@ -467,88 +314,6 @@ public class SQLiteConnect {
         rs.close();
         pst.close();
         return invcode;
-    }
-
-    public static String InvCode_Share(Connection con, String uuid, Integer num)throws Exception {
-        String invcode = null;
-        String sql = "select inv from vault_sharing where uuid = ? and num = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        pst.setInt(2, num);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            String invbase = rs.getString("inv");
-            invcode = invbase;
-        }
-        rs.close();
-        pst.close();
-        return invcode;
-    }
-
-    public static String getShareMap(Connection con, String uuid, Integer num)throws Exception {
-        String sett = null;
-        String sql = "select hashset from vault_sharing where uuid = ? and num = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        pst.setInt(2, num);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            String set = rs.getString("hashset");
-            sett = set;
-        }
-        rs.close();
-        pst.close();
-        return sett;
-    }
-
-    public static String getPlayerShareSet(Connection con, String uuid)throws Exception {
-        String sett = null;
-        String sql = "select list from player_share_list where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            String set = rs.getString("list");
-            sett = set;
-        }
-        rs.close();
-        pst.close();
-        return sett;
-    }
-
-    public static int getPlayerShareAmount(Connection con, String uuid)throws Exception {
-        int sett = 0;
-        String sql = "select amount from player_share_list where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            int set = rs.getInt("amount");
-            sett = set;
-        }
-        rs.close();
-        pst.close();
-        return sett;
-    }
-
-    public static int getPlayerPoints(Connection con, String uuid)throws Exception {
-        int sett = 0;
-        String sql = "select point from player_points where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            int set = rs.getInt("point");
-            sett = set;
-        }
-        rs.close();
-        pst.close();
-        return sett;
     }
 
     public static Boolean getToggle(Connection con, String uuid)throws Exception {
@@ -691,50 +456,6 @@ public class SQLiteConnect {
         }
     }
 
-    public static boolean hasDataPlayerList(Connection con, String uuid)throws Exception {
-        String hasData = null;
-        String sql = "select uuid from player_share_list where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            String Data = rs.getString("uuid");
-            hasData = Data;
-        }
-        if(uuid.equals(hasData)){
-            rs.close();
-            pst.close();
-            return true;
-        } else {
-            rs.close();
-            pst.close();
-            return false;
-        }
-    }
-
-    public static boolean hasDataPlayerPoints(Connection con, String uuid)throws Exception {
-        String hasData = null;
-        String sql = "select uuid from player_points where uuid = ?";
-        PreparedStatement pst = null;
-        pst = con.prepareStatement(sql);
-        pst.setString(1, uuid);
-        ResultSet rs = pst.executeQuery();
-        while(rs.next()){
-            String Data = rs.getString("uuid");
-            hasData = Data;
-        }
-        if(uuid.equals(hasData)){
-            rs.close();
-            pst.close();
-            return true;
-        } else {
-            rs.close();
-            pst.close();
-            return false;
-        }
-    }
-
     public static void MysqlcreateLargeTable(Connection con)throws Exception {
         String sql = "CREATE TABLE IF NOT EXISTS vault_large"
                 + "("
@@ -775,42 +496,6 @@ public class SQLiteConnect {
                 + "("
                 + "uuid VARCHAR(255),"
                 + "toggle BOOLEAN"
-                + ");";
-        Statement stat = null;
-        stat = con.createStatement();
-        stat.executeUpdate(sql);
-    }
-
-    public static void MysqlcreatePlayerShareListTable(Connection con)throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS player_share_list"
-                + "("
-                + "uuid VARCHAR(255),"
-                + "list LONGTEXT,"
-                + "amount INT"
-                + ");";
-        Statement stat = null;
-        stat = con.createStatement();
-        stat.executeUpdate(sql);
-    }
-
-    public static void MysqlcreateSharingVaultTable(Connection con)throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS vault_sharing"
-                + "("
-                + "uuid VARCHAR(255),"
-                + "num INT,"
-                + "inv LONGTEXT,"
-                + "hashset LONGTEXT"
-                + ");";
-        Statement stat = null;
-        stat = con.createStatement();
-        stat.executeUpdate(sql);
-    }
-
-    public static void MysqlcreatePlayerPointsTable(Connection con)throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS player_points"
-                + "("
-                + "uuid VARCHAR(255),"
-                + "point INT"
                 + ");";
         Statement stat = null;
         stat = con.createStatement();
