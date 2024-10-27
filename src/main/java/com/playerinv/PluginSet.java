@@ -50,7 +50,6 @@ public class PluginSet {
         getServer().getPluginManager().registerEvents((Listener)new CheckInvListener(), (Plugin)plugin);
         getServer().getPluginManager().registerEvents((Listener)new CheckInvOfflineListener(), (Plugin)plugin);
         getServer().getPluginManager().registerEvents((Listener)new PlayerDeathListener(), (Plugin)plugin);
-        getServer().getPluginManager().registerEvents((Listener)new VaultMoveItemListener(),(Plugin)plugin);
     }
 
     public static String inventoryToBase64(Inventory inventory) {
@@ -78,7 +77,13 @@ public class PluginSet {
             Inventory inventory = getServer().createInventory(new VaultHolder_Large(), dataInput.readInt(), color(Vault_large_title() + VaultNum));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = (ItemStack) dataInput.readObject();
+                ItemStack item = null;
+                try {
+                    item = (ItemStack) dataInput.readObject();
+                } catch (IllegalArgumentException | IOException e){
+                    Bukkit.getConsoleSender().sendMessage(color(prefix() + " Convert an item failed! Set type Material.AIR to fix it! (may some module items disappeared! check your server module loader!)"));
+                    continue;
+                }
                 if(item == null){
                     continue;
                 }
@@ -105,7 +110,13 @@ public class PluginSet {
             Inventory inventory = getServer().createInventory(new VaultHolder_Medium(), dataInput.readInt(), color(Vault_medium_title() + VaultNum));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = (ItemStack) dataInput.readObject();
+                ItemStack item = null;
+                try {
+                    item = (ItemStack) dataInput.readObject();
+                } catch (IllegalArgumentException | IOException e){
+                    Bukkit.getConsoleSender().sendMessage(color(prefix() + " Convert an item failed! Set type Material.AIR to fix it! (may some module items disappeared! check your server module loader!)"));
+                    continue;
+                }
                 if(item == null){
                     continue;
                 }
@@ -132,7 +143,13 @@ public class PluginSet {
             Inventory inventory = getServer().createInventory(new Check_VaultHolder_Large(), dataInput.readInt(), color(Check_Large_Title_Online(target) + VaultNum));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = (ItemStack) dataInput.readObject();
+                ItemStack item = null;
+                try {
+                    item = (ItemStack) dataInput.readObject();
+                } catch (IllegalArgumentException | IOException e){
+                    Bukkit.getConsoleSender().sendMessage(color(prefix() + " Convert an item failed! Set type Material.AIR to fix it! (may some module items disappeared! check your server module loader!)"));
+                    continue;
+                }
                 if(item == null){
                     continue;
                 }
@@ -159,7 +176,13 @@ public class PluginSet {
             Inventory inventory = getServer().createInventory(new Check_VaultHolder_Medium(), dataInput.readInt(), color(Check_Medium_Title_Online(target) + VaultNum));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = (ItemStack) dataInput.readObject();
+                ItemStack item = null;
+                try {
+                    item = (ItemStack) dataInput.readObject();
+                } catch (IllegalArgumentException | IOException e){
+                    Bukkit.getConsoleSender().sendMessage(color(prefix() + " Convert an item failed! Set type Material.AIR to fix it! (may some module items disappeared! check your server module loader!)"));
+                    continue;
+                }
                 if(item == null){
                     continue;
                 }
@@ -186,7 +209,13 @@ public class PluginSet {
             Inventory inventory = getServer().createInventory(new Check_VaultHolder_Large_Offline(), dataInput.readInt(), color(Check_Large_Title_Offline(target) + VaultNum));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = (ItemStack) dataInput.readObject();
+                ItemStack item = null;
+                try {
+                    item = (ItemStack) dataInput.readObject();
+                } catch (IllegalArgumentException | IOException e){
+                    Bukkit.getConsoleSender().sendMessage(color(prefix() + " Convert an item failed! Set type Material.AIR to fix it! (may some module items disappeared! check your server module loader!)"));
+                    continue;
+                }
                 if(item == null){
                     continue;
                 }
@@ -213,7 +242,13 @@ public class PluginSet {
             Inventory inventory = getServer().createInventory(new Check_VaultHolder_Medium_Offline(), dataInput.readInt(), color(Check_Medium_Title_Offline(target) + VaultNum));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
-                ItemStack item = (ItemStack) dataInput.readObject();
+                ItemStack item = null;
+                try {
+                    item = (ItemStack) dataInput.readObject();
+                } catch (IllegalArgumentException | IOException e){
+                    Bukkit.getConsoleSender().sendMessage(color(prefix() + " Convert an item failed! Set type Material.AIR to fix it! (may some module items disappeared! check your server module loader!)"));
+                    continue;
+                }
                 if(item == null){
                     continue;
                 }
@@ -528,7 +563,7 @@ public class PluginSet {
     public static void sendConvertDataMessage(){
         String locale = locale();
         if(locale.equals("zh-CN")){
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "´æÔÚ¾ÉÊý¾Ý±í ×ª»»Êý¾ÝÖÁÐÂ±í...");
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "å­˜åœ¨æ—§æ•°æ®è¡¨ è½¬æ¢æ•°æ®è‡³æ–°è¡¨...");
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Existing old data table , Converting data to new table..");
         }
@@ -537,7 +572,7 @@ public class PluginSet {
     public static void sendConvertSuccessMessage(){
         String locale = locale();
         if(locale.equals("zh-CN")){
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Êý¾Ý¿âÊý¾Ý×ª»»Íê³É!");
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "æ•°æ®åº“æ•°æ®è½¬æ¢å®Œæˆ!");
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Database conversion completed!");
         }
@@ -572,28 +607,28 @@ public class PluginSet {
         Boolean mysql = plugin.getConfig().getBoolean("DataBases.MySQL");
         Boolean lptoggle = plugin.getConfig().getBoolean("Luckperms-proxy-support");
         if(locale.equals("zh-CN")){
-            String database = "±¾µØÊý¾Ý¿âÒÑÆô¶¯..";
+            String database = "æœ¬åœ°æ•°æ®åº“å·²å¯åŠ¨..";
             String lp = null;
-            String papi = "&c¹Ø±Õ";
+            String papi = "&cå…³é—­";
             if(lpsupport){
-                lp = "&e½ûÓÃ";
+                lp = "&eç¦ç”¨";
                 if(lptoggle){
-                    lp = "&aÆôÓÃ";
+                    lp = "&aå¯ç”¨";
                 }
             } else {
-                lp = "&c²»Ö§³Ö";
+                lp = "&cä¸æ”¯æŒ";
             }
             if(mysql){
-                database = "³É¹¦Á¬½ÓMySQLÊý¾Ý¿â..";
+                database = "æˆåŠŸè¿žæŽ¥MySQLæ•°æ®åº“..";
             }
             if(hasPAPI){
-                papi = "&aÆôÓÃ";
+                papi = "&aå¯ç”¨";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.60"));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms È¨ÏÞÍ¬²½ " + lp));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.91"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms æƒé™åŒæ­¥ " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI Ö§³Ö: " + papi));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI æ”¯æŒ: " + papi));
             Bukkit.getServer().getConsoleSender().sendMessage(color("                      "));
         } else {
             String database = "Local SQLite databases connected..";
@@ -614,7 +649,7 @@ public class PluginSet {
                 papi = "&aEnabled";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.60"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.91"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms permission synchronization: " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI Support: " + papi));
@@ -886,16 +921,7 @@ public class PluginSet {
         }
     }
 
-    public static void UpdateCheck(){
-        if(plugin.getConfig().getBoolean("check-update")){
-            new UpdateChecker(plugin, UpdateCheckSource.GITHUB_RELEASE_TAG,"YXMAX/PlayerInv/releases/latest")
-                    .setFreeDownloadLink("https://www.spigotmc.org/resources/playerinv-reloaded-customizable-gui-different-vault-mysql-1-12-x-1-20-x.114372/")
-                    .setNameFreeVersion("FREE")
-                    .setNamePaidVersion("PREMIUM")
-                    .setPaidDownloadLink("https://polymart.org/resource/playerinv-full-customize-vault.6139")
-                    .setUsingPaidVersion(false)
-                    .checkEveryXHours(24)
-                    .checkNow();
-        }
+    public static String sslBool(){
+        return String.valueOf(plugin.getConfig().getBoolean("DataBases.useSSL"));
     }
 }

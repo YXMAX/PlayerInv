@@ -26,6 +26,8 @@ import static com.playerinv.MainGUI.MainMenu.*;
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
 import static com.playerinv.SQLite.SQLiteConnect.con;
+import static com.playerinv.Scheduler.CheckView.checkPlayerViewLarge;
+import static com.playerinv.Scheduler.CheckView.checkPlayerViewMedium;
 
 public class InvCommand implements CommandExecutor , TabExecutor {
 
@@ -37,58 +39,58 @@ public class InvCommand implements CommandExecutor , TabExecutor {
         if(args.length == 1 && args[0].equals("help") && (commandSender instanceof Player) && locale().equals("zh-CN")){
             Player player = (Player) commandSender;
             if(player.isOp() || player.hasPermission("playerinv.admin")){
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìe´ò¿ª¸öÈË²Ö¿âÖ÷GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Keys Toggle ¡ìe¿ª/¹ØF¼ü´ò¿ª²Ö¿â²Ëµ¥");
-                commandSender.sendMessage("¡ìf/PlayerInv Return Toggle ¡ìe¿ª/¹Ø ¹Ø±Õ²Ö¿âÊ±·µ»ØÖ÷²Ëµ¥");
-                commandSender.sendMessage("¡ìf/PlayerInv Check [Íæ¼Ò] ¡ìe²é¿´Ä³Íæ¼Ò²Ö¿â");
-                commandSender.sendMessage("¡ìf/PlayerInv Give [Íæ¼Ò] [ÀàÐÍ] ¡ìe¸øÓèÍæ¼ÒÄ³Ò»ÀàÐÍµÄ²Ö¿â¶Ò»»È¯");
-                commandSender.sendMessage("¡ìf/PlayerInv Open [ÀàÐÍ] [±àºÅ] ¡ìe´ò¿ªÄ³Ò»ÀàÐÍºÍ±àºÅµÄ²Ö¿â");
-                commandSender.sendMessage("¡ìf/PlayerInv Vault [¸øÓèÀàÐÍ] [²Ö¿âÀàÐÍ] [ÊýÖµ] [Íæ¼Ò] ¡ìe¸øÓè»ò×·¼Ó¸øÓèÍæ¼ÒÏàÓ¦ÊýÖµµÄ²Ö¿â");
-                commandSender.sendMessage("¡ìf/PlayerInv Reload ¡ìe²å¼þÖØÔØ");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eæ‰“å¼€ä¸ªäººä»“åº“ä¸»GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Keys Toggle Â§eå¼€/å…³Fé”®æ‰“å¼€ä»“åº“èœå•");
+                commandSender.sendMessage("Â§f/PlayerInv Return Toggle Â§eå¼€/å…³ å…³é—­ä»“åº“æ—¶è¿”å›žä¸»èœå•");
+                commandSender.sendMessage("Â§f/PlayerInv Check [çŽ©å®¶] Â§eæŸ¥çœ‹æŸçŽ©å®¶ä»“åº“");
+                commandSender.sendMessage("Â§f/PlayerInv Give [çŽ©å®¶] [ç±»åž‹] Â§eç»™äºˆçŽ©å®¶æŸä¸€ç±»åž‹çš„ä»“åº“å…‘æ¢åˆ¸");
+                commandSender.sendMessage("Â§f/PlayerInv Open [ç±»åž‹] [ç¼–å·] Â§eæ‰“å¼€æŸä¸€ç±»åž‹å’Œç¼–å·çš„ä»“åº“");
+                commandSender.sendMessage("Â§f/PlayerInv Vault [ç»™äºˆç±»åž‹] [ä»“åº“ç±»åž‹] [æ•°å€¼] [çŽ©å®¶] Â§eç»™äºˆæˆ–è¿½åŠ ç»™äºˆçŽ©å®¶ç›¸åº”æ•°å€¼çš„ä»“åº“");
+                commandSender.sendMessage("Â§f/PlayerInv Reload Â§eæ’ä»¶é‡è½½");
                 return true;
             } else if(accessToggle && !player.hasPermission("playerinv.give")){
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìe´ò¿ª¸öÈË²Ö¿âÖ÷GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Keys Toggle ¡ìe¿ª/¹ØF¼ü´ò¿ª²Ö¿â²Ëµ¥");
-                commandSender.sendMessage("¡ìf/PlayerInv Return Toggle ¡ìe¿ª/¹Ø ¹Ø±Õ²Ö¿âÊ±·µ»ØÖ÷²Ëµ¥");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eæ‰“å¼€ä¸ªäººä»“åº“ä¸»GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Keys Toggle Â§eå¼€/å…³Fé”®æ‰“å¼€ä»“åº“èœå•");
+                commandSender.sendMessage("Â§f/PlayerInv Return Toggle Â§eå¼€/å…³ å…³é—­ä»“åº“æ—¶è¿”å›žä¸»èœå•");
             } else if(accessToggle && player.hasPermission("playerinv.give")){
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìe´ò¿ª¸öÈË²Ö¿âÖ÷GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Give [Íæ¼Ò] [ÀàÐÍ] ¡ìe¸øÓèÍæ¼ÒÄ³Ò»ÀàÐÍµÄ²Ö¿â¶Ò»»È¯");
-                commandSender.sendMessage("¡ìf/PlayerInv Keys Toggle ¡ìe¿ª/¹ØF¼ü´ò¿ª²Ö¿â²Ëµ¥");
-                commandSender.sendMessage("¡ìf/PlayerInv Return Toggle ¡ìe¿ª/¹Ø ¹Ø±Õ²Ö¿âÊ±·µ»ØÖ÷²Ëµ¥");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eæ‰“å¼€ä¸ªäººä»“åº“ä¸»GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Give [çŽ©å®¶] [ç±»åž‹] Â§eç»™äºˆçŽ©å®¶æŸä¸€ç±»åž‹çš„ä»“åº“å…‘æ¢åˆ¸");
+                commandSender.sendMessage("Â§f/PlayerInv Keys Toggle Â§eå¼€/å…³Fé”®æ‰“å¼€ä»“åº“èœå•");
+                commandSender.sendMessage("Â§f/PlayerInv Return Toggle Â§eå¼€/å…³ å…³é—­ä»“åº“æ—¶è¿”å›žä¸»èœå•");
             } else {
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìe´ò¿ª¸öÈË²Ö¿âÖ÷GUI");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eæ‰“å¼€ä¸ªäººä»“åº“ä¸»GUI");
             }
         }
         if(args.length == 1 && args[0].equals("help") && (commandSender instanceof Player) && locale().equals("en-US")){
             Player player = (Player) commandSender;
             if(player.isOp() || player.hasPermission("playerinv.admin")){
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìeOpen main GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Keys Toggle ¡ìeToggle press F to open main GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Return Toggle ¡ìeToggle return to main menu when closing vault");
-                commandSender.sendMessage("¡ìf/PlayerInv Give [Player] [Type] ¡ìeGive player a type of vault ticket");
-                commandSender.sendMessage("¡ìf/PlayerInv Open [Type] [Num] ¡ìeOpen a vault of a certain type and number");
-                commandSender.sendMessage("¡ìf/PlayerInv Vault [Given Type] [Vault Type] [Num] [Player] ¡ìeappend or add vault that give players corresponding values");
-                commandSender.sendMessage("¡ìf/PlayerInv Reload ¡ìePlugin Reload");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eOpen main GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Keys Toggle Â§eToggle press F to open main GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Return Toggle Â§eToggle return to main menu when closing vault");
+                commandSender.sendMessage("Â§f/PlayerInv Give [Player] [Type] Â§eGive player a type of vault ticket");
+                commandSender.sendMessage("Â§f/PlayerInv Open [Type] [Num] Â§eOpen a vault of a certain type and number");
+                commandSender.sendMessage("Â§f/PlayerInv Vault [Given Type] [Vault Type] [Num] [Player] Â§eappend or add vault that give players corresponding values");
+                commandSender.sendMessage("Â§f/PlayerInv Reload Â§ePlugin Reload");
                 return true;
             } else if(accessToggle && !player.hasPermission("playerinv.give")){
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìeOpen main GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Keys Toggle ¡ìeToggle press F to open main GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Return Toggle ¡ìeToggle return to main menu when closing vault");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eOpen main GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Keys Toggle Â§eToggle press F to open main GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Return Toggle Â§eToggle return to main menu when closing vault");
             } else if(accessToggle && player.hasPermission("playerinv.give")){
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìeOpen main GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Keys Toggle ¡ìeToggle press F to open main GUI");
-                commandSender.sendMessage("¡ìf/PlayerInv Return Toggle ¡ìeToggle return to main menu when closing vault");
-                commandSender.sendMessage("¡ìf/PlayerInv Give [Player] [Type] ¡ìeGive player a type of vault ticket");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eOpen main GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Keys Toggle Â§eToggle press F to open main GUI");
+                commandSender.sendMessage("Â§f/PlayerInv Return Toggle Â§eToggle return to main menu when closing vault");
+                commandSender.sendMessage("Â§f/PlayerInv Give [Player] [Type] Â§eGive player a type of vault ticket");
             } else {
-                commandSender.sendMessage("¡ìe--------¡ìf[¡ìePlayerInv¡ìf]¡ìe--------");
-                commandSender.sendMessage("¡ìf/PlayerInv ¡ìeOpen Main GUI");
+                commandSender.sendMessage("Â§e--------Â§f[Â§ePlayerInvÂ§f]Â§e--------");
+                commandSender.sendMessage("Â§f/PlayerInv Â§eOpen Main GUI");
             }
         }
 
@@ -285,19 +287,27 @@ public class InvCommand implements CommandExecutor , TabExecutor {
         }
 
 
-        if(args.length == 3 && args[0].equals("give") && (commandSender instanceof Player)){
+        if(args.length >= 3 && args[0].equals("give") && (commandSender instanceof Player)){
             Player player = (Player) commandSender;
             if(player.hasPermission("playerinv.give") || player.hasPermission("playerinv.admin") || player.isOp()){
                 String target = args[1];
                 if(Bukkit.getServer().getPlayerExact(target) == null){
                     commandSender.sendMessage(color(prefix + Messages_Console_give_voucher_player_error()));
                 } else if(Bukkit.getServer().getPlayerExact(target) != null && args[2].equals("large")){
+                    int amount = 1;
                     Player targetonline = Bukkit.getServer().getPlayerExact(target);
-                    PermItem.linvitem(targetonline);
+                    if(args.length == 4 && !args[3].isEmpty() && isNum(args[3])){
+                        amount = Integer.parseInt(args[3]);
+                    }
+                    PermItem.linvitem(targetonline,amount);
                     commandSender.sendMessage(color(prefix + Messages_Voucher_give(targetonline)));
                 } else if(Bukkit.getServer().getPlayerExact(target) != null && args[2].equals("medium")){
+                    int amount = 1;
                     Player targetonline = Bukkit.getServer().getPlayerExact(target);
-                    PermItem.sinvitem(targetonline);
+                    if(args.length == 4 && !args[3].isEmpty() && isNum(args[3])){
+                        amount = Integer.parseInt(args[3]);
+                    }
+                    PermItem.sinvitem(targetonline,amount);
                     commandSender.sendMessage(color( prefix + Messages_Voucher_give(targetonline)));
                 }
             } else if(!player.hasPermission("playerinv.give")){
@@ -305,18 +315,26 @@ public class InvCommand implements CommandExecutor , TabExecutor {
             }
         }
 
-        if(args.length == 3 && args[0].equals("give") && !(commandSender instanceof Player)){
+        if(args.length >= 3 && args[0].equals("give") && !(commandSender instanceof Player)){
             String target = args[1];
             if(Bukkit.getServer().getPlayerExact(target) == null){
                 Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Console_give_voucher_player_error()));
             } else if(Bukkit.getServer().getPlayerExact(target) != null && args[2].equals("large")){
+                int amount = 1;
                 Player targetonline = Bukkit.getServer().getPlayerExact(target);
-                PermItem.linvitem(targetonline);
+                if(args.length == 4 && !args[3].isEmpty() && isNum(args[3])){
+                    amount = Integer.parseInt(args[3]);
+                }
+                PermItem.linvitem(targetonline,amount);
                 Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Console_give_voucher_large_notice(targetonline)));
                 targetonline.sendMessage(color(prefix + Messages_Console_give_voucher_large(targetonline)));
             } else if(Bukkit.getServer().getPlayerExact(target) != null && args[2].equals("medium")){
+                int amount = 1;
                 Player targetonline = Bukkit.getServer().getPlayerExact(target);
-                PermItem.sinvitem(targetonline);
+                if(args.length == 4 && !args[3].isEmpty() && isNum(args[3])){
+                    amount = Integer.parseInt(args[3]);
+                }
+                PermItem.sinvitem(targetonline,amount);
                 Bukkit.getServer().getConsoleSender().sendMessage(color(prefix + Messages_Console_give_voucher_medium_notice(targetonline)));
                 targetonline.sendMessage(color(prefix + Messages_Console_give_voucher_medium(targetonline)));
             }
@@ -347,10 +365,12 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                                         SQLiteConnect.insert_Large(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
                                         player.openInventory(inventoryFromBase64_Large(SQLiteConnect.InvCode_Large(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewLarge(vault_num,player);
                                         return true;
                                     } else {
                                         player.openInventory(inventoryFromBase64_Large(SQLiteConnect.InvCode_Large(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewLarge(vault_num,player);
                                         return true;
                                     }
                                 } else {
@@ -364,10 +384,12 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                                         SQLiteConnect.insert_Large(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
                                         player.openInventory(inventoryFromBase64_Large(SQLiteConnect.InvCode_Large(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewLarge(vault_num,player);
                                         return true;
                                     } else {
                                         player.openInventory(inventoryFromBase64_Large(SQLiteConnect.InvCode_Large(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewLarge(vault_num,player);
                                         return true;
                                     }
                                 } else {
@@ -395,10 +417,12 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                                         SQLiteConnect.insert_Medium(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
                                         player.openInventory(inventoryFromBase64_Medium(SQLiteConnect.InvCode_Medium(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewMedium(vault_num,player);
                                         return true;
                                     } else {
                                         player.openInventory(inventoryFromBase64_Medium(SQLiteConnect.InvCode_Medium(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewMedium(vault_num,player);
                                         return true;
                                     }
                                 } else {
@@ -412,10 +436,12 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                                         SQLiteConnect.insert_Medium(con,player.getUniqueId().toString(),vault_num,"rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
                                         player.openInventory(inventoryFromBase64_Medium(SQLiteConnect.InvCode_Medium(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewMedium(vault_num,player);
                                         return true;
                                     } else {
                                         player.openInventory(inventoryFromBase64_Medium(SQLiteConnect.InvCode_Medium(con, player.getUniqueId().toString(), vault_num), vault_num));
                                         player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
+                                        checkPlayerViewMedium(vault_num,player);
                                         return true;
                                     }
                                 } else {

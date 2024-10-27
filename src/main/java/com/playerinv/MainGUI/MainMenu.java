@@ -274,14 +274,14 @@ public class MainMenu {
                             item.setDurability((short) id);
                         }
                     }
-                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MainMenuConfig.contains(path + "head-textures") && !isBelow113){
-                        if(MainMenuConfig.getString(path + "head-textures") != null){
-                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MainMenuConfig.contains(path_prefix + "head-textures") && !isBelow113){
+                        if(MainMenuConfig.getString(path_prefix + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path_prefix + "head-textures"));
                         }
                     }
-                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MainMenuConfig.contains(path + "head-textures") && isBelow113){
-                        if(MainMenuConfig.getString(path + "head-textures") != null){
-                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MainMenuConfig.contains(path_prefix + "head-textures") && isBelow113){
+                        if(MainMenuConfig.getString(path_prefix + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path_prefix + "head-textures"));
                         }
                     }
                     if (MainMenuConfig.contains(path_prefix + "close-menu")) {
@@ -557,14 +557,14 @@ public class MainMenu {
                             item.setDurability((short) id);
                         }
                     }
-                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path + "head-textures") && !isBelow113){
-                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
-                            setCustomSkull(item, Check_MainMenuConfig.getString(path + "head-textures"));
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && Check_MainMenuConfig.contains(path_prefix + "head-textures") && !isBelow113){
+                        if(Check_MainMenuConfig.getString(path_prefix + "head-textures") != null){
+                            setCustomSkull(item, Check_MainMenuConfig.getString(path_prefix + "head-textures"));
                         }
                     }
-                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path + "head-textures") && isBelow113){
-                        if(Check_MainMenuConfig.getString(path + "head-textures") != null){
-                            setCustomSkull(item, MainMenuConfig.getString(path + "head-textures"));
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && Check_MainMenuConfig.contains(path_prefix + "head-textures") && isBelow113){
+                        if(Check_MainMenuConfig.getString(path_prefix + "head-textures") != null){
+                            setCustomSkull(item, MainMenuConfig.getString(path_prefix + "head-textures"));
                         }
                     }
                     if (Check_MainMenuConfig.contains(path_prefix + "close-menu")) {

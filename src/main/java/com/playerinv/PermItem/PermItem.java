@@ -16,24 +16,24 @@ import static com.playerinv.PluginSet.*;
 
 public class PermItem {
 
-    public static void linvitem(Player player){
+    public static void linvitem(Player player,int amount){
         if(player.getInventory().firstEmpty() != -1){
-            player.getInventory().addItem(largeitem_owner(player));
+            player.getInventory().addItem(largeitem_owner(player,amount));
         } else {
-            player.getWorld().dropItemNaturally(player.getLocation(),largeitem_owner(player));
+            player.getWorld().dropItemNaturally(player.getLocation(),largeitem_owner(player,amount));
         }
     }
 
-    public static void sinvitem(Player player){
+    public static void sinvitem(Player player,int amount){
         if(player.getInventory().firstEmpty() != -1){
-            player.getInventory().addItem(mediumitem_owner(player));
+            player.getInventory().addItem(mediumitem_owner(player,amount));
         } else {
-            player.getWorld().dropItemNaturally(player.getLocation(),mediumitem_owner(player));
+            player.getWorld().dropItemNaturally(player.getLocation(),mediumitem_owner(player,amount));
         }
     }
 
-    public static ItemStack largeitem_owner(Player player){
-        ItemStack litem = new ItemStack(Material.getMaterial(voucher_owner_large_material()));
+    public static ItemStack largeitem_owner(Player player,int amount){
+        ItemStack litem = new ItemStack(Material.getMaterial(voucher_owner_large_material()),amount);
         ItemMeta lim = litem.getItemMeta();
         if(voucher_owner_large_enchant_glow()){
             lim.addEnchant(Enchantment.ARROW_FIRE, 1, false);
@@ -57,8 +57,8 @@ public class PermItem {
         return litem;
     }
 
-    public static ItemStack mediumitem_owner(Player player){
-        ItemStack sitem = new ItemStack(Material.getMaterial(voucher_owner_medium_material()));
+    public static ItemStack mediumitem_owner(Player player,int amount){
+        ItemStack sitem = new ItemStack(Material.getMaterial(voucher_owner_medium_material()),amount);
         ItemMeta sim = sitem.getItemMeta();
         if(voucher_owner_medium_enchant_glow()){
             sim.addEnchant(Enchantment.ARROW_FIRE, 1, false);

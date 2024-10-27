@@ -108,3 +108,4 @@ DataBases:
   password: root
   database: playerinv
   allowPublicKeyRetrieval: false
+  useSSL: true

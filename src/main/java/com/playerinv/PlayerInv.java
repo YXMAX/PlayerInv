@@ -128,6 +128,14 @@ public class PlayerInv extends JavaPlugin {
 
     public static HashMap<String,Long> PlayerExpiryMap_Medium = new HashMap<>();
 
+    public static HashMap<Player,Boolean> TempPlayerInInventory_Large = new HashMap<>();
+
+    public static HashMap<Player,Boolean> TempPlayerInInventory_Medium = new HashMap<>();
+
+    public static HashMap<String,Inventory> TempInventory_Large = new HashMap<>();
+
+    public static HashMap<String,Inventory> TempInventory_Medium = new HashMap<>();
+
     public void onEnable(){
         int pluginId = 20554;
         Metrics metrics = new Metrics(this, pluginId);
@@ -156,15 +164,14 @@ public class PlayerInv extends JavaPlugin {
         Update_Config();
         initMorePaperLib();
         PluginStartUp();
-        UpdateCheck();
     }
 
     @Override
     public void onDisable() {
         String locale = locale();
         if(locale.equals("zh-CN")){
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "≤Âº˛–∂‘ÿ÷–...");
-            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "“—∂œø™”Î±æµÿ ˝æ›ø‚¡¨Ω”");
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Êèí‰ª∂Âç∏ËΩΩ‰∏≠...");
+            Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Â∑≤Êñ≠ÂºÄ‰∏éÊú¨Âú∞Êï∞ÊçÆÂ∫ìËøûÊé•");
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Plugin Disabled..");
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Disconnected from local database..");
@@ -187,7 +194,7 @@ public class PlayerInv extends JavaPlugin {
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
-            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?" + allowPublicKeyRetrieval() + "&rewriteBatchedStatements=true";
+            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?" + allowPublicKeyRetrieval() + "&rewriteBatchedStatements=true&useSSL=" + sslBool();
             Connection connection = DriverManager.getConnection(url, user, password);
             return connection;
         } catch (ClassNotFoundException | SQLException e) {
@@ -393,6 +400,7 @@ public class PlayerInv extends JavaPlugin {
         Boolean mysql = getConfig().getBoolean("DataBases.MySQL");
         if (!mysql) {
             try {
+                con = getConnection();
                 createLargeTable(con);
                 createMediumTable(con);
                 createToggleTable(con);
@@ -403,6 +411,7 @@ public class PlayerInv extends JavaPlugin {
         }
         if (mysql) {
             try {
+                con = getMySQLConnection();
                 MysqlcreateLargeTable(con);
                 MysqlcreateMediumTable(con);
                 MysqlcreateToggleTable(con);

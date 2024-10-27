@@ -25,18 +25,7 @@ public class SQLiteConnect {
 
     public static Boolean mysql = plugin.getConfig().getBoolean("DataBases.MySQL");
 
-    public static Connection con = judgeconnect();
-
-    public static Connection judgeconnect(){
-        if(mysql){
-            return plugin.getMySQLConnection();
-        }
-        try {
-            return getConnection();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static Connection con;
 
     public static void FixMySQL_DataType_Large() throws SQLException {
          String sql = "select * from vault_large limit 1";

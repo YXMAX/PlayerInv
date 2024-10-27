@@ -93,19 +93,19 @@ public class OtherMenu {
                         }
                     }
                     if(isBelow113){
-                        if (MenuFile.contains(path + "item-subid")) {
-                            int id = MenuFile.getInt(path + "item-subid");
+                        if (MenuFile.contains(path_prefix + "item-subid")) {
+                            int id = MenuFile.getInt(path_prefix + "item-subid");
                             item.setDurability((short) id);
                         }
                     }
-                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path + "head-textures") && !isBelow113){
-                        if(MenuFile.getString(path + "head-textures") != null){
-                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                    if(item.getType().toString().equalsIgnoreCase("PLAYER_HEAD") && MenuFile.contains(path_prefix + "head-textures") && !isBelow113){
+                        if(MenuFile.getString(path_prefix + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path_prefix + "head-textures"));
                         }
                     }
-                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path + "head-textures") && isBelow113){
-                        if(MenuFile.getString(path + "head-textures") != null){
-                            setCustomSkull(item, MenuFile.getString(path + "head-textures"));
+                    if(item.getType().toString().equalsIgnoreCase("SKULL_ITEM") && MenuFile.contains(path_prefix + "head-textures") && isBelow113){
+                        if(MenuFile.getString(path_prefix + "head-textures") != null){
+                            setCustomSkull(item, MenuFile.getString(path_prefix + "head-textures"));
                         }
                     }
                     if (MenuFile.contains(path_prefix + "close-menu")) {
