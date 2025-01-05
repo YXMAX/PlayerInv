@@ -1,5 +1,6 @@
 package com.playerinv.PermItem;
 
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -48,12 +49,11 @@ public class PermItem {
         ArrayList<String> lorelist = new ArrayList<String>();
         List<String> list = Locale_Voucher_Large_Lore();
         for(String s : list){
-            lorelist.add(color(s));
+            lorelist.add(color(s.replaceAll("%voucher_player%", player.getName())));
         }
-        lorelist.add(color(""));
-        lorelist.add(color( "&bOwner: &e" + player.getName()));
         lim.setLore(lorelist);
         litem.setItemMeta(lim);
+        litem = NBTEditor.set(litem, player.getName(), NBTEditor.CUSTOM_DATA, "playerinv:large");
         return litem;
     }
 
@@ -73,12 +73,11 @@ public class PermItem {
         ArrayList<String> lorelist = new ArrayList<String>();
         List<String> list = Locale_Voucher_Medium_Lore();
         for(String s : list){
-            lorelist.add(color(s));
+            lorelist.add(color(s.replaceAll("%voucher_player%", player.getName())));
         }
-        lorelist.add(color(""));
-        lorelist.add(color("&bOwner: &e" + player.getName()));
         sim.setLore(lorelist);
         sitem.setItemMeta(sim);
+        sitem = NBTEditor.set(sitem, player.getName(), NBTEditor.CUSTOM_DATA, "playerinv:medium");
         return sitem;
     }
 }

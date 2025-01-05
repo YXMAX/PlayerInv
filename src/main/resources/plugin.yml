@@ -10,15 +10,15 @@ permissions:
   playerinv.admin:
     default: op
   playerinv.check:
-    default: false
+    default: op
   playerinv.reload:
-    default: false
+    default: op
   playerinv.inv.*:
     default: false
   playerinv.keys.toggle:
     default: true
   playerinv.give:
-    default: false
+    default: op
   playerinv.gui.open:
     default: true
   playerinv.invsort:
@@ -37,6 +37,12 @@ permissions:
     default: false
   playerinv.return.toggle:
     default: true
+  playerinv.blacklist.material.ignore:
+    default: false
+  playerinv.blacklist.lore.ignore:
+    default: false
+  playerinv.enderchest.open:
+    default: false
 
 depend: [Vault]
 softdepend:

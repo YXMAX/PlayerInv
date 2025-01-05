@@ -15,16 +15,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
 import java.util.*;
 
 import static com.playerinv.ContextNode.addPermission_Large;
 import static com.playerinv.LPVerify.VerifyPermission.*;
 import static com.playerinv.LocaleUtil.*;
-import static com.playerinv.LocaleUtil.console_open_main;
 import static com.playerinv.MainGUI.MainMenu.*;
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
+import static com.playerinv.PluginSet.sendMsg;
 import static com.playerinv.SQLite.SQLiteConnect.con;
 import static com.playerinv.Scheduler.CheckView.checkPlayerViewLarge;
 import static com.playerinv.Scheduler.CheckView.checkPlayerViewMedium;
@@ -94,6 +95,76 @@ public class InvCommand implements CommandExecutor , TabExecutor {
             }
         }
 
+        if(args.length >= 1 && args[0].equals("open-vault")){
+            if(!(commandSender instanceof Player) || commandSender.isOp()){
+                switch(args.length){
+                    case 1:
+                        sendMsg(commandSender,OpenVault_player_error());
+                        return true;
+                    case 2:
+                        if(Bukkit.getPlayerExact(args[1]) != null){
+                            sendMsg(commandSender,OpenVault_type_error());
+                            return true;
+                        } else {
+                            sendMsg(commandSender,OpenVault_player_error());
+                            return true;
+                        }
+                    case 3:
+                        if(args[2].equalsIgnoreCase("large") || args[2].equalsIgnoreCase("medium")){
+                            sendMsg(commandSender,OpenVault_num_error());
+                            return true;
+                        } else {
+                            sendMsg(commandSender,OpenVault_type_error());
+                            return true;
+                        }
+                    case 4:
+                        if(isNum(args[3])){
+                            if(Bukkit.getPlayerExact(args[1]) == null){
+                                sendMsg(commandSender,OpenVault_player_error());
+                                return true;
+                            }
+                            if(args[2].equalsIgnoreCase("large")){
+                                Player target = Bukkit.getPlayerExact(args[1]);
+                                int vault_num = Integer.parseInt(args[3]);
+                                try {
+                                    if(!SQLiteConnect.hasData_Large(con,target.getUniqueId().toString(),vault_num)) {
+                                        SQLiteConnect.insert_Large(con, target.getUniqueId().toString(), vault_num, "rO0ABXcEAAAANnBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
+                                    }
+                                    target.playSound(target.getLocation(), Sound.valueOf(VaultSoundValue), VaultSoundVolume,VaultSoundPitch);
+                                    String vault_string = SQLiteConnect.InvCode_Large(con, target.getUniqueId().toString(), vault_num);
+                                    target.openInventory(inventoryFromBase64_Large(vault_string, vault_num));
+                                    checkPlayerViewLarge(vault_num,target);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                                sendMsg(commandSender,OpenVault_large_success().replaceAll("%player%",target.getName()).replaceAll("%vault_num%", String.valueOf(vault_num)));
+                                return true;
+                            } else if(args[2].equalsIgnoreCase("medium")){
+                                Player target = Bukkit.getPlayerExact(args[1]);
+                                int vault_num = Integer.parseInt(args[3]);
+                                try {
+                                    if(!SQLiteConnect.hasData_Medium(con,target.getUniqueId().toString(),vault_num)) {
+                                        SQLiteConnect.insert_Medium(con, target.getUniqueId().toString(), vault_num, "rO0ABXcEAAAAG3BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcA==");
+                                    }
+                                    target.playSound(target.getLocation(), Sound.valueOf(VaultSoundValue), VaultSoundVolume,VaultSoundPitch);
+                                    String vault_string = SQLiteConnect.InvCode_Medium(con, target.getUniqueId().toString(), vault_num);
+                                    target.openInventory(inventoryFromBase64_Medium(vault_string, vault_num));
+                                    checkPlayerViewMedium(vault_num,target);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                                sendMsg(commandSender,OpenVault_medium_success().replaceAll("%player%",target.getName()).replaceAll("%vault_num%", String.valueOf(vault_num)));
+                                return true;
+                            }
+                        } else {
+                            sendMsg(commandSender,OpenVault_num_error());
+                            return true;
+                        }
+                }
+            }
+            return true;
+        }
+
         if(args.length >= 1 && args[0].equals("open-main")){
             Boolean openaccess = plugin.getConfig().getBoolean("OpenGUIMessage");
             if(!(commandSender instanceof Player) || commandSender.isOp()){
@@ -129,6 +200,7 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 Check_OtherMenuFileMap = new HashMap<>();
                 plugin.saveDefaultConfig();
                 plugin.reloadConfig();
+                isDebug();
                 reloadMainMenuConfig();
                 getFile_writeMap();
                 getCheckFile_writeMap();
@@ -203,6 +275,7 @@ public class InvCommand implements CommandExecutor , TabExecutor {
                 Check_OtherMenuFileMap = new HashMap<>();
                 plugin.saveDefaultConfig();
                 plugin.reloadConfig();
+                isDebug();
                 reloadMainMenuConfig();
                 getFile_writeMap();
                 getCheckFile_writeMap();
@@ -1244,197 +1317,233 @@ public class InvCommand implements CommandExecutor , TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
-        Player player = (Player) commandSender;
-        LinkedList<String> tips = new LinkedList<>();
+        List<String> Commands = new ArrayList<>(Arrays.asList("reload","check","give"));
+        List<String> Admin = new ArrayList<>(Arrays.asList("reload","check","give","return","keys","vault","open-main","open-share","open-vault"));
 
-        if(args.length == 1 && !(player.hasPermission("playerinv.reload") || player.hasPermission("playerinv.admin") || player.hasPermission("playerinv.check") || player.hasPermission("playerinv.give"))) {
-            List<String> firstArgList = Arrays.asList("keys", "help", "open", "return");
-            if(args[0].isEmpty()){
-                tips.addAll(firstArgList);
-                return tips;
-            } else {
-                for(String firstArg : firstArgList) {
-                    if (firstArg.toLowerCase().startsWith(args[0].toLowerCase())) {
-                        tips.add(firstArg);
-                    }
-                }
-                return tips;
-            }
-        }
+        List<String> list = new ArrayList<>();
+        switch(args.length){
 
-        if(args.length == 1 && (player.hasPermission("playerinv.admin") || player.isOp())) {
-            List<String> firstArgList = Arrays.asList("reload", "keys", "help", "check", "give", "open", "vault", "return");
-            if(args[0].isEmpty()){
-                tips.addAll(firstArgList);
-                return tips;
-            } else {
-                for(String firstArg : firstArgList) {
-                    if (firstArg.toLowerCase().startsWith(args[0].toLowerCase())) {
-                        tips.add(firstArg);
-                    }
-                }
-                return tips;
-            }
-        }
+            case 1:
+                if(!commandSender.isOp()){
+                    for (String cmd : Commands) {
+                        if (!commandSender.hasPermission("playerinv." + cmd)) continue;
 
-        if(args.length == 1 && player.hasPermission("playerinv.reload") && player.hasPermission("playerinv.check")) {
-            List<String> firstArgList = Arrays.asList("reload", "keys", "help", "check", "open", "return");
-            if(args[0].isEmpty()){
-                tips.addAll(firstArgList);
-                return tips;
-            } else {
-                for(String firstArg : firstArgList) {
-                    if (firstArg.toLowerCase().startsWith(args[0].toLowerCase())) {
-                        tips.add(firstArg);
+                        list.add(cmd);
                     }
-                }
-                return tips;
-            }
-        }
 
-        if(args.length == 1 && player.hasPermission("playerinv.reload")) {
-            List<String> firstArgList = Arrays.asList("reload", "keys", "help", "open", "return");
-            if(args[0].isEmpty()){
-                tips.addAll(firstArgList);
-                return tips;
-            } else {
-                for(String firstArg : firstArgList) {
-                    if (firstArg.toLowerCase().startsWith(args[0].toLowerCase())) {
-                        tips.add(firstArg);
-                    }
-                }
-                return tips;
-            }
-        }
-        if(args.length == 1 && player.hasPermission("playerinv.check")) {
-            List<String> firstArgList = Arrays.asList("check", "keys", "help", "open", "return");
-            if(args[0].isEmpty()){
-                tips.addAll(firstArgList);
-                return tips;
-            } else {
-                for(String firstArg : firstArgList) {
-                    if (firstArg.toLowerCase().startsWith(args[0].toLowerCase())) {
-                        tips.add(firstArg);
-                    }
-                }
-                return tips;
-            }
-        }
-        if(args.length == 2){
-            List<String> secondArgList = Arrays.asList(("toggle"));
-            if(args[0].equalsIgnoreCase("keys".toLowerCase())) {
-                if(args[1].isEmpty()){
-                    tips.addAll(secondArgList);
+                    if (commandSender.hasPermission("playerinv.return.toggle")) list.add("return");
+
+                    if (commandSender.hasPermission("playerinv.keys.toggle")) list.add("keys");
+
+                    if (commandSender.hasPermission("playerinv.return.toggle")) list.add("return");
+
+                    if (commandSender.hasPermission("playerinv.invopen")) list.add("open");
+
+                    if (commandSender.hasPermission("playerinv.command.main.open")) list.add("open-main");
+
+                    if (commandSender.hasPermission("playerinv.command.share.open")) list.add("open-share");
+
+                    if (commandSender.hasPermission("playerinv.command.vault.open")) list.add("open-vault");
+
+                    if (commandSender.hasPermission("playerinv.vault.give") || commandSender.hasPermission("playerinv.vault.append")) list.add("vault");
+
+                    list.add("help");
                 } else {
-                    for(String secArg : secondArgList) {
-                        if(secArg.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            tips.add(secArg);
-                        }
-                    }
+                    list = Admin;
                 }
-            }
-        }
-        if(args.length == 2){
-            List<String> secondArgList = Arrays.asList(("toggle"));
-            if(args[0].equalsIgnoreCase("return".toLowerCase())) {
-                if(args[1].isEmpty()){
-                    tips.addAll(secondArgList);
-                } else {
-                    for(String secArg : secondArgList) {
-                        if(secArg.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            tips.add(secArg);
-                        }
-                    }
+                return StringUtil.copyPartialMatches(args[0].toLowerCase(), list, new ArrayList<String>());
+
+            case 2:
+                List<String> players = new ArrayList<>();
+                switch(args[0].toLowerCase()){
+
+                    case "check":
+
+                        if (!commandSender.hasPermission("playerinv.check")) return Collections.emptyList();
+
+                        Bukkit.getOnlinePlayers().forEach(target -> {players.add(target.getName());});
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), players, new ArrayList<String>());
+
+                    case "give":
+
+                        if (!commandSender.hasPermission("playerinv.give")) return Collections.emptyList();
+
+                        Bukkit.getOnlinePlayers().forEach(target -> {players.add(target.getName());});
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), players, new ArrayList<String>());
+
+                    case "open-main":
+
+                        if (!commandSender.hasPermission("playerinv.command.main.open")) return Collections.emptyList();
+
+                        Bukkit.getOnlinePlayers().forEach(target -> {players.add(target.getName());});
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), players, new ArrayList<String>());
+
+                    case "open-share":
+
+                        if (!commandSender.hasPermission("playerinv.command.share.open")) return Collections.emptyList();
+
+                        Bukkit.getOnlinePlayers().forEach(target -> {players.add(target.getName());});
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), players, new ArrayList<String>());
+
+                    case "open-vault":
+
+                        if (!commandSender.hasPermission("playerinv.command.vault.open")) return Collections.emptyList();
+
+                        Bukkit.getOnlinePlayers().forEach(target -> {players.add(target.getName());});
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), players, new ArrayList<String>());
+
+                    case "keys":
+                    case "return":
+
+                        if (!commandSender.hasPermission("playerinv.keys.toggle")) return Collections.emptyList();
+
+                        if (!commandSender.hasPermission("playerinv.return.toggle")) return Collections.emptyList();
+
+                        list.add("toggle");
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), list, new ArrayList<String>());
+
+                    case "open":
+
+                        if (!commandSender.hasPermission("playerinv.invopen")) return Collections.emptyList();
+
+                        list.add("large");
+                        list.add("medium");
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), list, new ArrayList<String>());
+
+                    case "vault":
+
+                        if (!commandSender.hasPermission("playerinv.vault.give") && !commandSender.hasPermission("playerinv.vault.append")) return Collections.emptyList();
+
+                        if (commandSender.hasPermission("playerinv.vault.give")) list.add("give");
+
+                        if (commandSender.hasPermission("playerinv.vault.append")) list.add("append");
+
+                        return StringUtil.copyPartialMatches(args[1].toLowerCase(), list, new ArrayList<String>());
                 }
-            }
-        }
-        if(args.length == 2 && (player.hasPermission("playerinv.check") || player.hasPermission("playerinv.admin"))){
-            if(args[0].equalsIgnoreCase("check".toLowerCase())) {
-                if(args[1].isEmpty()){
-                    Bukkit.getOnlinePlayers().forEach(p -> tips.add(p.getName()));
-                    return tips;
-                } else {
-                    Bukkit.getOnlinePlayers().forEach(p -> {
-                        if (p.getName().toLowerCase().startsWith(args[1].toLowerCase())) {
-                            tips.add(p.getName());
+
+            case 3:
+                List<String> players3 = new ArrayList<>();
+                switch(args[0].toLowerCase()){
+
+                    case "give":
+
+                        if (!commandSender.hasPermission("playerinv.give")) return Collections.emptyList();
+
+                        if(args[1].isEmpty()) return Collections.emptyList();
+
+                        list.add("large");
+                        list.add("medium");
+                        return StringUtil.copyPartialMatches(args[2].toLowerCase(), list, new ArrayList<String>());
+
+                    case "open":
+
+                        if (!commandSender.hasPermission("playerinv.invopen")) return Collections.emptyList();
+
+                        if(args[1].isEmpty()) return Collections.emptyList();
+
+                        if(args[1].equalsIgnoreCase("large") || args[1].equalsIgnoreCase("medium")){
+                            list.add("[Number]");
+                            return StringUtil.copyPartialMatches(args[2].toLowerCase(), list, new ArrayList<String>());
+                        } else {
+                            return Collections.emptyList();
                         }
-                    });
-                }
-            }
-        }
-        if(args.length == 2 && (player.hasPermission("playerinv.give") || player.hasPermission("playerinv.admin") || player.isOp())){
-            if(args[0].equalsIgnoreCase("give".toLowerCase())) {
-                if(args[1].isEmpty()){
-                    Bukkit.getOnlinePlayers().forEach(p -> tips.add(p.getName()));
-                } else {
-                    Bukkit.getOnlinePlayers().forEach(p -> {
-                        if (p.getName().toLowerCase().startsWith(args[1].toLowerCase())) {
-                            tips.add(p.getName());
+
+                    case "open-vault":
+
+                        if (!commandSender.hasPermission("playerinv.command.vault.open")) return Collections.emptyList();
+
+                        if(args[1].isEmpty()) return Collections.emptyList();
+
+                        list.add("large");
+                        list.add("medium");
+                        return StringUtil.copyPartialMatches(args[2].toLowerCase(), list, new ArrayList<String>());
+
+                    case "vault":
+
+                        if (!commandSender.hasPermission("playerinv.vault.give") && !commandSender.hasPermission("playerinv.vault.append")) return Collections.emptyList();
+
+                        if(args[1].isEmpty()) return Collections.emptyList();
+
+                        if(args[1].equalsIgnoreCase("give") || args[1].equalsIgnoreCase("append")){
+                            Bukkit.getOnlinePlayers().forEach(target -> {players3.add(target.getName());});
+                            return StringUtil.copyPartialMatches(args[2].toLowerCase(), players3, new ArrayList<String>());
+                        } else {
+                            return Collections.emptyList();
                         }
-                    });
                 }
-            }
-        }
-        if(args.length == 2 && (player.hasPermission("playerinv.invopen") || player.hasPermission("playerinv.admin") || player.isOp())){
-            if(args[0].equalsIgnoreCase("open".toLowerCase())) {
-                List<String> thirdArgList = Arrays.asList("large", "medium");
-                if(args[1].isEmpty()){
-                    tips.addAll(thirdArgList);
-                } else {
-                    for(String thirdArg : thirdArgList) {
-                        if(thirdArg.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            tips.add(thirdArg);
-                        }
-                    }
+
+            case 4:
+
+                switch(args[0].toLowerCase()){
+
+                    case "vault":
+
+                        if (!commandSender.hasPermission("playerinv.vault.give") && !commandSender.hasPermission("playerinv.vault.append")) return Collections.emptyList();
+
+                        if(args[1].isEmpty()) return Collections.emptyList();
+
+                        if(args[2].isEmpty()) return Collections.emptyList();
+
+                        list.add("[Number]");
+                        return StringUtil.copyPartialMatches(args[3].toLowerCase(), list, new ArrayList<String>());
+
+                    case "open-vault":
+
+                        if (!commandSender.hasPermission("playerinv.command.vault.open")) return Collections.emptyList();
+
+                        if(args[1].isEmpty()) return Collections.emptyList();
+
+                        if(args[2].isEmpty()) return Collections.emptyList();
+
+                        list.add("[Number]");
+                        return StringUtil.copyPartialMatches(args[3].toLowerCase(), list, new ArrayList<String>());
+
                 }
-            }
-        }
-        if(args.length == 3 && (player.hasPermission("playerinv.give") || player.hasPermission("playerinv.admin") || player.isOp())){
-            if(args[0].equalsIgnoreCase("give".toLowerCase())) {
-                List<String> thirdArgList = Arrays.asList("large", "medium");
-                if(!args[1].isEmpty()){
-                    if(args[2].isEmpty()){
-                        tips.addAll(thirdArgList);
-                    } else {
-                        for(String thirdArg : thirdArgList) {
-                            if(thirdArg.toLowerCase().startsWith(args[2].toLowerCase())) {
-                                tips.add(thirdArg);
-                            }
-                        }
-                    }
+
+            case 5:
+
+                List<String> players4 = new ArrayList<>();
+                switch(args[0].toLowerCase()) {
+
+                    case "vault":
+
+                        if (!commandSender.hasPermission("playerinv.vault.give") && !commandSender.hasPermission("playerinv.vault.append"))
+                            return Collections.emptyList();
+
+                        if (args[1].isEmpty()) return Collections.emptyList();
+
+                        if (args[2].isEmpty()) return Collections.emptyList();
+
+                        if (args[3].isEmpty()) return Collections.emptyList();
+
+                        Bukkit.getOnlinePlayers().forEach(target -> {
+                            players4.add(target.getName());
+                        });
+                        return StringUtil.copyPartialMatches(args[4].toLowerCase(), players4, new ArrayList<String>());
                 }
-            }
-        }
-        if(args.length == 3 && (player.hasPermission("playerinv.vault.give") || player.hasPermission("playerinv.admin") || player.hasPermission("playerinv.vault.append") || player.isOp())){
-            if(args[0].equalsIgnoreCase("vault".toLowerCase())) {
-                List<String> thirdArgList = Arrays.asList("large", "medium");
-                if(args[1].equals("give") || args[1].equals("append")){
-                    if(args[2].isEmpty()){
-                        tips.addAll(thirdArgList);
-                    } else {
-                        for(String thirdArg : thirdArgList) {
-                            if(thirdArg.toLowerCase().startsWith(args[2].toLowerCase())) {
-                                tips.add(thirdArg);
-                            }
-                        }
-                    }
+
+            case 6:
+
+                switch(args[0].toLowerCase()) {
+
+                    case "vault":
+
+                        if (!commandSender.hasPermission("playerinv.vault.give") && !commandSender.hasPermission("playerinv.vault.append"))
+                            return Collections.emptyList();
+
+                        if (args[1].isEmpty()) return Collections.emptyList();
+
+                        if (args[2].isEmpty()) return Collections.emptyList();
+
+                        if (args[3].isEmpty()) return Collections.emptyList();
+
+                        if (args[4].isEmpty()) return Collections.emptyList();
+
+                        list.add("(Days)");
+                        return StringUtil.copyPartialMatches(args[5].toLowerCase(), list, new ArrayList<String>());
                 }
-            }
         }
-        if(args.length == 2 && (player.hasPermission("playerinv.vault.give") || player.hasPermission("playerinv.admin") || player.hasPermission("playerinv.vault.append") || player.isOp())){
-            if(args[0].equalsIgnoreCase("vault".toLowerCase())) {
-                List<String> thirdArgList = Arrays.asList("give", "append");
-                if(args[1].isEmpty()){
-                    tips.addAll(thirdArgList);
-                } else {
-                    for(String thirdArg : thirdArgList) {
-                        if(thirdArg.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            tips.add(thirdArg);
-                        }
-                    }
-                }
-            }
-        }
-        return tips;
+        return Collections.emptyList();
+
     }
 }

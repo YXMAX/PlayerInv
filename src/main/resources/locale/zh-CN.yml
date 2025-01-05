@@ -80,3 +80,8 @@ Messages:
   Return_to_main_disabled: '&e返回主菜单功能 &c关闭'
   Console_open_main: '&a玩家 %player% 打开了仓库界面'
   Vault_already_open: '&c已打开仓库！无法重复打开'
+  Open-vault_player_error: '&c未知玩家'
+  Open-vault_type_error: '&c错误的仓库类型 [large/medium]'
+  Open-vault_num_error: '&c错误的仓库编号'
+  Open-vault_large_success: '&a为玩家 %player% 打开大型仓库 [%vault_num%]'
+  Open-vault_medium_success: '&a为玩家 %player% 打开小型仓库 [%vault_num%]'

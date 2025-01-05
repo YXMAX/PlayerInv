@@ -74,5 +74,9 @@ Messages:
   Return_to_main_enabled: '&eReturn-to-main &aEnabled'
   Return_to_main_disabled: '&eReturn-to-main &cDisabled'
   Vault_already_open: '&cYou have already opened the vault!'
-
+  Open-vault_player_error: '&cUnknown player'
+  Open-vault_type_error: '&cUnknown vault type [large/medium]'
+  Open-vault_num_error: '&cUnknown number'
+  Open-vault_large_success: '&aOpening Large Vault[%vault_num%] for %player%'
+  Open-vault_medium_success: '&aOpening Medium Vault[%vault_num%] for %player%'
 

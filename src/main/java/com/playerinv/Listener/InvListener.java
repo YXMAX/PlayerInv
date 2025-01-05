@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -23,11 +24,12 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 import static com.playerinv.LocaleUtil.*;
 import static com.playerinv.MainGUI.MainMenu.Main_GUI;
 import static com.playerinv.PlayerInv.*;
 import static com.playerinv.PluginSet.*;
-import static com.playerinv.PluginSet.VaultSoundPitch;
 import static com.playerinv.ReturnMain.OpenInventoryRunnable_Spigot.ReturnMain;
 import static com.playerinv.SQLite.SQLiteConnect.*;
 import static com.playerinv.Scheduler.CheckView.checkPlayerViewLarge;
@@ -340,6 +342,7 @@ public class InvListener implements Listener {
             String vault_substring = vault_title.substring(vault_title.length()-3);
             String vault_num = vault_substring.replaceAll("[^(0-9)]","");
             vault_num.trim();
+            sendLog(player.getName() + " close inventory large:" + vault_num);
             SQLiteConnect.updateInv_Large(con, player.getUniqueId().toString(), invdata, Integer.valueOf(vault_num));
             if(Return_to_main() && getReturnToggle(con, String.valueOf(player.getUniqueId()))) {
                 if(isFolia){
@@ -361,6 +364,7 @@ public class InvListener implements Listener {
             String vault_substring = vault_title.substring(vault_title.length()-3);
             String vault_num = vault_substring.replaceAll("[^(0-9)]","");
             vault_num.trim();
+            sendLog(player.getName() + " close inventory medium:" + vault_num);
             SQLiteConnect.updateInv_Medium(con, player.getUniqueId().toString(), invdata, Integer.valueOf(vault_num));
             if(Return_to_main() && getReturnToggle(con, String.valueOf(player.getUniqueId()))) {
                 if(isFolia){
@@ -408,169 +412,8 @@ public class InvListener implements Listener {
 
     @EventHandler
     public void onItemUse(PlayerInteractEvent event){
-        Boolean lp_proxy = PlayerInv.plugin.getConfig().getBoolean("Luckperms-proxy-support");
-        Boolean lp_give = plugin.getConfig().getBoolean("Luckperms-give-permissions");
-        String prefix = prefix();
-        Boolean title = PlayerInv.plugin.getConfig().getBoolean("Voucher.Title");
         Player p = event.getPlayer();
-        if(p.getItemInHand() == null){
-            return;
-        }
-        if(p.getItemInHand().getItemMeta() == null){
-            return;
-        }
-        if(p.getItemInHand().getItemMeta().getDisplayName() == null){
-            return;
-        }
-        if(p.getItemInHand().getItemMeta().getDisplayName().equals(color(Locale_Voucher_Large_DisplayName()))){
-            String item_target = getValueFromLore(p.getItemInHand(),"Owner");
-            if((item_target.equals(p.getName()) && Voucher_Set_Owner()) || !Voucher_Set_Owner()){
-                if(p.isOp() || p.hasPermission("playerinv.admin") || p.hasPermission(LargeFullInv)){
-                    p.sendMessage(color(prefix + Messages_Voucher_full()));
-                    return;
-                }
-                for(int i=1;i<(Large_Amount + 1);i++){
-                    if(i <= 10) {
-                        if (!p.hasPermission("playerinv.inv." + i)) {
-                            if(!p.hasPermission("playerinv.large.inv." + i)) {
-                                if ((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)) {
-                                    plugin.perms.playerAdd(null, p, "playerinv.large.inv." + i);
-                                }
-                                if (hasLuckPerms && lp_give && lp_proxy) {
-                                    ContextNode.addPermissionWithContext_Large(p, i,0);
-                                }
-                                if (hasLuckPerms && lp_give && !lp_proxy) {
-                                    ContextNode.addPermission_Large(p, i,0);
-                                }
-                                if(p.getItemInHand().getAmount() == 1){
-                                    p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
-                                } else {
-                                    int before_amount = p.getItemInHand().getAmount();
-                                    p.getItemInHand().setAmount(before_amount - 1);
-                                }
-                                p.sendMessage(color(prefix + Messages_Voucher_use_large(i)));
-                                if (title) {
-                                    p.sendTitle(color(Locale_Voucher_Large_Title(i)), color(Locale_Voucher_Large_Subtitle(i)), 10, 60, 10);
-                                }
-                                if (Voucher_sound_bool()) {
-                                    p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
-                                }
-                                return;
-                            } else {
-                                continue;
-                            }
-                        }
-                    }
-                    if(i > 10) {
-                        if (!p.hasPermission("playerinv.large.inv." + i)) {
-                            if ((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)) {
-                                plugin.perms.playerAdd(null, p, "playerinv.large.inv." + i);
-                            }
-                            if (hasLuckPerms && lp_give && lp_proxy) {
-                                ContextNode.addPermissionWithContext_Large(p, i,0);
-                            }
-                            if (hasLuckPerms && lp_give && !lp_proxy) {
-                                ContextNode.addPermission_Large(p, i,0);
-                            }
-                            if(p.getItemInHand().getAmount() == 1){
-                                p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
-                            } else {
-                                int before_amount = p.getItemInHand().getAmount();
-                                p.getItemInHand().setAmount(before_amount - 1);
-                            }
-                            p.sendMessage(color(prefix + Messages_Voucher_use_large(i)));
-                            if (title) {
-                                p.sendTitle(color(Locale_Voucher_Large_Title(i)), color(Locale_Voucher_Large_Subtitle(i)), 10, 60, 10);
-                            }
-                            if (Voucher_sound_bool()) {
-                                p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
-                            }
-                            return;
-                        }
-                    }
-                }
-                p.sendMessage(color(prefix + Messages_Voucher_full()));
-                return;
-            } else if(!item_target.equals(p.getName()) && Voucher_Set_Owner()){
-                p.sendMessage(color(prefix + Voucher_cannot_use()));
-                return;
-            }
-        }
-        if(p.getItemInHand().getItemMeta().getDisplayName().equals(color(Locale_Voucher_Medium_DisplayName()))){
-            String item_target = getValueFromLore(p.getItemInHand(),"Owner");
-            if((item_target.equals(p.getName()) && Voucher_Set_Owner()) || !Voucher_Set_Owner()){
-                if(p.isOp() || p.hasPermission("playerinv.admin") || p.hasPermission(MediumFullInv)){
-                    p.sendMessage(color(prefix + Messages_Voucher_full()));
-                    return;
-                }
-                for(int i=1;i<(Medium_Amount + 1);i++){
-                    if(i <= 15){
-                        int old_num = i + 10;
-                        if(!p.hasPermission("playerinv.inv." + old_num)) {
-                            if(!p.hasPermission("playerinv.medium.inv." + i)) {
-                                if ((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)) {
-                                    plugin.perms.playerAdd(null, p, "playerinv.medium.inv." + i);
-                                }
-                                if (hasLuckPerms && lp_proxy && lp_give) {
-                                    ContextNode.addPermissionWithContext_Medium(p, i,0);
-                                }
-                                if (hasLuckPerms && !lp_proxy && lp_give) {
-                                    ContextNode.addPermission_Medium(p, i,0);
-                                }
-                                if(p.getItemInHand().getAmount() == 1){
-                                    p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
-                                } else {
-                                    int before_amount = p.getItemInHand().getAmount();
-                                    p.getItemInHand().setAmount(before_amount - 1);
-                                }
-                                p.sendMessage(color(prefix + Messages_Voucher_use_medium(i)));
-                                if (title) {
-                                    p.sendTitle(color(Locale_Voucher_Medium_Title(i)), color(Locale_Voucher_Medium_Subtitle(i)), 10, 60, 10);
-                                }
-                                if (Voucher_sound_bool()) {
-                                    p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
-                                }
-                                return;
-                            } else {
-                                continue;
-                            }
-                        }
-                    }
-                    if(i > 15){
-                        if(!p.hasPermission("playerinv.medium.inv." + i)) {
-                            if((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)){
-                                plugin.perms.playerAdd(null, p, "playerinv.medium.inv." + i);
-                            }
-                            if(hasLuckPerms && lp_proxy && lp_give){
-                                ContextNode.addPermissionWithContext_Medium(p,i,0);
-                            }
-                            if (hasLuckPerms && !lp_proxy && lp_give) {
-                                ContextNode.addPermission_Medium(p, i,0);
-                            }
-                            if(p.getItemInHand().getAmount() == 1){
-                                p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
-                            } else {
-                                int before_amount = p.getItemInHand().getAmount();
-                                p.getItemInHand().setAmount(before_amount - 1);
-                            }
-                            p.sendMessage(color(prefix + Messages_Voucher_use_medium(i)));
-                            if (title) {
-                                p.sendTitle(color(Locale_Voucher_Medium_Title(i)), color(Locale_Voucher_Medium_Subtitle(i)), 10, 60, 10);
-                            }
-                            if (Voucher_sound_bool()) {
-                                p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
-                            }
-                            return;
-                        }
-                    }
-                }
-                p.sendMessage(color(prefix + Messages_Voucher_full()));
-                return;
-            } else if(!item_target.equals(p.getName()) && Voucher_Set_Owner()){
-                p.sendMessage(color(prefix + Voucher_cannot_use()));
-                return;
-            }
-        }
+        runVoucherJudge(p);
     }
 
     @EventHandler
@@ -590,6 +433,9 @@ public class InvListener implements Listener {
                 return;
             }
             if(plugin.getConfig().getStringList("Inventory.Blacklist").contains(item.getType().toString())) {
+                if(player.hasPermission("playerinv.blacklist.material.ignore")){
+                    return;
+                }
                 Boolean cancel = true;
                 switch (event.getAction()) {
                     case DROP_ALL_SLOT:
@@ -611,8 +457,62 @@ public class InvListener implements Listener {
                     event.setCancelled(true);
                     event.setResult(Event.Result.DENY);
                     player.sendMessage(color(prefix + Messages_Vault_blacklist_items()));
+                    return;
                 }
             }
+            if(event.getRawSlot() >= event.getInventory().getSize()) {
+                if (plugin.getConfig().getStringList("Inventory.Lore_blacklist").isEmpty()) {
+                    return;
+                }
+                if (!item.hasItemMeta()) {
+                    return;
+                }
+                if (!item.getItemMeta().hasLore()) {
+                    return;
+                }
+                if(player.hasPermission("playerinv.blacklist.lore.ignore")){
+                    return;
+                }
+                List<String> lore = item.getItemMeta().getLore();
+                List<String> lore_blacklist = plugin.getConfig().getStringList("Inventory.Lore_blacklist");
+                for (String each_lore : lore_blacklist) {
+                    if (isEmpty(each_lore)) {
+                        continue;
+                    }
+                    if (lore.stream().anyMatch(str -> str.contains(each_lore))) {
+                        event.setCancelled(true);
+                        event.setResult(Event.Result.DENY);
+                        player.sendMessage(color(prefix + Messages_Vault_blacklist_items()));
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onOpenEnderChestEvent(PlayerInteractEvent event){
+        Player player = event.getPlayer();
+        if(!getEnderChestOpenBool()){
+            return;
+        }
+        if(event.getClickedBlock() == null){
+            return;
+        }
+        if(event.getClickedBlock().getType() == null){
+            return;
+        }
+        Boolean openaccess = plugin.getConfig().getBoolean("OpenGUIMessage");
+        if(player.hasPermission("playerinv.enderchest.open") && event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
+            if(event.getAction() == Action.LEFT_CLICK_BLOCK){
+                return;
+            }
+            event.setCancelled(true);
+            if(openaccess) {
+                player.sendMessage(color(prefix() + Messages_Open_main_gui()));
+            }
+            player.openInventory(Main_GUI(player));
+            player.playSound(player.getLocation(), Sound.valueOf(GUISoundValue), GUISoundVolume,GUISoundPitch);
         }
     }
 }

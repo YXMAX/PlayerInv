@@ -34,15 +34,14 @@ public class CheckView {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                        TempPlayerInInventory_Large.remove(player);
+                        TempPlayerInInventory_Large.put(player,true);
                         scheduledTask.cancel();
                     } else {
                         sendLog(player.getName() + ":L" + id + " exit by close inventory, not save (folia)");
-                        TempPlayerInInventory_Large.remove(player);
                         scheduledTask.cancel();
                     }
                 }
-            },null,2,6);
+            },null,2,4);
         } else {
             if(isBelow113){
                 sendLog(player.getName() + " run checkView large:" + id + " by 1.12");
@@ -65,24 +64,24 @@ public class CheckView {
                                     throw new RuntimeException(e);
                                 }
                                 TempInventory_Large.remove(player.getUniqueId().toString() + ":" + id);
-                                TempPlayerInInventory_Large.remove(player);
+                                TempPlayerInInventory_Large.put(player,true);
                                 this.cancel();
                             } else {
                                 sendLog(player.getName() + ":L" + id + " exit by close inventory, not save (1.12)");
-                                TempPlayerInInventory_Large.remove(player);
                                 this.cancel();
                             }
                         }
                     }
                 };
-                task.runTaskTimerAsynchronously(plugin,2,6);
+                task.runTaskTimerAsynchronously(plugin,2,4);
             } else {
                 sendLog(player.getName() + " run checkView large:" + id + " by 1.13+");
                 TempPlayerInInventory_Large.put(player,false);
                 if(!TempInventory_Large.containsKey(player.getUniqueId().toString() + ":" + id)){
                     TempInventory_Large.put(player.getUniqueId().toString() + ":" + id,player.getOpenInventory().getTopInventory());
                 }
-                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, bukkitTask -> {
+                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,bukkitTask -> {
+                    sendLog(player.getName() + " run cycle large:" + id + " by 1.13+");
                     if(!(player.getOpenInventory().getTopInventory().getHolder() instanceof VaultHolder_Large)){
                         sendLog(player.getName() + ":L" + id + " out the vault, try to save (1.13+)");
                         if(!TempPlayerInInventory_Large.get(player)){
@@ -94,15 +93,14 @@ public class CheckView {
                                 throw new RuntimeException(e);
                             }
                             TempInventory_Large.remove(player.getUniqueId().toString() + ":" + id);
-                            TempPlayerInInventory_Large.remove(player);
+                            TempPlayerInInventory_Large.put(player,true);
                             bukkitTask.cancel();
                         } else {
                             sendLog(player.getName() + ":L" + id + " exit by close inventory, not save (1.13+)");
-                            TempPlayerInInventory_Large.remove(player);
                             bukkitTask.cancel();
                         }
                     }
-                },2,6);
+                },2,4);
             }
         }
     }
@@ -127,15 +125,14 @@ public class CheckView {
                             throw new RuntimeException(e);
                         }
                         TempInventory_Medium.remove(player.getUniqueId().toString() + ":" + id);
-                        TempPlayerInInventory_Medium.remove(player);
+                        TempPlayerInInventory_Medium.put(player,true);
                         scheduledTask.cancel();
                     } else {
                         sendLog(player.getName() + ":M" + id + " exit by close inventory, not save (folia)");
-                        TempPlayerInInventory_Medium.remove(player);
                         scheduledTask.cancel();
                     }
                 }
-            },null,2,6);
+            },null,2,4);
         } else {
             if(isBelow113){
                 sendLog(player.getName() + " run checkView medium:" + id + " by 1.12");
@@ -158,25 +155,24 @@ public class CheckView {
                                     throw new RuntimeException(e);
                                 }
                                 TempInventory_Medium.remove(player.getUniqueId().toString() + ":" + id);
-                                TempPlayerInInventory_Medium.remove(player);
+                                TempPlayerInInventory_Medium.put(player,true);
                                 this.cancel();
                             } else {
                                 sendLog(player.getName() + ":M" + id + " exit by close inventory, not save (1.12)");
-                                TempPlayerInInventory_Medium.remove(player);
                                 this.cancel();
                             }
                         }
                     }
                 };
-                task.runTaskTimerAsynchronously(plugin,2,6);
+                task.runTaskTimerAsynchronously(plugin,2,4);
             } else {
                 sendLog(player.getName() + " run checkView medium:" + id + " by 1.13+");
                 TempPlayerInInventory_Medium.put(player,false);
                 if(!TempInventory_Medium.containsKey(player.getUniqueId().toString() + ":" + id)){
                     TempInventory_Medium.put(player.getUniqueId().toString() + ":" + id,player.getOpenInventory().getTopInventory());
                 }
-                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, bukkitTask -> {
-                    sendLog(player.getName() + " run cycle medium: " + id + "by 1.13+");
+                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,bukkitTask -> {
+                    sendLog(player.getName() + " run cycle medium:" + id + " by 1.13+");
                     if(!(player.getOpenInventory().getTopInventory().getHolder() instanceof VaultHolder_Medium)){
                         sendLog(player.getName() + ":M" + id + " out the vault, try to save (1.13+)");
                         if(!TempPlayerInInventory_Medium.get(player)){
@@ -187,15 +183,14 @@ public class CheckView {
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
-                            TempPlayerInInventory_Medium.remove(player);
+                            TempPlayerInInventory_Medium.put(player,true);
                             bukkitTask.cancel();
                         } else {
                             sendLog(player.getName() + ":M" + id + " exit by close inventory, not save (1.13+)");
-                            TempPlayerInInventory_Medium.remove(player);
                             bukkitTask.cancel();
                         }
                     }
-                },2,6);
+                },2,4);
             }
         }
     }

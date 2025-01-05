@@ -6,6 +6,11 @@ Debug-mode: false
 
 check-update: true
 
+Function:
+  # 末影箱打开仓库GUI功能开关 (需要权限 playerinv.enderchest.open)
+  # Use enderchest to open Main GUI (Permission: playerinv.enderchest.open)
+  Enderchest_open: false
+
 ## Voucher settings
 ## 兑换券物品设置
 Voucher:
@@ -21,6 +26,7 @@ Voucher:
   Value: 'UI_TOAST_CHALLENGE_COMPLETE:1:1'
   Title: true
   Set-owner : true
+  Support-outdated-vouchers: false
 
 ## Customize vault amount
 ## 自定义仓库数量
@@ -44,6 +50,8 @@ OpenGUIMessage: true
 Inventory:
   Blacklist:
     - 'BARRIER'
+  Lore_blacklist:
+    - '禁止放入仓库'
 
 ## Return to the main menu when closing the vault GUI
 ## 是否启用 当关闭仓库菜单时返回主菜单

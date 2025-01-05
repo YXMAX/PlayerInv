@@ -276,4 +276,28 @@ public class LocaleUtil {
         return expiry;
     }
 
+    public static String OpenVault_player_error(){
+        String v = LocaleConfig.getString("Messages.Open-vault_player_error");
+        return v;
+    }
+
+    public static String OpenVault_type_error(){
+        String v = LocaleConfig.getString("Messages.Open-vault_type_error");
+        return v;
+    }
+
+    public static String OpenVault_num_error(){
+        String v = LocaleConfig.getString("Messages.Open-vault_num_error");
+        return v;
+    }
+
+    public static String OpenVault_large_success(){
+        String v = LocaleConfig.getString("Messages.Open-vault_large_success");
+        return v;
+    }
+
+    public static String OpenVault_medium_success(){
+        String v = LocaleConfig.getString("Messages.Open-vault_medium_success");
+        return v;
+    }
 }

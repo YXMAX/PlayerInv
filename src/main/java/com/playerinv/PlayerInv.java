@@ -6,6 +6,8 @@ import com.playerinv.PlaceHolder.PlaceholderExpansion;
 import com.playerinv.Scheduler.MySQLScheduler;
 import com.playerinv.Scheduler.PlaceHolderScheduler;
 import com.playerinv.TempHolder.TempPlayer;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.permission.Permission;
 import org.apache.commons.io.FileUtils;
@@ -117,6 +119,8 @@ public class PlayerInv extends JavaPlugin {
 
     public static Boolean Below116 = false;
 
+    public static Boolean is121 = false;
+
     public static Boolean lpsupport = false;
 
     public static Boolean isFolia = false;
@@ -135,6 +139,10 @@ public class PlayerInv extends JavaPlugin {
     public static HashMap<String,Inventory> TempInventory_Large = new HashMap<>();
 
     public static HashMap<String,Inventory> TempInventory_Medium = new HashMap<>();
+
+    public static boolean has_update = false;
+
+    public static String newer_version = null;
 
     public void onEnable(){
         int pluginId = 20554;
@@ -164,6 +172,7 @@ public class PlayerInv extends JavaPlugin {
         Update_Config();
         initMorePaperLib();
         PluginStartUp();
+        checkUpdate();
     }
 
     @Override
@@ -192,12 +201,16 @@ public class PlayerInv extends JavaPlugin {
         String password = getConfig().getString("DataBases.password");
         String database = getConfig().getString("DataBases.database");
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-
             String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?" + allowPublicKeyRetrieval() + "&rewriteBatchedStatements=true&useSSL=" + sslBool();
-            Connection connection = DriverManager.getConnection(url, user, password);
-            return connection;
-        } catch (ClassNotFoundException | SQLException e) {
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(url);
+            config.setUsername(user);
+            config.setPassword(password);
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(5);
+            HikariDataSource ds = new HikariDataSource(config);
+            return ds.getConnection();
+        } catch (SQLException e) {
             Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GRAY + "[PlayerInv] " + ChatColor.YELLOW + "Failed to connect to database. Check MySQL is enabled");
             e.printStackTrace();
             return null;
@@ -401,6 +414,11 @@ public class PlayerInv extends JavaPlugin {
         if (!mysql) {
             try {
                 con = getConnection();
+                if(con != null){
+                    sendLog("HikariCP 数据池创建成功");
+                } else {
+                    sendLog("HikariCP 数据池创建失败");
+                }
                 createLargeTable(con);
                 createMediumTable(con);
                 createToggleTable(con);
@@ -412,6 +430,11 @@ public class PlayerInv extends JavaPlugin {
         if (mysql) {
             try {
                 con = getMySQLConnection();
+                if(con != null){
+                    sendLog("HikariCP 数据池连接MySQL成功");
+                } else {
+                    sendLog("HikariCP 数据池连接MySQL失败");
+                }
                 MysqlcreateLargeTable(con);
                 MysqlcreateMediumTable(con);
                 MysqlcreateToggleTable(con);

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com'
-version = '2.7.91'
+version = '4.6.51'
 
 repositories {
     mavenCentral()
@@ -34,18 +34,23 @@ repositories {
     maven {
         url = "https://repo.jeff-media.com/public/"
     }
+    maven {
+        url = "https://repo.codemc.org/repository/maven-public/"
+    }
 }
 
 dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT"
     compileOnly "org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT"
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.5'
-    implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
+    implementation 'space.arim.morepaperlib:morepaperlib:0.4.4'
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.xerial:sqlite-jdbc:3.32.3.1'
     implementation 'com.google.code.gson:gson:2.11.0'
-    implementation "com.jeff_media:SpigotUpdateChecker:3.0.3"
+    implementation 'io.github.bananapuncher714:nbteditor:7.19.7'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
     compileOnly 'com.mojang:authlib:1.5.25'
 }
 
@@ -54,9 +59,9 @@ shadowJar {
     archiveClassifier.set('')
     dependencies {
         include(dependency('space.arim.morepaperlib:morepaperlib'))
-        relocate("com.jeff_media", "com.playerinv") {
-            include(dependency("com.jeff_media:"))
-        }
+        include(dependency('com.zaxxer:HikariCP'))
+        include(dependency('org.slf4j:slf4j-api'))
+        include(dependency('io.github.bananapuncher714:nbteditor'))
     }
 }
 

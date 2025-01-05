@@ -1,6 +1,8 @@
 package com.playerinv.SQLite;
 
 import com.playerinv.TempHolder.TempPlayer;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteDataSource;
 
@@ -8,8 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import static com.playerinv.PlayerInv.*;
-import static com.playerinv.PluginSet.sendConvertDataMessage;
-import static com.playerinv.PluginSet.sendConvertSuccessMessage;
+import static com.playerinv.PluginSet.*;
 
 
 public class SQLiteConnect {
@@ -69,12 +70,12 @@ public class SQLiteConnect {
 
 
     public static Connection getConnection() throws Exception {
-        SQLiteConfig config = new SQLiteConfig();
-        config.setSharedCache(true);
-        config.enableRecursiveTriggers(true);
-        SQLiteDataSource ds = new SQLiteDataSource(config);
+        sendLog("创建HikariCP 数据池");
+        HikariConfig config = new HikariConfig();
         String url = System.getProperty("user.dir");
-        ds.setUrl("jdbc:sqlite:"+url+"/plugins/PlayerInv/"+"Database.db");
+        config.setJdbcUrl("jdbc:sqlite:"+url+"/plugins/PlayerInv/"+"Database.db");
+        config.setDriverClassName("org.sqlite.JDBC");
+        HikariDataSource ds = new HikariDataSource(config);
         return ds.getConnection();
     }
 

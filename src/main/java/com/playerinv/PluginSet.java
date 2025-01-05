@@ -1,17 +1,15 @@
 package com.playerinv;
 
-import com.jeff_media.updatechecker.UpdateCheckSource;
-import com.jeff_media.updatechecker.UpdateChecker;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.playerinv.InvHolder.*;
 import com.playerinv.Listener.*;
 import com.playerinv.SQLite.SQLiteConnect;
+import com.playerinv.Scheduler.UpdateChecker;
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,6 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -31,6 +31,8 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +52,7 @@ public class PluginSet {
         getServer().getPluginManager().registerEvents((Listener)new CheckInvListener(), (Plugin)plugin);
         getServer().getPluginManager().registerEvents((Listener)new CheckInvOfflineListener(), (Plugin)plugin);
         getServer().getPluginManager().registerEvents((Listener)new PlayerDeathListener(), (Plugin)plugin);
+        getServer().getPluginManager().registerEvents((Listener)new UpdateNotice(), (Plugin)plugin);
     }
 
     public static String inventoryToBase64(Inventory inventory) {
@@ -580,7 +583,27 @@ public class PluginSet {
 
     public static void DetectServerVersion(){
         String version = Bukkit.getServer().getClass().getPackage().getName();
-        if(version.contains("v1_12") || version.contains("v1_11") || version.contains("v1_10") || version.contains("v1_9") || version.contains("v1_8") || version.contains("v1_7") || version.contains("v1_6")){
+        if(version.equals("org.bukkit.craftbukkit")){
+            String v = Bukkit.getVersion();
+            if(v.contains("1.11") || v.contains("1.10") || v.contains("1.9") || v.contains("1.8") || v.contains("1.7") || v.contains("1.6")){
+                isBelow113 = true;
+                resetSoundValue();
+            } else if(v.contains("1.12")){
+                isBelow113 = true;
+                resetSoundValue();
+            } else if(v.contains("1.13")){
+                is113 = true;
+                resetSoundValue();
+            } else if(v.contains("1.14") || v.contains("1.15")){
+                Below116 = true;
+            } else if(v.contains("1.21")){
+                is121 = true;
+            }
+        }
+        if(version.contains("v1_11") || version.contains("v1_10") || version.contains("v1_9") || version.contains("v1_8") || version.contains("v1_7") || version.contains("v1_6")){
+            isBelow113 = true;
+            resetSoundValue();
+        } else if(version.contains("v1_12")){
             isBelow113 = true;
             resetSoundValue();
         } else if(version.contains("v1_13")){
@@ -588,6 +611,8 @@ public class PluginSet {
             resetSoundValue();
         } else if(version.contains("v1_14") || version.contains("v1_15")){
             Below116 = true;
+        } else if(version.contains("v1_21")){
+            is121 = true;
         }
     }
 
@@ -606,6 +631,7 @@ public class PluginSet {
         String locale = locale();
         Boolean mysql = plugin.getConfig().getBoolean("DataBases.MySQL");
         Boolean lptoggle = plugin.getConfig().getBoolean("Luckperms-proxy-support");
+        String version = plugin.getDescription().getVersion();
         if(locale.equals("zh-CN")){
             String database = "本地数据库已启动..";
             String lp = null;
@@ -625,7 +651,7 @@ public class PluginSet {
                 papi = "&a启用";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.91"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v" + version + " CLASSIC"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms 权限同步 " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI 支持: " + papi));
@@ -649,7 +675,7 @@ public class PluginSet {
                 papi = "&aEnabled";
             }
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l ____  &e&l____   "));
-            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v2.7.91"));
+            Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|    | &e&l ||    &2PlayerInv v" + version + " CLASSIC"));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|____| &e&l ||    &6LuckPerms permission synchronization: " + lp));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l ||    &6" + database));
             Bukkit.getServer().getConsoleSender().sendMessage(color(" &b&l|      &e&l_||_   &6PlaceHolderAPI Support: " + papi));
@@ -801,6 +827,23 @@ public class PluginSet {
     }
 
     public static ItemStack setCustomSkull(ItemStack head, String base64) {
+        if(is121){
+            if (base64.isEmpty()) return head;
+
+            try {
+                SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+                PlayerProfile profile = Bukkit.getServer().createPlayerProfile(UUID.randomUUID(),"playerinv");
+                PlayerTextures textures = profile.getTextures();
+                textures.setSkin(getUrlFromBase64(base64));
+                profile.setTextures(textures);
+                skullMeta.setOwnerProfile(profile);
+                head.setItemMeta(skullMeta);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            return head;
+
+        }
         if(!isBelow113) {
 
             if (base64.isEmpty()) return head;
@@ -844,6 +887,11 @@ public class PluginSet {
             return head;
         }
         return head;
+    }
+
+    public static URL getUrlFromBase64(String base64) throws MalformedURLException {
+        String decoded = new String(Base64.getDecoder().decode(base64));
+        return new URL(decoded.substring("{\"textures\":{\"SKIN\":{\"url\":\"".length(), decoded.length() - "\"}}}".length()));
     }
 
     public static int getLargeEmptySlots(int num,Player player) {
@@ -923,5 +971,303 @@ public class PluginSet {
 
     public static String sslBool(){
         return String.valueOf(plugin.getConfig().getBoolean("DataBases.useSSL"));
+    }
+
+    public static void sendMsg(CommandSender commandSender, String msg){
+        if(!(commandSender instanceof Player)){
+            Bukkit.getConsoleSender().sendMessage(color(prefix() + msg));
+        } else {
+            Player player = (Player) commandSender;
+            if(player.isOp()){
+                player.sendMessage(color(prefix() + msg));
+            }
+        }
+    }
+
+    public static boolean isEmpty(String str) {
+        if(str != null && !str.replace(" ", "").equals("")){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    public static boolean getSupportOutdatedVoucherBool(){
+        return plugin.getConfig().getBoolean("Voucher.Support-outdated-vouchers");
+    }
+
+    public static void runVoucherJudge(Player p){
+        String prefix = prefix();
+        if(p.getItemInHand() == null){
+            return;
+        }
+        if(!p.getItemInHand().hasItemMeta()){
+            return;
+        }
+        if(!p.getItemInHand().getItemMeta().hasDisplayName()){
+            return;
+        }
+        if(getSupportOutdatedVoucherBool()){
+            if(NBTEditor.contains(p.getItemInHand(),NBTEditor.CUSTOM_DATA,"playerinv:large")){
+                String owner = NBTEditor.getString(p.getItemInHand(),NBTEditor.CUSTOM_DATA,"playerinv:large");
+                if(Voucher_Set_Owner()){
+                    if(owner.equals(p.getName())){
+                        runVoucherLarge(p);
+                        return;
+                    } else {
+                        p.sendMessage(color(prefix + Voucher_cannot_use()));
+                        return;
+                    }
+                } else {
+                    runVoucherLarge(p);
+                    return;
+                }
+            }
+            if(NBTEditor.contains(p.getItemInHand(),NBTEditor.CUSTOM_DATA,"playerinv:medium")){
+                String owner = NBTEditor.getString(p.getItemInHand(),NBTEditor.CUSTOM_DATA,"playerinv:medium");
+                if(Voucher_Set_Owner()){
+                    if(owner.equals(p.getName())){
+                        runVoucherMedium(p);
+                        return;
+                    } else {
+                        p.sendMessage(color(prefix + Voucher_cannot_use()));
+                        return;
+                    }
+                } else {
+                    runVoucherMedium(p);
+                    return;
+                }
+            }
+            if(p.getItemInHand().getItemMeta().getDisplayName().equals(color(Locale_Voucher_Large_DisplayName()))){
+                if(Voucher_Set_Owner()){
+                    String item_target = getValueFromLore(p.getItemInHand(),"Owner");
+                    if(item_target.equals(p.getName())){
+                        runVoucherLarge(p);
+                    } else {
+                        p.sendMessage(color(prefix + Voucher_cannot_use()));
+                        return;
+                    }
+                } else {
+                    runVoucherLarge(p);
+                }
+            }
+            if(p.getItemInHand().getItemMeta().getDisplayName().equals(color(Locale_Voucher_Medium_DisplayName()))){
+                if(Voucher_Set_Owner()){
+                    String item_target = getValueFromLore(p.getItemInHand(),"Owner");
+                    if(item_target.equals(p.getName())){
+                        runVoucherMedium(p);
+                        return;
+                    } else {
+                        p.sendMessage(color(prefix + Voucher_cannot_use()));
+                        return;
+                    }
+                } else {
+                    runVoucherMedium(p);
+                    return;
+                }
+            }
+        }
+        if(NBTEditor.contains(p.getEquipment().getItemInMainHand(),NBTEditor.CUSTOM_DATA,"playerinv:large")){
+            String owner = NBTEditor.getString(p.getEquipment().getItemInMainHand(),NBTEditor.CUSTOM_DATA,"playerinv:large");
+            if(Voucher_Set_Owner()){
+                if(owner.equals(p.getName())){
+                    runVoucherLarge(p);
+                    return;
+                } else {
+                    p.sendMessage(color(prefix + Voucher_cannot_use()));
+                    return;
+                }
+            } else {
+                runVoucherLarge(p);
+                return;
+            }
+        }
+        if(NBTEditor.contains(p.getEquipment().getItemInMainHand(),NBTEditor.CUSTOM_DATA,"playerinv:medium")){
+            String owner = NBTEditor.getString(p.getEquipment().getItemInMainHand(),NBTEditor.CUSTOM_DATA,"playerinv:medium");
+            if(Voucher_Set_Owner()){
+                if(owner.equals(p.getName())){
+                    runVoucherMedium(p);
+                    return;
+                } else {
+                    p.sendMessage(color(prefix + Voucher_cannot_use()));
+                    return;
+                }
+            } else {
+                runVoucherMedium(p);
+                return;
+            }
+        }
+    }
+
+    public static int runVoucherLarge(Player p){
+        Boolean lp_proxy = PlayerInv.plugin.getConfig().getBoolean("Luckperms-proxy-support");
+        Boolean lp_give = plugin.getConfig().getBoolean("Luckperms-give-permissions");
+        String prefix = prefix();
+        Boolean title = PlayerInv.plugin.getConfig().getBoolean("Voucher.Title");
+        if(p.isOp() || p.hasPermission("playerinv.admin") || p.hasPermission(LargeFullInv)){
+            p.sendMessage(color(prefix + Messages_Voucher_full()));
+            return 1;
+        }
+        for(int i=1;i<(Large_Amount + 1);i++){
+            if(i <= 10) {
+                if (!p.hasPermission("playerinv.inv." + i)) {
+                    if(!p.hasPermission("playerinv.large.inv." + i)) {
+                        if ((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)) {
+                            plugin.perms.playerAdd(null, p, "playerinv.large.inv." + i);
+                        }
+                        if (hasLuckPerms && lp_give && lp_proxy) {
+                            ContextNode.addPermissionWithContext_Large(p, i,0);
+                        }
+                        if (hasLuckPerms && lp_give && !lp_proxy) {
+                            ContextNode.addPermission_Large(p, i,0);
+                        }
+                        if(p.getItemInHand().getAmount() == 1){
+                            p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                        } else {
+                            int before_amount = p.getItemInHand().getAmount();
+                            p.getItemInHand().setAmount(before_amount - 1);
+                        }
+                        p.sendMessage(color(prefix + Messages_Voucher_use_large(i)));
+                        if (title) {
+                            p.sendTitle(color(Locale_Voucher_Large_Title(i)), color(Locale_Voucher_Large_Subtitle(i)), 10, 60, 10);
+                        }
+                        if (Voucher_sound_bool()) {
+                            p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
+                        }
+                        return 1;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+            if(i > 10) {
+                if (!p.hasPermission("playerinv.large.inv." + i)) {
+                    if ((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)) {
+                        plugin.perms.playerAdd(null, p, "playerinv.large.inv." + i);
+                    }
+                    if (hasLuckPerms && lp_give && lp_proxy) {
+                        ContextNode.addPermissionWithContext_Large(p, i,0);
+                    }
+                    if (hasLuckPerms && lp_give && !lp_proxy) {
+                        ContextNode.addPermission_Large(p, i,0);
+                    }
+                    if(p.getItemInHand().getAmount() == 1){
+                        p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                    } else {
+                        int before_amount = p.getItemInHand().getAmount();
+                        p.getItemInHand().setAmount(before_amount - 1);
+                    }
+                    p.sendMessage(color(prefix + Messages_Voucher_use_large(i)));
+                    if (title) {
+                        p.sendTitle(color(Locale_Voucher_Large_Title(i)), color(Locale_Voucher_Large_Subtitle(i)), 10, 60, 10);
+                    }
+                    if (Voucher_sound_bool()) {
+                        p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
+                    }
+                    return 1;
+                }
+            }
+        }
+        p.sendMessage(color(prefix + Messages_Voucher_full()));
+        return 1;
+    }
+
+    public static void runVoucherMedium(Player p){
+        Boolean lp_proxy = PlayerInv.plugin.getConfig().getBoolean("Luckperms-proxy-support");
+        Boolean lp_give = plugin.getConfig().getBoolean("Luckperms-give-permissions");
+        String prefix = prefix();
+        Boolean title = PlayerInv.plugin.getConfig().getBoolean("Voucher.Title");
+        if(p.isOp() || p.hasPermission("playerinv.admin") || p.hasPermission(MediumFullInv)){
+            p.sendMessage(color(prefix + Messages_Voucher_full()));
+            return;
+        }
+        for(int i=1;i<(Medium_Amount + 1);i++){
+            if(i <= 15){
+                int old_num = i + 10;
+                if(!p.hasPermission("playerinv.inv." + old_num)) {
+                    if(!p.hasPermission("playerinv.medium.inv." + i)) {
+                        if ((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)) {
+                            plugin.perms.playerAdd(null, p, "playerinv.medium.inv." + i);
+                        }
+                        if (hasLuckPerms && lp_proxy && lp_give) {
+                            ContextNode.addPermissionWithContext_Medium(p, i,0);
+                        }
+                        if (hasLuckPerms && !lp_proxy && lp_give) {
+                            ContextNode.addPermission_Medium(p, i,0);
+                        }
+                        if(p.getItemInHand().getAmount() == 1){
+                            p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                        } else {
+                            int before_amount = p.getItemInHand().getAmount();
+                            p.getItemInHand().setAmount(before_amount - 1);
+                        }
+                        p.sendMessage(color(prefix + Messages_Voucher_use_medium(i)));
+                        if (title) {
+                            p.sendTitle(color(Locale_Voucher_Medium_Title(i)), color(Locale_Voucher_Medium_Subtitle(i)), 10, 60, 10);
+                        }
+                        if (Voucher_sound_bool()) {
+                            p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
+                        }
+                        return;
+                    } else {
+                        continue;
+                    }
+                }
+            }
+            if(i > 15){
+                if(!p.hasPermission("playerinv.medium.inv." + i)) {
+                    if((!hasLuckPerms && !lp_proxy && !lp_give) || (hasLuckPerms && !lp_proxy && !lp_give)){
+                        plugin.perms.playerAdd(null, p, "playerinv.medium.inv." + i);
+                    }
+                    if(hasLuckPerms && lp_proxy && lp_give){
+                        ContextNode.addPermissionWithContext_Medium(p,i,0);
+                    }
+                    if (hasLuckPerms && !lp_proxy && lp_give) {
+                        ContextNode.addPermission_Medium(p, i,0);
+                    }
+                    if(p.getItemInHand().getAmount() == 1){
+                        p.getEquipment().setItemInHand(new ItemStack(Material.AIR));
+                    } else {
+                        int before_amount = p.getItemInHand().getAmount();
+                        p.getItemInHand().setAmount(before_amount - 1);
+                    }
+                    p.sendMessage(color(prefix + Messages_Voucher_use_medium(i)));
+                    if (title) {
+                        p.sendTitle(color(Locale_Voucher_Medium_Title(i)), color(Locale_Voucher_Medium_Subtitle(i)), 10, 60, 10);
+                    }
+                    if (Voucher_sound_bool()) {
+                        p.playSound(p.getLocation(), Sound.valueOf(VoucherSoundValue), VoucherSoundVolume, VoucherSoundPitch);
+                    }
+                    return;
+                }
+            }
+        }
+        p.sendMessage(color(prefix + Messages_Voucher_full()));
+        return;
+    }
+
+    public static boolean getUpdateBool(){
+        return plugin.getConfig().getBoolean("check-update");
+    }
+
+    public static boolean getEnderChestOpenBool(){
+        return plugin.getConfig().getBoolean("Function.Enderchest_open");
+    }
+
+    public static void checkUpdate(){
+        if(!getUpdateBool()){
+            return;
+        }
+        new UpdateChecker(plugin, 114372).getVersion(version -> {
+            if (plugin.getDescription().getVersion().equals(version.replaceAll("v",""))) {
+                Bukkit.getConsoleSender().sendMessage(color("&e" + prefix() + "No new update available"));
+            } else {
+                has_update = true;
+                newer_version = version;
+                Bukkit.getConsoleSender().sendMessage(color("&e" + prefix() + "An function update for PlayerInv (" + version + ") is available at:"));
+                Bukkit.getConsoleSender().sendMessage(color("&e" + prefix() + "https://www.spigotmc.org/resources/playerinv.114372/"));
+            }
+        });
     }
 }
