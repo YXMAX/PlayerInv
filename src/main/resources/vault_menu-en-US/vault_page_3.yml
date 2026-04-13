@@ -1,0 +1,171 @@
+######################################################
+###
+### vault_items is the important vault display, vault_set is the important vault set with slots
+### vault_items's information cannot delete, it will send error
+### you can change material, amount, lore or display-name even custom-model-data
+### items's column can customize any items but cannot add command currently
+### menu_title and size are must exist!
+### you can add some new menu file in vault_menu folder, if you need open that menu
+### just add open-menu: (file-name) with a item to open new menu.
+### custom-model-data only support upper version 1.14
+### if you need item-id lower 1.13 version, add item-subid: [num] to items
+###
+### If the server is 1.12 and a custom head needs to be used
+### Please set material to SKULL_ITEM
+### And add [item-subid: 3] to ensure the use of Steve's head
+### And add head-textures: Base64Code..
+######################################################
+menu_title: 'Vault menu [3/3]'
+size: 54
+vault_items:
+  large_locked:
+    material: BLACK_SHULKER_BOX
+    amount: 1
+    enchant-glow: false
+    display-name: '&6Large Vault [ &a%vault_num% &6]'
+    lore:
+      - '&e- &fItems and weapons can be stored'
+      - '&e- &fVault sizes: &a54'
+      - ''
+      - '&e- &cLocked'
+  large_unlocked:
+    material: WHITE_SHULKER_BOX
+    amount: 1
+    enchant-glow: false
+    display-name: '&6Large Vault [ &a%vault_num% &6]'
+    lore:
+      - '&e- &fItems and weapons can be stored'
+      - '&e- &fEmpty slots: &a%remain_slot%&d/&b54'
+      - ''
+      - '&e- &6Left-Click &8Open-vault'
+      - '&e- &dShift+Right-Click &8Alter-attribute'
+  medium_locked:
+    material: ENDER_CHEST
+    amount: 1
+    enchant-glow: false
+    display-name: '&dMedium Vault [ &a%vault_num% &d]'
+    lore:
+      - '&e- &fItems and weapons can be stored'
+      - '&e- &fVault sizes: &a27'
+      - ''
+      - '&e- &cLocked'
+  medium_unlocked:
+    material: CHEST
+    amount: 1
+    enchant-glow: false
+    display-name: '&dMedium Vault [ &a%vault_num% &d]'
+    lore:
+      - '&e- &fItems and weapons can be stored'
+      - '&e- &fEmpty slots: &a%remain_slot%&d/&b27'
+      - ''
+      - '&e- &6Left-Click &8Open-vault'
+      - '&e- &dShift+Right-Click &8Alter-attribute'
+  large_vault_set: #Slot : Vault_number ,must have ' ' to warp, if not, it will not enable
+    - '11:25'
+    - '12:26'
+    - '13:27'
+    - '14:28'
+    - '20:29'
+    - '21:30'
+    - '22:31'
+    - '23:32'
+    - '29:33'
+    - '30:34'
+    - '31:35'
+    - '32:36'
+  medium_vault_set: #Slot : Vault_number ,must have ' ' to warp, if not, it will not enable
+    - '15:19'
+    - '16:20'
+    - '17:21'
+    - '24:22'
+    - '25:23'
+    - '26:24'
+    - '33:25'
+    - '34:26'
+    - '35:27'
+items:
+  glass_1:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 10
+    display-name: ' '
+  d1:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 1
+    display-name: ' '
+  d2:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 28
+    display-name: ' '
+  d3:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 19
+    display-name: ' '
+  d4:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 37
+    display-name: ' '
+  close:
+    material: RED_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 46
+    display-name: '&cPrevious page'
+    open-menu: vault_page_2
+  d5:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 47
+    display-name: ' '
+  d6:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 48
+    display-name: ' '
+  d7:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 49
+    display-name: ' '
+  d8:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 50
+    display-name: ' '
+  d9:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 51
+    display-name: ' '
+  d10:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 52
+    display-name: ' '
+  d11:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 53
+    display-name: ' '
+  d12:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: 1
+    enchant-glow: false
+    slot: 54
+    display-name: ' '

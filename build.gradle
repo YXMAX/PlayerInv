@@ -1,0 +1,144 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'java'
+}
+
+group = 'com'
+version = '6.5.6'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc"
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        name = "spigotmc"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        name = "EcoItems"
+        url = "https://repo.auxilor.io/repository/maven-public/"
+    }
+    maven {
+        url = 'https://jitpack.io'
+    }
+    maven {
+        url = 'https://libraries.minecraft.net/'
+    }
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        name = 'MorePaperLib'
+        url = 'https://mvn-repo.arim.space/lesser-gpl3/'
+    }
+    maven {
+        url = "https://repo.jeff-media.com/public/"
+    }
+    maven {
+        url = "https://repo.codemc.org/repository/maven-public/"
+    }
+    maven {
+        name = "MythicMobs"
+        url = 'https://mvn.lumine.io/repository/maven-public/'
+    }
+    maven {
+        name = "MMOItems"
+        url = 'https://nexus.phoenixdevt.fr/repository/maven-public/'
+    }
+    maven {
+        name = "ItemsAdder"
+        url = 'https://maven.devs.beer/'
+    }
+    maven {
+        name = "Oraxen"
+        url = "https://repo.oraxen.com/releases"
+    }
+    maven {
+        name = "NeigeItems"
+        url = "https://r.irepo.space/maven/"
+    }
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT"
+    compileOnly "org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT"
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
+    compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'me.clip:placeholderapi:2.11.5'
+    implementation 'space.arim.morepaperlib:morepaperlib:0.4.4'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'org.xerial:sqlite-jdbc:3.32.3.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'net.jpountz.lz4:lz4:1.3.0'
+    implementation files('NBTEditor/nbteditor-7.20.3.jar')
+    implementation 'org.slf4j:slf4j-nop:1.7.36'
+    implementation files('NBTEditor/item-nbt-api-2.15.5.jar')
+    compileOnly 'com.mojang:authlib:1.5.25'
+}
+
+shadowJar {
+    destinationDirectory = file('OutPut')
+    archiveClassifier.set('')
+    dependencies {
+        include(dependency('net.jpountz.lz4:lz4'))
+        include(dependency('commons-io:commons-io'))
+        include(dependency('de.tr7zw:item-nbt-api'))
+        relocate 'darwin.x86_64', 'com.dependencies.lz4.darwin.x86_64'
+        relocate 'linux', 'com.dependencies.lz4.linux'
+        relocate 'net.jpountz', 'com.dependencies.lz4.net.jpountz'
+        relocate 'win32.amd64', 'com.dependencies.lz4.win32.amd64'
+        relocate("de.tr7zw", "com.dependencies.nbtapi") {
+            include(dependency('de.tr7zw:item-nbt-api'))
+        }
+        relocate("org.slf4j", "com.dependencies.slf4j") {
+            include(dependency('org.slf4j:slf4j-nop'))
+        }
+        relocate("space.arim.morepaperlib", "com.dependencies.arim.morepaperlib") {
+            include(dependency('space.arim.morepaperlib:morepaperlib'))
+        }
+        relocate("com.zaxxer", "com.dependencies.zaxxer") {
+            include(dependency('com.zaxxer:HikariCP'))
+        }
+        relocate("org.slf4j", "com.dependencies.slf4j") {
+            include(dependency('org.slf4j:slf4j-api'))
+        }
+        relocate("io.github.bananapuncher714", "com.dependencies.bananapuncher714") {
+            include(dependency('io.github.bananapuncher714:nbteditor'))
+        }}
+}
+
+
+def targetJavaVersion = 1.8
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_1_8
+//    targetCompatibility = JavaVersion.VERSION_1_8
+//
+//    withJavadocJar()
+//    withSourcesJar()
+//}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+

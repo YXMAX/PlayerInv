@@ -1,0 +1,105 @@
+Voucher:
+  large:
+    display-name: '&bLarge Vault Voucher'
+    lore:
+      - '&e- &6Get a large vault'
+      - '&e- &6Right-click to use'
+      - ''
+      - '&bOwner: &e%voucher_player%'
+    title: '&eCongratulation!!'
+    subtitle: '&aReceived &bNO.%large_vault_number% &aLarge Vault'
+  medium:
+    display-name: '&aMedium Vault Voucher'
+    lore:
+      - '&e- &6Get a medium vault'
+      - '&e- &6Right-click to use'
+      - ''
+      - '&bOwner: &e%voucher_player%'
+    title: '&eCongratulation!!'
+    subtitle: '&aReceived &bNO.%medium_vault_number% &aMedium Vault'
+
+Vault:
+  Large_title: 'Large vault #'
+  Medium_title: 'Medium vault #'
+  Share_title: 'Sharing vault'
+
+Vault_name:
+  Large_default: '&6Large-Vault &f[&a%vault_num%&f]'
+  Medium_default: '&dMedium-Vault &f[&a%vault_num%&f]'
+
+Check:
+  Menu_title: "%player% 's Vault-List"
+  Next_page: '&aNext'
+  Previous_page: '&cPrevious'
+  Vault_display_large: '&dLarge-Vault &f[&a%vault_num%&f]'
+  Vault_display_medium: '&dMedium-Vault &f[&a%vault_num%&f]'
+  Vault_exist: '&f- &aCheck this vault contents'
+  Vault_not_exist: '&f- &cThis vault has not been created yet'
+
+Expiry:
+  Permanent: '&aPERMANENT'
+  Temporary: '&a%day_value% Days'
+
+Placeholder_expiry:
+  Permanent: '&aPERMANENT'
+  Expiry: '&e%day_value% Days'
+  Day_less: '&cLess than 1 day'
+  Not_exist: '&cNot exist'
+
+Messages:
+  No_permission_command: '&cYou have no permission to do that.'
+  No_permission_vault: '&cYou have no permission to open vault.'
+  Vault_blacklist_items: '&cThe item has been banned from vault'
+  Voucher_full: '&cYou already have all the vault of the current type, You cant use this voucher!'
+  Voucher_give: '&eSuccessfully give player &f%player% &ea vault voucher'
+  Voucher_use_large: '&eReceived &aNO.%large_vault_number% &elarge vault'
+  Voucher_use_medium: '&eReceived &aNO.%medium_vault_number% &emedium vault'
+  Voucher_cannot_use: '&cYou cannot use this voucher'
+  Check_player_error: '&cPlease enter the right player name.'
+  Check_unknown_player: '&cUnknown player'
+  Not_console_command: '&cThis command is only in game.'
+  Console_give_voucher_player_error: '&cPlayer offline..'
+  Command_reload: '&ePlugin reloaded...'
+  Unknown_number: '&cUnknown value...'
+  Vault_command_give_large_success: '&eSuccessfully given player %player% Large Vault %vault_num%'
+  Vault_command_give_medium_success: '&eSuccessfully given player %player% Medium Vault %vault_num%'
+  Vault_command_give_already_has: '&cThe player already owns the vault!'
+  Vault_command_give_num_null: '&cPlease enter a vault number'
+  Vault_command_append_large_success: '&eSuccessfully added &f%player% &ewith &a%vault_mount% &elarge vaults under the existing &a%before_append% &elarge vault.'
+  Vault_command_append_medium_success: '&eSuccessfully added &f%player% &ewith &a%vault_mount% &emedium vaults under the existing &a%before_append% &emedium vault.'
+  Vault_command_append_num_null: '&cPlease enter a amount of append given number'
+  Vault_command_append_full: '&cThe player already owns all the vaults!'
+  Vault_player_give_large_notice: '&eYou have received Large Vault &a%vault_num%'
+  Vault_player_give_medium_notice: '&eYou have received Medium Vault  &a%vault_num%'
+  Vault_player_append_large_notice: '&eYou have received Large Vaults  &a%vault_num_start% &e- &a%vault_num_end%.'
+  Vault_player_append_medium_notice: '&eYou have received Medium Vaults &a%vault_num_start% &e- &a%vault_num_end%.'
+  Player_death_store_notice: '&eYour item has been stored in the Large Vault [&a%vault_num%&e].'
+  Invite_not_exist: '&cYou have not been invited or the invitation has outdated.'
+  Console_open_main: '&a%player% opening the main GUI'
+  Vault_already_open: '&cYou have already opened the vault!'
+  Open-vault_player_error: '&cUnknown player'
+  Open-vault_type_error: '&cUnknown vault type [large/medium]'
+  Open-vault_num_error: '&cUnknown number'
+  Open-vault_large_success: '&aOpening Large Vault[%vault_num%] for %player%'
+  Open-vault_medium_success: '&aOpening Medium Vault[%vault_num%] for %player%'
+  Auto_pickup_large_notice: '&6%item_amount%&fx &r%item% &a==> &6Large-Vault &f[&d%vault_num%&f]'
+  Auto_pickup_medium_notice: '&6%item_amount%&fx &r%item% &a==> &dMedium-Vault &f[&e%vault_num%&f]'
+  Auto_pickup_vault_null: "&cYou don't have any vault to storage the dropped item!"
+  Auto_pickup_vault_full: '&cAll vault full! cannot storage!'
+  Auto_pickup_enabled: '&eAuto-pickup &aEnabled'
+  Auto_pickup_disabled: '&eAuto-pick &cDisabled'
+  Vault_string_destroy: '&cThe vault contents has been corrupted! Please contact the server admin!'
+  Vault_item_destroy: '&cThe vault items of slot %slot% cannot be set correctly! Set to Material.AIR! Please contact the server admin!'
+  Vault_attribute_change_notice: "&aPlease enter a name ('#' exit)"
+  Vault_attribute_change_large_success: '&aSuccessfully changed &dLarge-Vault&6[&f%vault_num%&6] &aattribute: &r%vault_name%'
+  Vault_attribute_change_medium_success: '&aSuccessfully changed &eMedium-Vault&6[&f%vault_num%&6] &aattribute: &r%vault_name%'
+  Translator_not_support_language: '&cYou are using a language that is not supported by the plugin to use the vault-search. The vanilla item will use english name to search'
+  Vault_item_destroy_cancel_open: '&cThe vault contents has been corrupted! Cannot access!'
+  Check_vault_error_exist: '&cSome items broken in this vault! auto-save disabled.. &6(Shift+Right-Click to save) &copen vault in 5 seconds (broken items will remove)'
+  Check_vault_set_save: '&aSet to save...'
+  Check_vault_no_save: '&cSet to not save...'
+  Cache_not_ready: '&cCache is not ready.. Please try again later!'
+  Cache_broken: '&cGet cache failed! Please check the connection!'
+  Connection_valid: '&aConnection restored!'
+  Connection_not_valid: '&cConnection invalid!'
+  Connection_invalid_refuse: '&cOperation refused! Please contact op!'

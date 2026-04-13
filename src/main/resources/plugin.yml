@@ -1,0 +1,62 @@
+name: PlayerInv
+version: '${version}'
+main: com.playerinv.PlayerInv
+api-version: '1.14'
+folia-supported: true
+commands:
+  playerinv:
+    aliases: [inv, pinv, pi]
+permissions:
+  playerinv.admin:
+    default: op
+  playerinv.check:
+    default: op
+  playerinv.reload:
+    default: op
+  playerinv.inv.*:
+    default: false
+  playerinv.give:
+    default: op
+  playerinv.gui.open:
+    default: true
+  playerinv.invsort:
+    default: true
+  playerinv.invopen:
+    default: true
+  playerinv.large.inv.*:
+    default: op
+  playerinv.medium.inv.*:
+    default: op
+  playerinv.vault.give:
+    default: op
+  playerinv.vault.append:
+    default: op
+  playerinv.death.store:
+    default: false
+  playerinv.pickup.toggle:
+    default: true
+  playerinv.point.give:
+    default: op
+  playerinv.alter.name:
+    default: true
+  playerinv.command.main.open:
+    default: op
+  playerinv.command.vault.open:
+    default: op
+  playerinv.auto.pickup:
+    default: op
+  playerinv.blacklist.material.ignore:
+    default: false
+  playerinv.blacklist.lore.ignore:
+    default: false
+  playerinv.enderchest.open:
+    default: false
+  playerinv.vault.event.pickup.ignore:
+    default: op
+  playerinv.vault.event.place.ignore:
+    default: op
+
+depend: [Vault]
+softdepend:
+  - Luckperms
+  - PlaceholderAPI

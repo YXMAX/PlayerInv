@@ -1,0 +1,203 @@
+# 插件前缀
+Prefix: '&f[&ePlayerInv&f] '
+
+# 使用的文本语言
+Language: 'zh-CN'
+
+# 开发者模式 非必要不要开启
+Debug-mode: false
+
+# 当仓库数据出现损坏时 是否清除损坏的物品并继续打开仓库
+Clear_item_when_error: false
+
+# 开启仓库主菜单的有效期变量替换 变量名: %vault_expiry%
+# 仅适用于开启 Luckperms_permission_give 的情况
+Replace_expiry_variable: false
+
+# 允许玩家在仓库菜单界面操作物品栏内的物品
+Allow_click_in_menu: true
+
+# 是否将自定义命名应用于打开的仓库的显示标题
+# 关闭后 可以使用变量 %custom_title% 展示玩家自定义命名
+Custom_title_replace_gui_title: true
+
+# 仓库无权限时是否可拿取仓库内物品
+Vault_can_pickup_no_permission: true
+
+# 功能开关
+Function:
+  # 末影箱打开仓库GUI功能开关 (需要权限 playerinv.enderchest.open)
+  Enderchest_open: false
+
+# 使用/inv时打开的第一个菜单
+Menu:
+  Open_main: 'Main'
+
+
+# 兑换券物品设置
+Voucher:
+  # 兑换券是否开启使用
+  Enabled: true
+  # 大型仓库兑换券
+  large:
+    # 物品材质
+    material: PAPER
+    # 是否附魔发光
+    enchant-glow: true
+    # 自定义模型数据
+    custom-model-data: 0
+  # 中型仓库兑换券
+  medium:
+    # 物品材质
+    material: PAPER
+    # 是否附魔发光
+    enchant-glow: true
+    # 自定义模型数据
+    custom-model-data: 0
+  # 兑换券是否以掉落物形式给予 (若仓库已满 无论开关与否 物品都会以掉落物掉落)
+  Natural_drop: false
+  # 是否开启使用兑换券时显示的大标题
+  Title: true
+  # 是否开启 兑换券识别券主名称
+  Set-owner: true
+
+# 自定义仓库数量
+Vault:
+  # 是否允许玩家可自定义仓库名称
+  Name_change: true
+  # 定义大型仓库的最大数量
+  Large_amount: 36
+  # 定义中型仓库的最大数量
+  Medium_amount: 27
+  # 仓库行为设置
+  Event:
+    # 是否可放置物品到仓库内
+    Place: true
+    # 是否可拿起仓库内的物品
+    Pickup: true
+
+# 音效相关
+# Enabled 为各个音效开关
+# Value 填入 [音效名:音量:音调]
+Sound:
+  # 菜单打开的音效
+  Menu_open:
+    Enabled: true
+    Value: 'BLOCK_SHULKER_BOX_OPEN:1:1'
+  # 仓库打开的音效
+  Vault_open:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_OPEN:1:1.03'
+  # 仓库关闭的音效
+  Vault_close:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_CLOSE:1:1.03'
+  # 进行菜单切换时的音效
+  Menu_switch:
+    Enabled: true
+    Value: 'ITEM_BOOK_PAGE_TURN:1:1-2'
+  # 自动拾取时的音效
+  Auto_pickup:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1-2'
+  # MM掉落发送仓库时的音效
+  Loot_send:
+    Enabled: true
+    Value: 'ENTITY_PLAYER_LEVELUP:1:1-2'
+  # 使用兑换券成功时的音效
+  Voucher_use:
+    Enabled: true
+    Value: 'UI_TOAST_CHALLENGE_COMPLETE:1:1'
+  # 需要聊天栏输入时的音效
+  Type_chatbar:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1'
+
+# 仓库设置
+Inventory:
+  # 物品材质黑名单
+  Blacklist:
+    - 'BARRIER'
+  # 物品Lore检测的黑名单
+  Lore_blacklist:
+    - '不可放入仓库'
+  # 自动拾取掉落物功能
+  Auto_pickup:
+    # 功能开关
+    enabled: false
+    # 拾取提示使用ActionBar (经验条上方)
+    action_bar: true
+    # 检测的Lore
+    detected_lore:
+      - '稀有度'
+    # 是否拾取对应的物品材质掉落物 (该项不受lore限制)
+    material_pickup: false
+    # 物品材质列表是否反转 (true则为黑名单[即不拾取列表内物品])
+    list_reverse: false
+    # 自动拾取物品材质的黑/白名单
+    detected_material:
+      - 'STONE'
+
+
+# 当执行/inv vault [give/append] 给予玩家仓库时运行的命令
+# 当使用兑换券时运行的命令
+# 可用于获得仓库的全服广播
+Send-vault:
+  Enabled: false
+  Command:
+    Large-vault:
+      - 'broadcast &a恭喜玩家 &f%target% &a获得了大型仓库 %vault_num%'
+    Medium-vault:
+      - 'broadcast &a恭喜玩家 &f%target% &a获得了中型仓库 %vault_num%'
+
+
+# 使用指令打开仓库后 是否再返回菜单
+# Menu不可为空 可随便填一个值
+Command:
+  # 返回插件的菜单
+  Return_menu:
+    Enabled: false
+    Menu: 'Main'
+  # 返回时执行命令 ([player] 玩家 [op] OP [console] 控制台)
+  # 替换 %player% 为玩家名
+  # 支持 PAPI 变量
+  # 默认[player]
+  Return_command:
+    Enabled: false
+    Command: '[player] inv'
+
+# 当玩家拥有权限: playerinv.death.store
+# 玩家死亡后 物品会存储到大型仓库中
+#
+# 默认会检测玩家所在世界是否开启游戏规则: 死亡不掉落
+#
+# 若 ignore-keepInventory 开启, 如果物品仍然在死亡后掉落
+# 这些物品仍会被收纳至仓库
+Player-death-store:
+  Enabled: false
+  ignore-keepInventory: false
+
+
+# 开启后 插件将会使用 Luckperms API进行权限给予
+# 请确保 Luckperms 已经安装
+# 开启后将适用于权限给予以及限时权限给予
+Luckperms-give-permissions: false
+
+
+# Luckperms-proxy-support 目的是为了作对子服的权限限制
+# 若 Luckperms 使用了 MySQL 存储, 则无需开启
+Luckperms-proxy-support: false
+Sync-server:
+  - 'global'
+
+DataBases:
+  MySQL: false
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  database: playerinv
+  maxPoolSize: 50
+  minIdle: 25
+  allowPublicKeyRetrieval: false
+  useSSL: true

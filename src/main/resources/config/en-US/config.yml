@@ -1,0 +1,160 @@
+# Plugin Prefix
+Prefix: '&f[&ePlayerInv&f] '
+
+# Text Language
+Language: 'en-US'
+
+# Debug mode
+Debug-mode: false
+
+# clear broken items when the data broken
+Clear_item_when_error: false
+
+# Replace variable in mainGUI: %vault_expiry%
+# Only support: Luckperms_permission_give
+Replace_expiry_variable: false
+
+# Allow player move their slot-items in GUI
+Allow_click_in_menu: true
+
+# custom title apply to vault title
+Custom_title_replace_gui_title: true
+
+check-update: true
+
+Function:
+  # Open Vault-GUI by enderchest (permission: playerinv.enderchest.open)
+  Enderchest_open: false
+
+
+Menu:
+  Open_main: 'Main'
+
+Sound:
+  Menu_open:
+    Enabled: true
+    Value: 'BLOCK_SHULKER_BOX_OPEN:1:1'
+  Vault_open:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_OPEN:1:1.03'
+  Vault_close:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_CLOSE:1:1.03'
+  Menu_switch:
+    Enabled: true
+    Value: 'ITEM_BOOK_PAGE_TURN:1:1-2'
+  Auto_pickup:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1-2'
+  Loot_send:
+    Enabled: true
+    Value: 'ENTITY_PLAYER_LEVELUP:1:1-2'
+  Voucher_use:
+    Enabled: true
+    Value: 'UI_TOAST_CHALLENGE_COMPLETE:1:1'
+  Type_chatbar:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1'
+
+# Voucher settings
+Voucher:
+  large:
+    material: PAPER
+    enchant-glow: true
+    custom-model-data: 0
+  medium:
+    material: PAPER
+    enchant-glow: true
+    custom-model-data: 0
+  Title: true
+  Set-owner: true
+
+# Customize vault amount
+Vault:
+  Name_change: true
+  Large_amount: 36
+  Medium_amount: 27
+  Event:
+    Place: true
+    Pickup: true
+
+
+# Vault Settings
+Inventory:
+  Blacklist:
+    - 'BARRIER'
+  Lore_blacklist:
+    - 'Cannot put into vault'
+  Auto_pickup:
+    enabled: false
+    action_bar: true
+    detected_lore:
+      - 'Rarity'
+    material_pickup: false
+    list_reverse: false
+    detected_material:
+      - 'STONE'
+
+# When use command run: /inv vault [give/append]
+# When use the vouchers run
+# Can be used to obtain a server broadcast of the vault
+Send-vault:
+  Enabled: false
+  Command:
+    Large-vault:
+      - 'broadcast &aCongratulations to player &f%target% &aget a large-vault %vault_num%'
+    Medium-vault:
+      - 'broadcast &aCongratulations to player &f%target% &aget a medium-vault %vault_num%'
+
+# Return to the main menu when closing the vault GUI
+# Players can control it through the command: /inv return toggle
+Return-to-main:
+  Enabled: true
+
+# Use command to open vault and return menu when close
+Command:
+  Return_menu:
+    Enabled: false
+    Menu: 'Main'
+  # Run command when return
+  # Replace %player% to player's name
+  # Supported PAPI
+  # Default: [player]
+  Return_command:
+    Enabled: false
+    Command: '[player] inv'
+
+# When the player has the permission playerinv.death.store
+# Can store dropped items in the vault when player death
+#
+# By default, it will detect whether the player's world has enabled GameRules: keepInventory
+#
+# When ignore-keepInventory enabled, If the item still falls after death
+# These items will still be stored in the vault
+Player-death-store:
+  Enabled: false
+  ignore-keepInventory: false
+
+# The plugin will use the Luckperms API to give permissions
+# Please ensure that Luckperms is installed
+# Only applicable to giving permissions within a single server
+# Using for permission expiry or not
+Luckperms-give-permissions: false
+
+
+# If Luckperms use MySQL, keep disabled
+Luckperms-proxy-support: false
+Sync-server:
+  - 'global'
+
+DataBases:
+  MySQL: false
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  database: playerinv
+  maxPoolSize: 50
+  minIdle: 25
+  allowPublicKeyRetrieval: false
+  useSSL: true
