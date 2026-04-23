@@ -10,9 +10,6 @@
 * Supported MySQL,SQLite
 * Highly customizable GUI
 * Supported use vouchers to get vault
-* Use ItemSwapItem Key(Default F) to open Main GUI
-* Supported KeyOpen Toggle
-* Supported ReturnMain Toggle
 * Supported check vault when player offline or online (OP)
 * Supported change vault when player offline or online (OP)
 * Base64 Code to storge Inventory, High Security
