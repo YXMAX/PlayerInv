@@ -5,7 +5,7 @@
 
 ## ✨ Plugin Features
 
-* Supported Version 1.12.X-1.20.X
+* Supported Version 1.12.X-26.X
 * Supported Spigot,PaperSpigot,CatServer,Folia,Arclight,Purpur
 * Supported MySQL,SQLite
 * Highly customizable GUI
