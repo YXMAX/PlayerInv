@@ -373,10 +373,10 @@ public class CommandHandler implements CommandExecutor , TabExecutor {
                                 return true;
                             }
                             if(args[1].equalsIgnoreCase("large")){
-                                vaultManager.openStorageVault(player1,1,Integer.parseInt(args[2]),null,true);
+                                vaultManager.openStorageVault(player1,1,Integer.parseInt(args[2]),true);
                                 return true;
                             } else if(args[1].equalsIgnoreCase("medium")){
-                                vaultManager.openStorageVault(player1,2,Integer.parseInt(args[2]),null,true);
+                                vaultManager.openStorageVault(player1,2,Integer.parseInt(args[2]),true);
                                 return true;
                             } else {
                                 sendMessages(commandSender, Unknown_number);

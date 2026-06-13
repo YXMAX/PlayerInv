@@ -65,13 +65,14 @@ public class NodeUtil {
         }
     }
 
-    public static InventoryContainer inventoryFromBase64_LargeCache(String data, int vault_num, String player) {
-        InventoryContainer container = new InventoryContainer();
+    public static InventoryContainer inventoryFromBase64_LargeCache(String data, int vault_num, Player player) {
+        InventoryContainer container = new InventoryContainer(1);
         try {
+            VaultHolder_Large holder = new VaultHolder_Large(vault_num);
+            holder.setContainer(container);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(decompress(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            Inventory inventory = getServer().createInventory(null, dataInput.readInt(), "CLONE");
-            container.setInventory(inventory);
+            Inventory inventory = getServer().createInventory(holder, dataInput.readInt(), color(vaultAttributesManager.replaceVaultTitle(player,1,vault_num)));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
                 ItemStack item = null;
@@ -91,6 +92,7 @@ public class NodeUtil {
                 }
                 inventory.setItem(i, item);
             }
+            container.setInventory(inventory);
             dataInput.close();
             return container;
         } catch( IOException | IllegalArgumentException e) {
@@ -101,13 +103,14 @@ public class NodeUtil {
         }
     }
 
-    public static InventoryContainer inventoryFromBase64_MediumCache(String data, int vault_num,String player) {
-        InventoryContainer container = new InventoryContainer();
+    public static InventoryContainer inventoryFromBase64_MediumCache(String data, int vault_num,Player player) {
+        InventoryContainer container = new InventoryContainer(2);
         try {
+            VaultHolder_Medium holder = new VaultHolder_Medium(vault_num);
+            holder.setContainer(container);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(decompress(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            Inventory inventory = getServer().createInventory(null, dataInput.readInt(), "CLONE");
-            container.setInventory(inventory);
+            Inventory inventory = getServer().createInventory(holder, dataInput.readInt(), color(vaultAttributesManager.replaceVaultTitle(player,2,vault_num)));
             // Read the serialized inventory
             for (int i = 0; i < inventory.getSize(); i++) {
                 ItemStack item = null;
@@ -127,6 +130,7 @@ public class NodeUtil {
                 }
                 inventory.setItem(i, item);
             }
+            container.setInventory(inventory);
             dataInput.close();
             return container;
         } catch( IOException | IllegalArgumentException e) {
@@ -135,6 +139,10 @@ public class NodeUtil {
             container.setError();
             return null;
         }
+    }
+
+    public static InventoryContainer inventoryFromBase64_Cache(String data,int vault_type, int vault_num, Player player) {
+        return vault_type == 1 ? inventoryFromBase64_LargeCache(data,vault_num,player) : inventoryFromBase64_MediumCache(data,vault_num,player);
     }
 
     public static CheckVaultHolder inventoryFromBase64_Check(OfflinePlayer target,String data,int type,int vault_num,Inventory back_inventory) {
@@ -443,7 +451,9 @@ public class NodeUtil {
         }
         for(String cmd : cmd_list){
             String rcmd = cmd.replaceAll("%target%",player).replaceAll("%vault_num%", String.valueOf(vault_num));
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),rcmd);
+            scheduler.scheduling().globalRegionalScheduler().run(task -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),rcmd);
+            });
         }
     }
 
@@ -458,7 +468,9 @@ public class NodeUtil {
         }
         for(String cmd : cmd_list){
             String rcmd = cmd.replaceAll("%target%",player).replaceAll("%vault_num%", String.valueOf(vault_num));
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),rcmd);
+            scheduler.scheduling().globalRegionalScheduler().run(task -> {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),rcmd);
+            });
         }
     }
 
@@ -717,7 +729,10 @@ public class NodeUtil {
                     }
                     return;
                 case 3:
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(),run);
+                    String result = run;
+                    scheduler.scheduling().globalRegionalScheduler().run(task -> {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),result);
+                    });
                     return;
                 default:
                     player.performCommand(run);

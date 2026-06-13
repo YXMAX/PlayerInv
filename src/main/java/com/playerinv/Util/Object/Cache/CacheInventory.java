@@ -1,6 +1,5 @@
 package com.playerinv.Util.Object.Cache;
 
-import com.playerinv.Util.NodeUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -8,7 +7,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.playerinv.PlayerInv.jdbcUtil;
-import static com.playerinv.Util.InitUtil.scheduler;
 import static com.playerinv.Util.NodeUtil.*;
 
 public class CacheInventory {
@@ -25,37 +23,33 @@ public class CacheInventory {
 
     public CacheInventory(Player player) {
         this.uuid = player.getUniqueId().toString();
-        scheduler.scheduling().entitySpecificScheduler(player).runDelayed(task -> {
-            this.locale = player.getLocale();
-            sendLog("Got player locale: " + this.locale);
-        }, null,15);
+        this.locale = player.getLocale();
+        sendLog("获取到玩家语言: " + this.locale);
         CompletableFuture<Void> largeFuture = CompletableFuture.runAsync(() -> {
             LinkedHashMap<Integer, InventoryContainer> large = jdbcUtil.getFullLargeInventoryAsync(player);
             if (large == null) {
-                sendError(player.getName() + " 's UUID: " + this.uuid);
-                sendError(player.getName() + " 's get data failed! pls check the database connection!");
+                sendError("玩家 " + player.getName() + " 的UUID: " + this.uuid);
+                sendError("玩家 " + player.getName() + " 的大型仓库数据获取失败! 请检查数据库连接以及是否可用");
                 return;
             }
             large_map = new LinkedHashMap<>();
-            String locale = player.getLocale();
             if (!large.isEmpty()) {
                 for (Map.Entry<Integer, InventoryContainer> entry : large.entrySet()) {
-                    large_map.put(entry.getKey(), new VaultStatistics(uuid, entry.getValue(), 1, entry.getKey(), locale));
+                    large_map.put(entry.getKey(), new VaultStatistics(uuid, entry.getValue(), 1, entry.getKey(), this.locale));
                 }
             }
         });
         CompletableFuture<Void> mediumFuture = CompletableFuture.runAsync(() -> {
             LinkedHashMap<Integer, InventoryContainer> medium = jdbcUtil.getFullMediumInventoryAsync(player);
             if (medium == null) {
-                sendError(player.getName() + " 's UUID: " + this.uuid);
-                sendError(player.getName() + " 's get data failed! pls check the database connection!");
+                sendError("玩家 " + player.getName() + " 的UUID: " + this.uuid);
+                sendError("玩家 " + player.getName() + " 的中型仓库数据获取失败! 请检查数据库连接以及是否可用");
                 return;
             }
             medium_map = new LinkedHashMap<>();
-            String locale = player.getLocale();
             if (!medium.isEmpty()) {
                 for (Map.Entry<Integer, InventoryContainer> entry : medium.entrySet()) {
-                    medium_map.put(entry.getKey(), new VaultStatistics(uuid, entry.getValue(), 2, entry.getKey(), locale));
+                    medium_map.put(entry.getKey(), new VaultStatistics(uuid, entry.getValue(), 2, entry.getKey(), this.locale));
                 }
             }
         });
@@ -150,21 +144,54 @@ public class CacheInventory {
         }
     }
 
-    public void syncAndUpload(int type,int num,Inventory inventory){
-        this.getOrCreateVaultStats(type,num).syncCacheAndUpload(inventory);
+    public void syncContentsAndUpload(int type, int num, Inventory inventory){
+        this.getOrCreateVaultStats(type,num).syncContentsAndUpload(inventory);
+    }
+
+    public void uploadCache(int type,int num){
+        this.getOrCreateVaultStats(type,num).uploadCache();
     }
 
     public void syncFromDatabase(int type,int num){
         this.getVaultStatistics(type,num).syncInventoryFromDatabase();
     }
 
+    public void insertInventoryContainer(int type, int num, InventoryContainer container){
+        this.getOrCreateVaultStats(type,num).setInventoryContainer(container);
+    }
+
     public List<String> getAllInventorySQL(){
         List<String> list = new ArrayList<>();
         for(VaultStatistics vaultStatistics : large_map.values()){
-            list.add(vaultStatistics.getSQL());
+            String sql = vaultStatistics.getSQL();
+            if(sql != null){
+                list.add(sql);
+            }
         }
         for(VaultStatistics vaultStatistics : medium_map.values()){
-            list.add(vaultStatistics.getSQL());
+            String sql = vaultStatistics.getSQL();
+            if(sql != null){
+                list.add(sql);
+            }
+        }
+        return list;
+    }
+
+    public List<String> getPendingUploadSQLs(){
+        List<String> list = new ArrayList<>();
+        if(large_map != null){
+            for(VaultStatistics vs : large_map.values()){
+                if(!vs.sync.get() && vs.getInventoryContainer() != null && !vs.getInventoryContainer().isNull()){
+                    list.add(vs.takeUploadSQL());
+                }
+            }
+        }
+        if(medium_map != null){
+            for(VaultStatistics vs : medium_map.values()){
+                if(!vs.sync.get() && vs.getInventoryContainer() != null && !vs.getInventoryContainer().isNull()){
+                    list.add(vs.takeUploadSQL());
+                }
+            }
         }
         return list;
     }

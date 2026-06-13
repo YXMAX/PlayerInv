@@ -37,10 +37,7 @@ public class VaultStorageListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            int vault_num = ((VaultHolder_Large) event.getInventory().getHolder()).getNum();
-            scheduler.scheduling().asyncScheduler().runDelayed(() -> {
-                cacheInventoryManager.syncInventoryAndUpload(player,1,vault_num,event.getInventory());
-            },Duration.ofMillis(5));
+            ((VaultHolder_Large) event.getInventory().getHolder()).update(player);
             return;
         }
         if (event.getInventory().getHolder() instanceof VaultHolder_Medium){
@@ -50,55 +47,17 @@ public class VaultStorageListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            int vault_num = ((VaultHolder_Medium) event.getInventory().getHolder()).getNum();
-            scheduler.scheduling().asyncScheduler().runDelayed(() -> {
-                cacheInventoryManager.syncInventoryAndUpload(player,2,vault_num,event.getInventory());
-            },Duration.ofMillis(5));
+            ((VaultHolder_Medium) event.getInventory().getHolder()).update(player);
             return;
         }
     }
-
-//    @EventHandler
-//    public void onInvCloseUnusualEvent(InventoryOpenEvent event){
-//        Player player = (Player) event.getPlayer();
-//        if(VaultAccess_List.containsKey(player.getName())){
-//            sendLog(player.getName() + " close unusual!! save temp to databases");
-//            String[] split = VaultAccess_List.get(player.getName()).split(":");
-//            int num = Integer.parseInt(split[1]);
-//            switch(split[0].toLowerCase()){
-//                case "medium":
-//                    Inventory inv = MediumInventoryCache.getIfPresent(player.getUniqueId().toString() + ":" + num);
-//                    if(inv == null){
-//                        VaultAccess_List.remove(player.getName());
-//                        return;
-//                    }
-//                    operationManager.updateVault(2,player.getUniqueId().toString(),inv,num);
-//                    MediumInventoryCache.invalidate(player.getUniqueId().toString() + ":" + num);
-//                    VaultAccess_List.remove(player.getName());
-//                    return;
-//                case "large":
-//                default:
-//                    Inventory inv2 = LargeInventoryCache.getIfPresent(player.getUniqueId().toString() + ":" + num);
-//                    if(inv2 == null){
-//                        VaultAccess_List.remove(player.getName());
-//                        return;
-//                    }
-//                    operationManager.updateVault(1,player.getUniqueId().toString(),inv2,num);
-//                    LargeInventoryCache.invalidate(player.getUniqueId().toString() + ":" + num);
-//                    VaultAccess_List.remove(player.getName());
-//                    return;
-//            }
-//        }
-//    }
 
     @EventHandler
     public void onVaultStorageClose(InventoryCloseEvent event){
         Player player = (Player) event.getPlayer();
         if (event.getInventory().getHolder() instanceof VaultHolder_Large){
-//            VaultAccess_List.remove(player.getName());
             VaultHolder_Large holder = (VaultHolder_Large) event.getInventory().getHolder();
-//            operationManager.updateVault(1,player.getUniqueId().toString(),event.getInventory(),holder.getNum());
-
+            holder.update(player);
             VaultCloseEvent closeEvent = new VaultCloseEvent(player,event.getInventory(), VaultType.LARGE, holder.getNum());
             Bukkit.getPluginManager().callEvent(closeEvent);
 
@@ -107,10 +66,8 @@ public class VaultStorageListener implements Listener {
             return;
         }
         if (event.getInventory().getHolder() instanceof VaultHolder_Medium){
-//            VaultAccess_List.remove(player.getName());
             VaultHolder_Medium holder = (VaultHolder_Medium) event.getInventory().getHolder();
-//            operationManager.updateVault(2,player.getUniqueId().toString(),event.getInventory(),holder.getNum());
-
+            holder.update(player);
             VaultCloseEvent closeEvent = new VaultCloseEvent(player,event.getInventory(), VaultType.MEDIUM, holder.getNum());
             Bukkit.getPluginManager().callEvent(closeEvent);
 
@@ -319,6 +276,7 @@ public class VaultStorageListener implements Listener {
                 VaultHolder_Large holder = (VaultHolder_Large) event.getInventory().getHolder();
                 Player player = (Player) event.getWhoClicked();
                 if(player.hasPermission("playerinv.vault.event.place.ignore")){
+                    holder.update(player);
                     return;
                 }
                 if(!vaultPlaceEvent){
@@ -327,7 +285,10 @@ public class VaultStorageListener implements Listener {
                 }
                 if(holder.isOnlyPickup()){
                     event.setCancelled(true);
+                    return;
                 }
+                holder.update(player);
+                return;
             }
         }
         if(event.getInventory().getHolder() instanceof VaultHolder_Medium) {
@@ -335,6 +296,7 @@ public class VaultStorageListener implements Listener {
                 VaultHolder_Medium holder = (VaultHolder_Medium) event.getInventory().getHolder();
                 Player player = (Player) event.getWhoClicked();
                 if(player.hasPermission("playerinv.vault.event.place.ignore")){
+                    holder.update(player);
                     return;
                 }
                 if(!vaultPlaceEvent){
@@ -343,7 +305,10 @@ public class VaultStorageListener implements Listener {
                 }
                 if(holder.isOnlyPickup()){
                     event.setCancelled(true);
+                    return;
                 }
+                holder.update(player);
+                return;
             }
         }
     }

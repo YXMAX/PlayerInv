@@ -145,7 +145,7 @@ public class JDBCUtil {
             }
             while(rs.next()){
                 int num = rs.getInt("num");
-                InventoryContainer inventory = NodeUtil.inventoryFromBase64_LargeCache(rs.getString("inv"),num,player.getName());
+                InventoryContainer inventory = NodeUtil.inventoryFromBase64_LargeCache(rs.getString("inv"),num,player);
                 map.put(num,inventory);
             }
             rs.close();
@@ -175,7 +175,7 @@ public class JDBCUtil {
             }
             while(rs.next()){
                 int num = rs.getInt("num");
-                InventoryContainer inventory = NodeUtil.inventoryFromBase64_MediumCache(rs.getString("inv"),num,player.getName());
+                InventoryContainer inventory = NodeUtil.inventoryFromBase64_MediumCache(rs.getString("inv"),num,player);
                 map.put(num,inventory);
             }
             rs.close();
@@ -228,7 +228,7 @@ public class JDBCUtil {
 
         for (RawInventory data : rawDataList) {
             CompletableFuture<InventoryContainer> future = CompletableFuture.supplyAsync(() -> {
-                return NodeUtil.inventoryFromBase64_LargeCache(data.invBase64, data.num, player.getName());
+                return NodeUtil.inventoryFromBase64_LargeCache(data.invBase64, data.num, player);
             },LARGE_DECODER_POOL);
 
             futureMap.put(data.num, future);
@@ -301,7 +301,7 @@ public class JDBCUtil {
 
         for (RawInventory data : rawDataList) {
             CompletableFuture<InventoryContainer> future = CompletableFuture.supplyAsync(() -> {
-                return NodeUtil.inventoryFromBase64_MediumCache(data.invBase64, data.num, player.getName());
+                return NodeUtil.inventoryFromBase64_MediumCache(data.invBase64, data.num, player);
             },MEDIUM_DECODER_POOL);
 
             futureMap.put(data.num, future);
@@ -446,7 +446,8 @@ public class JDBCUtil {
         });
     }
 
-    public void updateVaultBatch(List<String> list){
+    public CompletableFuture<Void> updateVaultBatch(List<String> list){
+        CompletableFuture<Void> future = new CompletableFuture<>();
         try {
             Connection con = ds.getConnection();
             con.setAutoCommit(false);
@@ -458,17 +459,18 @@ public class JDBCUtil {
             con.commit();
             stmt.close();
             con.close();
+            future.complete(null);
         } catch (SQLTransientConnectionException e) {
             NodeUtil.sendSQLConnectionError("updateVaultBatch",e.toString());
             JDBCUtil.closeMySQLInteract();
         } catch (SQLException e) {
             NodeUtil.sendSQLError("updateVaultBatch",e.toString());
         }
+        return future;
     }
 
-    public void updateVaultByCache(int type, String uuid, Inventory inventory, int num){
+    public void updateVaultByCache(int type, String uuid, String inv_string, int num){
         CompletableFuture.runAsync(() -> {
-            String inv_string = inventoryToBase64(inventory);
             try {
                 Connection con = ds.getConnection();
                 String vault_type = null;
@@ -486,10 +488,14 @@ public class JDBCUtil {
                 pst.setString(1, inv_string);
                 pst.setString(2, uuid);
                 pst.setInt(3, num);
-                pst.executeUpdate();
+                int i = pst.executeUpdate();
+                if(i == 1){
+                    sendLog("仓库缓存上传成功: " + type + "//" + uuid + ":" + num + " (" + inv_string.length() + ")");
+                } else {
+                    sendLog("仓库缓存上传失败?: " + type + "//" + uuid + ":" + num);
+                }
                 pst.close();
                 con.close();
-                sendLog("VaultCache upload success: " + type + "//" + uuid + ":" + num);
             } catch (SQLTransientConnectionException e) {
                 NodeUtil.sendSQLConnectionError("updateVaultByCache",e.toString());
                 JDBCUtil.closeMySQLInteract();
@@ -808,7 +814,7 @@ public class JDBCUtil {
     }
 
     public void createIndex(){
-        for(int i=1;i<=3;i++){
+        for(int i=1;i<=2;i++){
             String table = null;
             String index = null;
             switch(i){
@@ -820,10 +826,6 @@ public class JDBCUtil {
                     index = "medium_index";
                     table = "vault_medium";
                     break;
-                case 3:
-                    index = "name_index";
-                    table = "vault_name";
-                    break;
             }
             try {
                 Connection con = ds.getConnection();
@@ -833,12 +835,22 @@ public class JDBCUtil {
                 statement.close();
                 con.close();
             } catch (SQLException e) {
-                return;
+                continue;
             }
         }
     }
 
     public void createUniqueIndex(){
+        try {
+            Connection con = ds.getConnection();
+            String sql = "CREATE UNIQUE INDEX name_key ON vault_name (uuid)";
+            Statement statement = con.createStatement();
+            statement.executeUpdate(sql);
+            statement.close();
+            con.close();
+        } catch (SQLException e) {
+
+        }
         try {
             Connection con = ds.getConnection();
             String sql = "CREATE UNIQUE INDEX pickup_key ON pickup_toggle (uuid)";
@@ -847,7 +859,7 @@ public class JDBCUtil {
             statement.close();
             con.close();
         } catch (SQLException e) {
-            return;
+
         }
     }
 }

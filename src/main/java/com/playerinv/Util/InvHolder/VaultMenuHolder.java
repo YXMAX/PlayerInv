@@ -101,7 +101,10 @@ public class VaultMenuHolder implements InventoryHolder {
                     reset_string = reset_string.trim();
                     switch(command_detail[0]){
                         case "console":
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),reset_string);
+                            String result = reset_string;
+                            scheduler.scheduling().globalRegionalScheduler().run(task -> {
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),result);
+                            });
                             return;
                         case "op":
                             if(player.isOp()){
@@ -136,7 +139,7 @@ public class VaultMenuHolder implements InventoryHolder {
         }
         switch(click_type){
             case "LEFT":
-                vaultManager.openStorageVault(player,type,vault_num,this.file_name,false);
+                vaultManager.openStorageVault(player,type,vault_num,false);
                 return;
             case "SHIFT_RIGHT":
                 if(!vaultNameChange){

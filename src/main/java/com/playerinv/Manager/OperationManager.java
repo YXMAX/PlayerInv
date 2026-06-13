@@ -1,8 +1,10 @@
 package com.playerinv.Manager;
 
 import com.google.common.collect.Iterables;
+import com.google.gson.Gson;
 import com.playerinv.Enums.LocaleEnums;
 import com.playerinv.Util.InitUtil;
+import com.playerinv.Util.InvHolder.*;
 import com.playerinv.Util.Object.Cache.CacheInventory;
 import com.playerinv.Util.Object.Cache.VaultStatistics;
 import com.playerinv.Util.PlaceHolder.PlaceholderTemp;
@@ -10,6 +12,8 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.*;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -28,7 +33,6 @@ import static com.playerinv.Util.JDBCUtil.ds;
 import static com.playerinv.Util.LoadUtil.*;
 import static com.playerinv.Util.LocaleUtil.*;
 import static com.playerinv.Util.NodeUtil.*;
-import static org.bukkit.Bukkit.getServer;
 
 public class OperationManager {
 
@@ -36,17 +40,69 @@ public class OperationManager {
 
     private static ExecutorService singleThreadForDeathStore = Executors.newSingleThreadExecutor();
 
+    private final Set<UUID> pendingSyncLoad = ConcurrentHashMap.newKeySet();
+
     public void initAttributes(Player player) {
         pickupManager.putToggle(player);
         vaultAttributesManager.insert(player);
     }
+
+    public void addPendingSync(Player player){
+        pendingSyncLoad.add(player.getUniqueId());
+    }
+
     public void loadCacheInventory(Player player){
-        cacheInventoryManager.put(player,new CacheInventory(player));
+        scheduler.scheduling().asyncScheduler().runDelayed(task -> {
+            if(pendingSyncLoad.remove(player.getUniqueId())){
+                if(player.isOnline() && !cacheInventoryManager.containsKey(player)){
+                    cacheInventoryManager.put(player, new CacheInventory(player));
+                }
+            }
+        }, Duration.ofSeconds(3));
+    }
+
+    public void onPlayerSavedSignal(String uuid){
+        Player player = Bukkit.getPlayer(UUID.fromString(uuid));
+        if(player == null || !player.isOnline()){
+            return;
+        }
+        if(pendingSyncLoad.remove(player.getUniqueId())){
+            if(!cacheInventoryManager.containsKey(player)){
+                cacheInventoryManager.put(player, new CacheInventory(player));
+            }
+        }
+    }
+
+    public void sendPlayerSavedSignal(String uuid){
+        try {
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(byteOut);
+            out.writeUTF("Forward");
+            out.writeUTF("ALL");
+            out.writeUTF("PlayerInvSaved");
+
+            ByteArrayOutputStream msgBytes = new ByteArrayOutputStream();
+            DataOutputStream msgOut = new DataOutputStream(msgBytes);
+            msgOut.writeUTF(uuid);
+
+            out.writeShort(msgBytes.toByteArray().length);
+            out.write(msgBytes.toByteArray());
+
+            Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+            if(player == null){
+                sendLog("目标服务器无玩家 未成功发送数据上传信号");
+                return;
+            }
+            player.sendPluginMessage(plugin, "BungeeCord", byteOut.toByteArray());
+            sendLog("发送数据上传完成信号至其他服务器");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeAttributes(Player player){
-        cacheInventoryManager.remove(player);
         vaultAttributesManager.remove(player);
+        cacheInventoryManager.flushAndRemove(player);
     }
 
     public void loadExpiry(Player player){
@@ -70,6 +126,7 @@ public class OperationManager {
     }
 
     public void sendCheckResult(int type,String uuid,int num){
+        sendLog("发送同步信息:" + uuid + ":" + num);
         try {
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(byteOut);
@@ -94,10 +151,11 @@ public class OperationManager {
 
             Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
             if(player == null){
+                sendLog("目标服务器无玩家 未成功发送更新Check数据信号");
                 return;
             }
             player.sendPluginMessage(plugin, "BungeeCord", byteOut.toByteArray());
-
+            sendLog("发送更新Check数据信号至其他服务器");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -112,6 +170,7 @@ public class OperationManager {
         if(player == null){
             return;
         }
+        sendLog("执行查询修改仓库后的同步:" + result);
         cacheInventoryManager.syncInventoryFromDatabase(player,type,num);
     }
 
@@ -119,7 +178,7 @@ public class OperationManager {
         CompletableFuture.runAsync(() -> {
             Player player = Bukkit.getPlayer(UUID.fromString(uuid));
             if(player != null){
-                cacheInventoryManager.syncInventoryAndUpload(player,type,num,inventory);
+                cacheInventoryManager.syncVaultContentsAndUpload(player,type,num,inventory);
                 return;
             }
             if(isMySQL){

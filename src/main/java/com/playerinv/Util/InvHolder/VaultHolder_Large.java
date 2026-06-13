@@ -1,42 +1,66 @@
 package com.playerinv.Util.InvHolder;
 
 import com.playerinv.Util.NodeUtil;
+import com.playerinv.Util.Object.Cache.InventoryContainer;
 import com.playerinv.Util.Scheduler.ReturnScheduler;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
+
+import static com.playerinv.PlayerInv.cacheInventoryManager;
+import static com.playerinv.Util.InitUtil.scheduler;
 import static com.playerinv.Util.LoadUtil.*;
+import static com.playerinv.Util.NodeUtil.sendLog;
 
 public class VaultHolder_Large implements InventoryHolder {
     @NotNull
     @Override
     public Inventory getInventory() {
-        return null;
+        return inventory;
     }
 
-    private int num;
+    private Inventory inventory;
 
-    private String menu_name;
+    private InventoryContainer container;
+
+    private int num;
 
     private boolean isCommand;
 
     private boolean onlyPickup;
 
-    public VaultHolder_Large(int num,String menu_name,boolean isCommand,boolean onlyPickup) {
-        this.menu_name = menu_name;
+    public VaultHolder_Large(int num) {
         this.num = num;
-        this.isCommand = isCommand;
+        this.inventory = null;
+    }
+
+    public void setIsCommand(boolean command) {
+        isCommand = command;
+    }
+
+    public void setOnlyPickup(boolean onlyPickup) {
         this.onlyPickup = onlyPickup;
     }
 
-    public String getMenu_name() {
-        return menu_name;
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public void setContainer(InventoryContainer container) {
+        this.container = container;
     }
 
     public int getNum() {
         return num;
+    }
+
+    public void update(Player player){
+        this.container.syncAndUpload(player,this.num);
     }
 
     public boolean isCommand() {

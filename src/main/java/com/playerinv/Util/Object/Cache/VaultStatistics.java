@@ -1,8 +1,8 @@
 package com.playerinv.Util.Object.Cache;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +10,9 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.playerinv.PlayerInv.*;
@@ -21,6 +23,8 @@ public class VaultStatistics {
 
     private InventoryContainer inventoryContainer;
 
+    private String locale;
+
     private String uuid;
 
     private int vaultType;
@@ -29,14 +33,17 @@ public class VaultStatistics {
 
     private int remain;
 
-    public AtomicInteger count = new AtomicInteger(0);
+    public AtomicInteger uploadCount = new AtomicInteger(0);
+
+    public AtomicBoolean sync = new AtomicBoolean(true);
 
     public VaultStatistics(String uuid, InventoryContainer inventoryContainer, int vaultType, int vaultNum, String locale) {
         this.uuid = uuid;
         this.inventoryContainer = inventoryContainer;
+        this.locale = locale;
         this.vaultType = vaultType;
         this.vaultNum = vaultNum;
-        this.count.set(0);
+        this.uploadCount.set(0);
         if(this.vaultType == 1){
             this.remain = 54;
         } else {
@@ -48,14 +55,19 @@ public class VaultStatistics {
     public VaultStatistics(String uuid,int vaultType,int vaultNum,String locale) {
         this.uuid = uuid;
         this.inventoryContainer = null;
+        this.locale = locale;
         this.vaultType = vaultType;
         this.vaultNum = vaultNum;
-        this.count.set(0);
+        this.uploadCount.set(0);
         if(this.vaultType == 1){
             this.remain = 54;
         } else {
             this.remain = 27;
         }
+    }
+
+    public void setInventoryContainer(InventoryContainer inventoryContainer) {
+        this.inventoryContainer = inventoryContainer;
     }
 
     private void resetRemain(){
@@ -66,42 +78,63 @@ public class VaultStatistics {
         }
     }
 
-    public void syncCacheAndUpload(Inventory inventory){
+    public void syncContentsAndUpload(Inventory inventory){
         if(this.inventoryContainer == null){
-            this.inventoryContainer = new InventoryContainer();
+            this.inventoryContainer = new InventoryContainer(this.vaultType,this.vaultNum,this.uuid,inventory);
         }
+        if(this.inventoryContainer.isNull()){
+            this.inventoryContainer.insertInventory(this.vaultNum,this.uuid,inventory);
+        }
+        this.sync.set(false);
         this.inventoryContainer.setContents(inventory.getContents());
-        int current = this.count.incrementAndGet();
+        int current = this.uploadCount.incrementAndGet();
         scheduler.scheduling().asyncScheduler().runDelayed(task -> {
-            if(this.count.get() != current){
+            if(this.uploadCount.get() != current){
                 task.cancel();
                 return;
             }
             this.refreshInventory();
-            jdbcUtil.updateVaultByCache(vaultType,uuid,this.inventoryContainer.getInventory(),vaultNum);
+            jdbcUtil.updateVaultByCache(vaultType,uuid,this.inventoryContainer.getStrings(),vaultNum);
+            this.sync.set(true);
+        }, Duration.ofMillis(1250));
+    }
+
+    public void uploadCache(){
+        this.sync.set(false);
+        int current = this.uploadCount.incrementAndGet();
+        scheduler.scheduling().asyncScheduler().runDelayed(task -> {
+            if(this.uploadCount.get() != current){
+                task.cancel();
+                return;
+            }
+            this.refreshInventory();
+            jdbcUtil.updateVaultByCache(vaultType,uuid,this.inventoryContainer.getStrings(),vaultNum);
+            this.sync.set(true);
         }, Duration.ofMillis(1250));
     }
 
     public void uploadAsync(){
-        int current = this.count.incrementAndGet();
+        this.sync.set(false);
+        int current = this.uploadCount.incrementAndGet();
         scheduler.scheduling().asyncScheduler().runDelayed(task -> {
-            if(this.count.get() != current){
+            if(this.uploadCount.get() != current){
                 task.cancel();
                 return;
             }
             this.refreshInventory();
-            jdbcUtil.updateVaultByCache(vaultType,uuid,this.inventoryContainer.getInventory(),vaultNum);
+            jdbcUtil.updateVaultByCache(vaultType,uuid,this.inventoryContainer.getStrings(),vaultNum);
+            this.sync.set(true);
         }, Duration.ofMillis(1250));
     }
 
     public void syncInventoryFromDatabase(){
         scheduler.scheduling().asyncScheduler().runDelayed(task -> {
             String vaultString = jdbcUtil.getVaultString(this.vaultType, this.uuid, this.vaultNum);
-            Inventory inventory = inventoryFromBase64_Basic(vaultString);
-            if(inventory == null){
+            InventoryContainer inventoryContainer = inventoryFromBase64_Cache(vaultString, this.vaultType, this.vaultNum, Bukkit.getPlayer(UUID.fromString(this.uuid)));
+            if(inventoryContainer == null){
                 return;
             }
-            this.inventoryContainer.getInventory().setContents(inventory.getContents());
+            this.inventoryContainer = inventoryContainer;
             this.refreshInventory();
         }, Duration.ofMillis(100));
     }
@@ -111,7 +144,18 @@ public class VaultStatistics {
     }
 
     public String getSQL(){
-        return "update " + this.getVaultType() + " set inv='" + inventoryToBase64(this.inventoryContainer.getInventory()) + "' where uuid='" + this.uuid + "' and num=" + this.vaultNum;
+        if(this.sync.get()){
+            return null;
+        }
+        sendLog("获取 " + this.vaultType + "//" + this.uuid + ":" + this.vaultNum + " 的仓库数据SQL");
+        return "update " + this.getVaultType() + " set inv='" + this.inventoryContainer.getStrings() + "' where uuid='" + this.uuid + "' and num=" + this.vaultNum;
+    }
+
+    public String takeUploadSQL(){
+        this.uploadCount.incrementAndGet();
+        this.sync.set(true);
+        sendLog("强制上传 " + this.vaultType + "//" + this.uuid + ":" + this.vaultNum + " 的仓库数据");
+        return "update " + this.getVaultType() + " set inv='" + this.inventoryContainer.getStrings() + "' where uuid='" + this.uuid + "' and num=" + this.vaultNum;
     }
 
     public Inventory getInventory() {
@@ -125,14 +169,7 @@ public class VaultStatistics {
     public void refreshInventory(){
         CompletableFuture.runAsync(() -> {
             this.resetRemain();
-            for(int i = 0; i< inventoryContainer.getInventory().getSize(); i++){
-                ItemStack stack = inventoryContainer.getInventory().getItem(i);
-                if(stack == null || stack.getType().equals(Material.AIR)){
-                    continue;
-                }
-                remain = remain - 1;
-            }
-            sendLog("Remain-slots calculation complete: " + this.vaultType + "//" + this.uuid + ":" + this.vaultNum);
+            sendLog("仓库空闲格数计算完毕: " + this.vaultType + "//" + this.uuid + ":" + this.vaultNum);
         });
     }
 

@@ -10,14 +10,12 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.playerinv.PlayerInv.jdbcUtil;
+import static com.playerinv.PlayerInv.operationManager;
+import static com.playerinv.Util.NodeUtil.sendLog;
 
 public class CacheInventoryManager {
 
-    public HashMap<UUID, CacheInventory> CacheInventoryMap;
-
-    public CacheInventoryManager() {
-        this.CacheInventoryMap = new HashMap<>();
-    }
+    private final HashMap<UUID, CacheInventory> CacheInventoryMap = new HashMap<>();
 
     public void put(Player player,CacheInventory cacheInventory){
         this.CacheInventoryMap.put(player.getUniqueId(),cacheInventory);
@@ -25,6 +23,22 @@ public class CacheInventoryManager {
 
     public void remove(Player player){
         this.CacheInventoryMap.remove(player.getUniqueId());
+    }
+
+    public void flushAndRemove(Player player){
+        CompletableFuture.runAsync(() -> {
+            CacheInventory cache = this.CacheInventoryMap.get(player.getUniqueId());
+            if(cache != null){
+                List<String> sqls = cache.getPendingUploadSQLs();
+                if(!sqls.isEmpty()){
+                    jdbcUtil.updateVaultBatch(sqls).thenRun(() -> {
+                        operationManager.sendPlayerSavedSignal(player.getUniqueId().toString());
+                    });
+                }
+            }
+            this.CacheInventoryMap.remove(player.getUniqueId());
+            sendLog("卸载玩家仓库数据缓存完成");
+        });
     }
 
     public boolean isCacheBroken(Player player){
@@ -47,19 +61,15 @@ public class CacheInventoryManager {
     }
 
     public CacheInventory get(Player player){
-        if(!this.CacheInventoryMap.containsKey(player.getUniqueId())){
-            CacheInventoryMap.put(player.getUniqueId(),new CacheInventory(player));
-            return null;
-        }
         return this.CacheInventoryMap.get(player.getUniqueId());
     }
 
-    public void syncInventoryAndUpload(Player player, int type, int num, Inventory inventory){
+    public void syncVaultContentsAndUpload(Player player, int type, int num, Inventory inventory){
         CacheInventory cacheInventory = this.get(player);
         if(cacheInventory == null){
             return;
         }
-        cacheInventory.syncAndUpload(type, num, inventory);
+        cacheInventory.syncContentsAndUpload(type, num, inventory);
     }
 
     public void syncInventoryFromDatabase(Player player, int type, int num){
@@ -70,9 +80,17 @@ public class CacheInventoryManager {
         cacheInventory.syncFromDatabase(type, num);
     }
 
+    public void insertInventoryContainer(Player player, int type, int num, InventoryContainer container){
+        CacheInventory cacheInventory = this.get(player);
+        if(cacheInventory == null){
+            return;
+        }
+        cacheInventory.insertInventoryContainer(type, num, container);
+    }
+
     public InventoryContainer getInventoryContainer(Player player, int type, int num){
         CacheInventory cacheInventory = this.get(player);
-        if(cacheInventory == null) return new InventoryContainer(true);
+        if(cacheInventory == null) return new InventoryContainer(type,true);
         return cacheInventory.getInventoryContainer(type,num);
     }
 
