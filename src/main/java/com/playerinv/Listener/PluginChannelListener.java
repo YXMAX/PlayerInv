@@ -27,11 +27,13 @@ public class PluginChannelListener implements PluginMessageListener {
 
             DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
             String data = msgin.readUTF(); // Read the data in the same way you wrote it
-            short somenumber = msgin.readShort();
 
-            sendLog("data: " + data);
             if(subChannel.equals("PlayerInvCheck")) {
+                sendLog("接收到PlayerInvCheck频道的数据");
                 operationManager.receiveCheckResult(data);
+            } else if(subChannel.equals("PlayerInvSaved")) {
+                sendLog("接收到PlayerInvSaved频道的数据: " + data);
+                operationManager.onPlayerSavedSignal(data);
             }
 
         } catch (Exception e) {

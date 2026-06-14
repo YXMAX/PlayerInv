@@ -42,9 +42,10 @@ public class OperationManager {
 
     private final Set<UUID> pendingSyncLoad = ConcurrentHashMap.newKeySet();
 
-    public void initAttributes(Player player) {
-        pickupManager.putToggle(player);
-        vaultAttributesManager.insert(player);
+    public CompletableFuture<Void> initAttributes(Player player) {
+        CompletableFuture<Void> f1 = pickupManager.putToggle(player);
+        CompletableFuture<Void> f2 = vaultAttributesManager.insert(player);
+        return CompletableFuture.allOf(f1,f2);
     }
 
     public void addPendingSync(Player player){

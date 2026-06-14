@@ -17,8 +17,8 @@ public class VaultAttributesManager {
         this.vaultAttributes = new HashMap<>();
     }
 
-    public void insert(Player player) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Void> insert(Player player) {
+        return CompletableFuture.runAsync(() -> {
             this.vaultAttributes.put(player, new VaultAttributes(player,jdbcUtil.getVaultName(player.getUniqueId().toString())));
         });
     }

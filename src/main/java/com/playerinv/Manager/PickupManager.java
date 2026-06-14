@@ -42,8 +42,8 @@ public class PickupManager {
         }
     }
 
-    public void putToggle(Player player){
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Void> putToggle(Player player){
+        return CompletableFuture.runAsync(() -> {
             if(NodeUtil.hasPermission(player, PermissionEnums.AUTO_PICKUP)){
                 pickupToggleMap.put(player.getUniqueId().toString(), jdbcUtil.getPickupToggle(player.getUniqueId().toString()));
             }

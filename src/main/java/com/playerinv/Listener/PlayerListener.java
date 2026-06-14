@@ -111,9 +111,11 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = (Player) event.getPlayer();
-        operationManager.initAttributes(player);
-        operationManager.loadCacheInventory(player);
+        operationManager.addPendingSync(player);
         operationManager.loadExpiry(player);
+        operationManager.initAttributes(player).thenRun(() -> {
+            operationManager.loadCacheInventory(player);
+        });
         if(player.isOp()){
             if(checkUpdate && has_update){
                 player.sendMessage(color(prefix + "&bThere is a newer version (" + newer_version + ") available:"));
