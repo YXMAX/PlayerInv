@@ -22,5 +22,8 @@
 * 管理员可查询玩家全部的仓库内容 可随意取出和放入
 * 支持 `MySQL` 存储，默认使用 `SQLite` 本地数据库存储
 
+## 开发者
+* [playerinv-api](https://github.com/YXMAX/playerinv-api)
+
 ## 📃 许可证
 [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)

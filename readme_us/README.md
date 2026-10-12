@@ -21,5 +21,8 @@ Provides players with unlimited storage vaults. Players can customize vault attr
 * Admins can query all vault contents of any player, with full take-out and deposit access
 * Supports `MySQL` storage; defaults to `SQLite` local database
 
+## Developer
+* [playerinv-api](https://github.com/YXMAX/playerinv-api)
+
 ## 📃 License
 [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html)
