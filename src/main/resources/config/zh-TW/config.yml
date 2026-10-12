@@ -1,0 +1,197 @@
+# 外掛前綴
+Prefix: '&f[&ePlayerInv&f] '
+
+# 使用的文字語言
+Language: 'zh-TW'
+
+# 開發者模式 非必要不要開啟
+Debug-mode: false
+
+# 物品反序列化失敗時的處理策略 (如物品包含伺服器不存在的附魔)
+# remove - 移除無效附魔,保留物品其它的資料
+# skip - 跳過該物品 該欄位變為空
+# deny - 直接報錯 禁止玩家開啟該倉庫 (預設)
+Invalid_item_policy: 'deny'
+
+# 將玩家對倉庫外掛的一些操作發送至控制台
+Player_operation_detail_console: true
+
+# 允許玩家在倉庫選單介面操作物品欄內的物品
+Allow_click_in_menu: true
+
+# 倉庫無權限時是否可拿取倉庫內物品
+Vault_can_pickup_no_permission: true
+
+# 功能開關
+Function:
+  # 終界箱開啟倉庫GUI功能開關 (需要權限 playerinv.enderchest.open)
+  Enderchest_open: false
+  # 關閉倉庫自動返回選單功能
+  Auto_return: false
+
+# 使用/inv時開啟的第一個選單
+Menu:
+  Open_main: 'Main'
+
+# 兌換券物品設定
+Voucher:
+  # 兌換券是否開啟使用
+  Enabled: true
+  # 大型倉庫兌換券
+  large:
+    # 物品材質
+    material: PAPER
+    # 是否附魔發光
+    enchant-glow: true
+    # 自訂模型資料
+    custom-model-data: 0
+  # 中型倉庫兌換券
+  medium:
+    # 物品材質
+    material: PAPER
+    # 是否附魔發光
+    enchant-glow: true
+    # 自訂模型資料
+    custom-model-data: 0
+  # 兌換券是否以掉落物形式給予 (若倉庫已滿 無論開關與否 物品都會以掉落物掉落)
+  Natural_drop: false
+  # 是否開啟使用兌換券時顯示的大標題
+  Title: true
+  # 是否開啟 兌換券識別券主名稱
+  Set-owner: true
+
+# 自訂倉庫數量
+Vault:
+  # 是否允許玩家可自訂倉庫名稱
+  Name_change: true
+  # 定義大型倉庫的最大數量
+  Large_amount: 36
+  # 定義中型倉庫的最大數量
+  Medium_amount: 27
+  # 倉庫行為設定
+  Event:
+    # 是否可放置物品到倉庫內
+    Place: true
+    # 是否可拿起倉庫內的物品
+    Pickup: true
+
+# 音效相關
+# Enabled 為各個音效開關
+# Value 填入 [音效名:音量:音調]
+Sound:
+  # 選單開啟的音效
+  Menu_open:
+    Enabled: true
+    Value: 'BLOCK_SHULKER_BOX_OPEN:1:1'
+  # 倉庫開啟的音效
+  Vault_open:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_OPEN:1:1.03'
+  # 倉庫關閉的音效
+  Vault_close:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_CLOSE:1:1.03'
+  # 進行選單切換時的音效
+  Menu_switch:
+    Enabled: true
+    Value: 'ITEM_BOOK_PAGE_TURN:1:1-2'
+  # 自動拾取時的音效
+  Auto_pickup:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1-2'
+  # 使用兌換券成功時的音效
+  Voucher_use:
+    Enabled: true
+    Value: 'UI_TOAST_CHALLENGE_COMPLETE:1:1'
+  # 需要聊天欄輸入時的音效
+  Type_chatbar:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1'
+
+# 倉庫設定
+Inventory:
+  # 物品材質黑名單
+  Blacklist:
+    - 'BARRIER'
+  # 物品Lore檢測的黑名單
+  Lore_blacklist:
+    - '不可放入倉庫'
+  Auto_pickup:
+    # 功能開關
+    enabled: false
+    # 拾取提示使用ActionBar (經驗條上方)
+    action_bar: true
+    # 檢測的Lore
+    detected_lore:
+      - '稀有度'
+    # 是否拾取對應的物品材質掉落物 (該項不受lore限制)
+    material_pickup: false
+    # 物品材質列表是否反轉 (true則為黑名單[即不拾取列表內物品])
+    list_reverse: false
+    # 自動拾取物品材質的黑/白名單
+    detected_material:
+      - 'STONE'
+
+
+# 當執行/inv vault [give/append] 給予玩家倉庫時執行的指令
+# 當使用兌換券時執行的指令
+# 可用於獲得倉庫的全服廣播
+Send-vault:
+  Enabled: false
+  Command:
+    Large-vault:
+      - '[console] broadcast &a恭喜玩家 &f%target% &a獲得了大型倉庫 %vault_num%'
+    Medium-vault:
+      - '[console] broadcast &a恭喜玩家 &f%target% &a獲得了中型倉庫 %vault_num%'
+
+
+# 使用指令開啟倉庫後 是否再返回選單
+# Menu不可為空 可隨便填一個值
+Command:
+  # 返回外掛的選單
+  Return_menu:
+    Enabled: false
+    Menu: 'Main'
+  # 返回時執行指令 ([player] 玩家 [op] OP [console] 控制台)
+  # 替換 %player% 為玩家名
+  # 支援 PAPI 變數
+  # 預設[player]
+  Return_command:
+    Enabled: false
+    Command: '[player] inv'
+
+# 當玩家擁有權限: playerinv.death.store
+# 玩家死亡後 物品會儲存到大型倉庫中
+#
+# 預設會檢測玩家所在世界是否開啟遊戲規則: 死亡不掉落
+#
+# 若 ignore-keepInventory 開啟, 如果物品仍然在死亡後掉落
+# 這些物品仍會被收納至倉庫
+Player-death-store:
+  Enabled: false
+  ignore-keepInventory: false
+
+
+# 開啟後 外掛將會使用 Luckperms API進行權限給予
+# 請確保 Luckperms 已經安裝
+# 開啟後將適用於權限給予以及限時權限給予
+Luckperms-give-permissions: false
+
+
+# Luckperms-proxy-support 目的是為了作對子服的權限限制
+# 若 Luckperms 使用了 MySQL 儲存, 則無需開啟
+Luckperms-proxy-support: false
+Sync-server:
+  - 'global'
+
+DataBases:
+  MySQL: false
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  database: playerinv
+  maxPoolSize: 50
+  minIdle: 25
+  allowPublicKeyRetrieval: false
+  useSSL: true

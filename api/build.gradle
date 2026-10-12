@@ -1,0 +1,57 @@
+plugins {
+    id("java")
+    id("maven-publish")
+}
+
+// JitPack 坐标: com.github.YXMAX:playerinv-api:<tag>
+// artifactId 由 api/settings.gradle 的 rootProject.name 决定
+group = "com.github.YXMAX"
+// API 版本独立于插件版本, 接口有变更时手动递增
+version = {rootProject.version}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc"
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        name = "spigotmc"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+}
+
+dependencies {
+    compileOnly "org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT"
+    compileOnly "org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+    // 缺少注释不应导致 JitPack 构建失败
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = 'playerinv-api'
+        }
+    }
+}

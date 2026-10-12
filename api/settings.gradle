@@ -1,0 +1,3 @@
+// 仅在 api 作为独立仓库(playerinv-api)被构建时生效, 主项目构建时会被忽略。
+// 该名称即 JitPack 产物的 artifactId, 需与公开仓库名一致。
+rootProject.name = 'playerinv-api'

@@ -1,0 +1,197 @@
+# Plugin prefix
+Prefix: '&f[&ePlayerInv&f] '
+
+# Text language in use
+Language: 'en-US'
+
+# Developer mode - do not enable unless necessary
+Debug-mode: false
+
+# Handling strategy when item deserialization fails (e.g. the item has an enchantment that does not exist on this server)
+# remove - remove the invalid enchantment, keep the rest of the item data
+# skip - skip the item, the slot becomes empty
+# deny - throw an error and prevent the player from opening that vault (default)
+Invalid_item_policy: 'deny'
+
+# Send some of the player's vault operations to the console
+Player_operation_detail_console: true
+
+# Allow players to operate items in their inventory while the vault menu is open
+Allow_click_in_menu: true
+
+# Whether items in the vault can be taken when the player has no permission for that vault
+Vault_can_pickup_no_permission: true
+
+# Feature toggles
+Function:
+  # Ender chest opens the vault GUI (requires permission playerinv.enderchest.open)
+  Enderchest_open: false
+  # Disable auto-return to the menu after closing a vault
+  Auto_return: false
+
+# The first menu opened by /inv
+Menu:
+  Open_main: 'Main'
+
+# Voucher item settings
+Voucher:
+  # Whether vouchers can be used
+  Enabled: true
+  # Large vault voucher
+  large:
+    # Item material
+    material: PAPER
+    # Whether the item has the enchantment glow
+    enchant-glow: true
+    # Custom model data
+    custom-model-data: 0
+  # Medium vault voucher
+  medium:
+    # Item material
+    material: PAPER
+    # Whether the item has the enchantment glow
+    enchant-glow: true
+    # Custom model data
+    custom-model-data: 0
+  # Whether vouchers are given as dropped items (if the vault is full the item is dropped regardless of this setting)
+  Natural_drop: false
+  # Whether to show the title when a voucher is used
+  Title: true
+  # Whether the voucher records the name of its owner
+  Set-owner: true
+
+# Custom vault amounts
+Vault:
+  # Whether players can set a custom vault name
+  Name_change: true
+  # Maximum number of large vaults
+  Large_amount: 36
+  # Maximum number of medium vaults
+  Medium_amount: 27
+  # Vault behaviour settings
+  Event:
+    # Whether items can be placed into the vault
+    Place: true
+    # Whether items can be taken out of the vault
+    Pickup: true
+
+# Sound settings
+# Enabled toggles each sound
+# Value takes the form [sound name:volume:pitch]
+Sound:
+  # Sound played when a menu is opened
+  Menu_open:
+    Enabled: true
+    Value: 'BLOCK_SHULKER_BOX_OPEN:1:1'
+  # Sound played when a vault is opened
+  Vault_open:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_OPEN:1:1.03'
+  # Sound played when a vault is closed
+  Vault_close:
+    Enabled: true
+    Value: 'BLOCK_ENDER_CHEST_CLOSE:1:1.03'
+  # Sound played when switching menus
+  Menu_switch:
+    Enabled: true
+    Value: 'ITEM_BOOK_PAGE_TURN:1:1-2'
+  # Sound played on auto pickup
+  Auto_pickup:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1-2'
+  # Sound played when a voucher is used successfully
+  Voucher_use:
+    Enabled: true
+    Value: 'UI_TOAST_CHALLENGE_COMPLETE:1:1'
+  # Sound played when chat input is required
+  Type_chatbar:
+    Enabled: true
+    Value: 'ENTITY_EXPERIENCE_ORB_PICKUP:1:1'
+
+# Vault settings
+Inventory:
+  # Item material blacklist
+  Blacklist:
+    - 'BARRIER'
+  # Blacklist for item lore detection
+  Lore_blacklist:
+    - 'Cannot be stored in the vault'
+  Auto_pickup:
+    # Feature toggle
+    enabled: false
+    # Show pickup notices on the ActionBar (above the experience bar)
+    action_bar: true
+    # Lore to detect
+    detected_lore:
+      - 'Rarity'
+    # Whether the matching item materials are picked up (not affected by the lore limit)
+    material_pickup: false
+    # Whether the material list is reversed (true makes it a blacklist, i.e. listed items are not picked up)
+    list_reverse: false
+    # Black/white list of item materials for auto pickup
+    detected_material:
+      - 'STONE'
+
+
+# Commands run when /inv vault [give/append] gives a player a vault
+# Commands run when a voucher is used
+# Can be used for server-wide broadcasts when a vault is obtained
+Send-vault:
+  Enabled: false
+  Command:
+    Large-vault:
+      - '[console] broadcast &aCongratulations to &f%target% &afor obtaining large vault %vault_num%'
+    Medium-vault:
+      - '[console] broadcast &aCongratulations to &f%target% &afor obtaining medium vault %vault_num%'
+
+
+# Whether to return to the menu after opening a vault with a command
+# Menu cannot be empty, any value will do
+Command:
+  # Return to the plugin's menu
+  Return_menu:
+    Enabled: false
+    Menu: 'Main'
+  # Command run on return ([player] player [op] OP [console] console)
+  # %player% is replaced with the player name
+  # PlaceholderAPI placeholders are supported
+  # Defaults to [player]
+  Return_command:
+    Enabled: false
+    Command: '[player] inv'
+
+# Applies when the player has the permission: playerinv.death.store
+# After the player dies, their items are stored in a large vault
+#
+# By default the plugin checks whether the keepInventory game rule is enabled in the player's world
+#
+# If ignore-keepInventory is enabled and items still drop on death,
+# those items will still be stored in the vault
+Player-death-store:
+  Enabled: false
+  ignore-keepInventory: false
+
+
+# When enabled, the plugin grants permissions through the Luckperms API
+# Make sure Luckperms is installed
+# Applies to both permanent and temporary permission grants
+Luckperms-give-permissions: false
+
+
+# Luckperms-proxy-support is intended for per-sub-server permission limits
+# If Luckperms uses MySQL storage, this does not need to be enabled
+Luckperms-proxy-support: false
+Sync-server:
+  - 'global'
+
+DataBases:
+  MySQL: false
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  database: playerinv
+  maxPoolSize: 50
+  minIdle: 25
+  allowPublicKeyRetrieval: false
+  useSSL: true
