@@ -3,7 +3,6 @@ package com.playerinv.Util.Yaml;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -41,7 +40,7 @@ public class CommentYamlConfiguration extends YamlConfiguration {
 
     @Override
     public void save(File file) throws IOException {
-        Validate.notNull(file, "File cannot be null");
+        Objects.requireNonNull(file, "File cannot be null");
         Files.createParentDirs(file);
         String data = this.saveToString();
 
@@ -73,7 +72,7 @@ public class CommentYamlConfiguration extends YamlConfiguration {
     }
 
     public static YamlConfiguration loadConfiguration(File file) {
-        Validate.notNull(file, "File cannot be null");
+        Objects.requireNonNull(file, "File cannot be null");
         YamlConfiguration config = new CommentYamlConfiguration();
         try {
             config.load(file);

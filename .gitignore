@@ -1,0 +1,28 @@
+# Gradle
+.gradle/
+build/
+**/build/
+OutPut/
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# Java build artifacts
+out/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Logs and local runtime files
+*.log
+logs/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini

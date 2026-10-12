@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public enum EnumEntity {
 
-    ITEM(EntityType.DROPPED_ITEM, "entity.Item.name"),
+    ITEM(resolve("DROPPED_ITEM", "ITEM"), "entity.Item.name"),
     EXPERIENCE_ORB(EntityType.EXPERIENCE_ORB, "entity.XPOrb.name"),
     SMALL_FIREBALL(EntityType.SMALL_FIREBALL, "entity.SmallFireball.name"),
     FIREBALL(EntityType.FIREBALL, "entity.Fireball.name"),
@@ -46,17 +46,17 @@ public enum EnumEntity {
     ZOMBIE(EntityType.ZOMBIE, "entity.Zombie.name"),
     SLIME(EntityType.SLIME, "entity.Slime.name"),
     GHAST(EntityType.GHAST, "entity.Ghast.name"),
-    ZOMBIE_PIGMAN(EntityType.valueOf("PIG_ZOMBIE"), "entity.PigZombie.name"),
+    ZOMBIE_PIGMAN(resolve("PIG_ZOMBIE", "ZOMBIFIED_PIGLIN"), "entity.PigZombie.name"),
     ENDERMAN(EntityType.ENDERMAN, "entity.Enderman.name"),
     ENDERMITE(EntityType.ENDERMITE, "entity.Endermite.name"),
     SILVERFISH(EntityType.SILVERFISH, "entity.Silverfish.name"),
     CAVE_SPIDER(EntityType.CAVE_SPIDER, "entity.CaveSpider.name"),
     BLAZE(EntityType.BLAZE, "entity.Blaze.name"),
     MAGMA_CUBE(EntityType.MAGMA_CUBE, "entity.LavaSlime.name"),
-    MOOSHROOM(EntityType.MUSHROOM_COW, "entity.MushroomCow.name"),
+    MOOSHROOM(resolve("MUSHROOM_COW", "MOOSHROOM"), "entity.MushroomCow.name"),
     VILLAGER(EntityType.VILLAGER, "entity.Villager.name"),
     IRON_GOLEM(EntityType.IRON_GOLEM, "entity.VillagerGolem.name"),
-    SNOW_GOLEM(EntityType.SNOWMAN, "entity.SnowMan.name"),
+    SNOW_GOLEM(resolve("SNOWMAN", "SNOW_GOLEM"), "entity.SnowMan.name"),
     ENDER_DRAGON(EntityType.ENDER_DRAGON, "entity.EnderDragon.name"),
     WITHER(EntityType.WITHER, "entity.WitherBoss.name"),
     WITCH(EntityType.WITCH, "entity.Witch.name"),
@@ -72,12 +72,12 @@ public enum EnumEntity {
     BAT(EntityType.BAT, "entity.Bat.name"),
     HORSE(EntityType.HORSE, "entity.Horse.name"),
     RABBIT(EntityType.RABBIT, "entity.Rabbit.name"),
-    BLOCK_OF_TNT(EntityType.PRIMED_TNT, "entity.PrimedTnt.name"),
+    BLOCK_OF_TNT(resolve("PRIMED_TNT", "TNT"), "entity.PrimedTnt.name"),
     FALLING_BLOCK(EntityType.FALLING_BLOCK, "entity.FallingSand.name"),
     MINECART(EntityType.MINECART, "entity.Minecart.name"),
-    MINECART_WITH_HOPPER(EntityType.MINECART_HOPPER, "entity.MinecartHopper.name"),
-    MINECART_WITH_CHEST(EntityType.MINECART_CHEST, "entity.MinecartChest.name"),
-    BOAT(EntityType.BOAT, "entity.Boat.name"),
+    MINECART_WITH_HOPPER(resolve("MINECART_HOPPER", "HOPPER_MINECART"), "entity.MinecartHopper.name"),
+    MINECART_WITH_CHEST(resolve("MINECART_CHEST", "CHEST_MINECART"), "entity.MinecartChest.name"),
+    BOAT(resolve("BOAT", "OAK_BOAT"), "entity.Boat.name"),
     POLAR_BEAR(EntityType.POLAR_BEAR, "entity.PolarBear.name"),
     ZOMBIE_VILLIGER(EntityType.ZOMBIE_VILLAGER, "entity.ZombieVillager.name"),
     ELDER_GUARDIAN(EntityType.ELDER_GUARDIAN, "entity.ElderGuardian.name"),
@@ -97,6 +97,14 @@ public enum EnumEntity {
     // Some entity subtypes are not included
 
     private static final Map<EntityType, EnumEntity> lookup = new HashMap<>();
+
+    private static EntityType resolve(String legacyName, String modernName) {
+        try {
+            return EntityType.valueOf(legacyName);
+        } catch (IllegalArgumentException ignored) {
+            return EntityType.valueOf(modernName);
+        }
+    }
 
     static {
         for (EnumEntity entity : EnumSet.allOf(EnumEntity.class))

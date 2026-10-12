@@ -43,8 +43,14 @@ public class PlayerListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event){
         Boolean value = false;
         if(isBelow113){
-            String v = event.getEntity().getWorld().getGameRuleValue("keepInventory");
-            value = Boolean.parseBoolean(v);
+            try {
+                String v = (String) event.getEntity().getWorld().getClass()
+                        .getMethod("getGameRuleValue", String.class)
+                        .invoke(event.getEntity().getWorld(), "keepInventory");
+                value = Boolean.parseBoolean(v);
+            } catch (ReflectiveOperationException exception) {
+                plugin.getLogger().warning("Unable to read the keepInventory game rule: " + exception.getMessage());
+            }
         } else {
             value = event.getEntity().getWorld().getGameRuleValue(GameRule.KEEP_INVENTORY);
         }

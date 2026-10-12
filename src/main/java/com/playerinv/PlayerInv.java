@@ -93,14 +93,18 @@ public class PlayerInv extends JavaPlugin {
 
     public void onEnable(){
         plugin = this;
+        initUtil.initMorePaperLib();
         new Metrics(this, 20554);
-        NBT.preloadApi();
+        if (!NBT.preloadApi()) {
+            getLogger().severe("NBT-API failed to initialize; disabling PlayerInv to prevent item data loss.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         initUtil.detectServerVersion();
         loadUtil.loadPluginConfig(true);
         loadUtil.loadPrefix();
         loadUtil.loadLocale();
         initUtil.isDebugMode();
-        initUtil.initMorePaperLib();
         initUtil.initLz4Factory();
         initUtil.initItemsLangAPI();
         initUtil.checkOnlineMode();

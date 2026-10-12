@@ -83,6 +83,7 @@ public class InitUtil {
         if(!split[0].equals("1")){
             isUp1193 = true;
             isUp118 = true;
+            isUp1205 = true;
             is121 = true;
             return;
         }
